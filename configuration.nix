@@ -13,7 +13,6 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.systemd-boot.consoleMode = "max";
   # networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -38,12 +37,9 @@
   services = {
     xserver.enable = true;
     displayManager.sddm.enable = true;
-    displayManager.sddm.wayland.enable = true;
     desktopManager.plasma6.enable = true;
   };
   
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.nvidia.acceptLicense = true;
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -78,33 +74,23 @@
   };
 
   programs.firefox.enable = true;
-  # programs.hyprland.enable = true;
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-  };
-  xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-
+  
   environment.sessionVariables = {
-    # If your cursor becomes invisible
-    WLR_NO_HARDWARE_CURSORS = "1";
-    # Hint electron apps to use wayland
-    NIXOS_OZONE_WL = "1";
-    # Tell hyprland ur using nvidia
-    LIBVA_DRIVER_NAME = "nvidia";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    EDITOR = "hx";
+    VISUAL = "hx";
   };
 
   # Nvidia Proprietary Drivers
   services.xserver.videoDrivers = [ "nvidia" ]; #enables nvidia
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.nvidia.acceptLicense = true;
   hardware = {
-    #graphics.enable = true; #seems optional - maybe set somewhere else
+    graphics.enable = true; #seems optional - maybe set somewhere else
     nvidia.modesetting.enable = true; #needed for high res
     # Last version that supports Kepler GPUs
     nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
     # nvidia.open = false; - only applies to drivers >= 560
-    #nvidia.nvidiaSettings = true;
+    nvidia.nvidiaSettings = true;
     # nvidia.forceFullCompositionPipeline = true;
   };
   
@@ -112,24 +98,11 @@
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
     git
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    vim
     wget
     helix
     kitty
     google-chrome
-    ### hyprland packages
-    egl-wayland # nvidia
-    waybar
-    (waybar.overrideAttrs (oldAttrs: {
-      mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
-    }))
-    mako
-    libnotify
-    xdg-desktop-portal-gtk
-    swww
-    wofi
-    rofi-wayland
-    networkmanagerapplet
     # debugging utils
     xorg.xrandr
     inxi
