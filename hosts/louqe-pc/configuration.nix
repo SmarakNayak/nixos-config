@@ -73,14 +73,13 @@
 
   programs.firefox.enable = true;
   programs.hyprland.enable = true;
+  programs.steam.enable = true;
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
-    #vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    #wget
     helix
     ghostty
     wofi
@@ -88,6 +87,10 @@
     google-chrome
     git
     pavucontrol
+    mission-center
+    signal-desktop
+    discord
+    vscode
   ];
 
   age.identityPaths = [ "/home/miltu/.config/age/master.key" ];
