@@ -51,9 +51,12 @@
   # Enable sound.
   # services.pulseaudio.enable = true;
   # OR
+  # security.rtkit.enable = true;
   # services.pipewire = {
-  #   enable = true;
-  #   pulse.enable = true;
+    # enable = true;
+    # alsa.enable = true;
+    # alsa.support32Bit = true;
+    # pulse.enable = true;
   # };
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -84,6 +87,7 @@
     waybar
     google-chrome
     git
+    pavucontrol
   ];
 
   age.identityPaths = [ "/home/miltu/.config/age/master.key" ];
@@ -110,7 +114,7 @@
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
-    open = false;
+    open = false; # for anything prior to 2000 series (1660ti)
     modesetting.enable = true;
     nvidiaSettings = true;
   };
