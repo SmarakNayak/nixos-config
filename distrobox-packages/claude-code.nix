@@ -1,6 +1,6 @@
 { pkgs, ... }:
 
-pkgs.writeShellScriptBin "claude" ''
+pkgs.writeShellScriptBin "claude-distro" ''
   export PATH="${pkgs.podman}/bin:$PATH"
   CONTAINER="ubuntu"
   if ! ${pkgs.distrobox}/bin/distrobox list | grep -q "| $CONTAINER"; then

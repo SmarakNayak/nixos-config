@@ -1,18 +1,19 @@
 { config, pkgs, lib, ... }:
 
 let
-  claude = import ./distrobox-packages/claude-code.nix { inherit pkgs; };
+  claude-distro = import ./distrobox-packages/claude-code.nix { inherit pkgs; };
 in
 {
   home.username = "miltu";
   home.homeDirectory = "/home/miltu";
-  home.stateVersion = "25.11";
+  home.stateVersion = "24.11";
 
   home.packages = with pkgs; [
     # tree
     curl
     distrobox
-    claude
+    claude-distro
+    claude-code
   ];
   
   programs.home-manager.enable = true;

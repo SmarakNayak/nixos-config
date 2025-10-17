@@ -13,9 +13,14 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    claude-code = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, agenix, home-manager, ... }@inputs: {
+  outputs = { self, nixpkgs, agenix, home-manager, claude-code, ... }@inputs: {
     nixosConfigurations= {
       louqe-pc = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit self; };
@@ -24,6 +29,7 @@
           agenix.nixosModules.default
           home-manager.nixosModules.home-manager
           {
+            nixpkgs.overlays = [ claude-code.overlays.default ];
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.miltu = import ./home.nix;
@@ -38,6 +44,7 @@
           agenix.nixosModules.default
           home-manager.nixosModules.home-manager
           {
+            nixpkgs.overlays = [ claude-code.overlays.default ];
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.miltu = import ./home.nix;
