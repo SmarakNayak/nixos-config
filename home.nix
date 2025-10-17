@@ -1,16 +1,31 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
+let
+  claude = pkgs.writeShellScriptBin "claude" ''
+    export PATH="${pkgs.podman}/bin:$PATH"
+    CONTAINER="ubuntu"
+    if ! ${pkgs.distrobox}/bin/distrobox list | grep -q "^$CONTAINER"; then
+      echo "Creating $CONTAINER container (first run)..."
+      ${pkgs.distrobox}/bin/distrobox create --name "$CONTAINER" --image ubuntu:latest --yes
+      echo "Installing claude-code..."
+      ${pkgs.distrobox}/bin/distrobox enter "$CONTAINER" -- bash -c 'curl -fsSL https://claude.ai/install.sh | bash'
+    fi
+    exec ${pkgs.distrobox}/bin/distrobox enter "$CONTAINER" -- ~/.local/bin/claude "$@"
+  '';
+in
 {
   home.username = "miltu";
   home.homeDirectory = "/home/miltu";
-  home.stateVersion = "25.05";
+  home.stateVersion = "25.11";
 
   home.packages = with pkgs; [
     # tree
+    curl
+    distrobox
+    claude
   ];
   
   programs.home-manager.enable = true;
-  programs.bash.enable = true;
 
   # Example: Configure git (you can remove this from configuration.nix if you move it here)
   # programs.git = {
@@ -31,7 +46,8 @@
     mimeType = [ "text/html" "text/xml" ];
     actions = {};
   };
-  home.activation.clearWofiCache = config.lib.dag.entryAfter ["writeBoundary"] ''
+  home.activation.clearWofiCache = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    echo 'HELLLO'
     run rm -f $HOME/.cache/wofi-drun
   '';
 }
