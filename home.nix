@@ -22,13 +22,16 @@
   #   };
   # };
   home.file.".config/hypr/hyprland.conf".source = ./dotfiles/hypr/hyprland.conf;
-  xdg.enable = true;
-  xdg.desktopEntries.google-chrome2 = {
+  xdg.desktopEntries.google-chrome = {
     name = "Google Chrome";
     exec = "google-chrome-stable --disable-features=WaylandWpColorManagerV1 %U";
     icon = "google-chrome";
     type = "Application";
     categories = [ "Network" "WebBrowser" ];
     mimeType = [ "text/html" "text/xml" ];
+    actions = {};
   };
+  home.activation.clearWofiCache = config.lib.dag.entryAfter ["writeBoundary"] ''
+    run rm -f $HOME/.cache/wofi-drun
+  '';
 }
