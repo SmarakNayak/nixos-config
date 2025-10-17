@@ -10,6 +10,7 @@
   ];
   
   programs.home-manager.enable = true;
+  programs.bash.enable = true;
 
   # Example: Configure git (you can remove this from configuration.nix if you move it here)
   # programs.git = {
@@ -22,7 +23,7 @@
   # };
   home.file.".config/hypr/hyprland.conf".source = ./dotfiles/hypr/hyprland.conf;
   xdg.enable = true;
-  xdg.desktopEntries.google-chrome = {
+  xdg.desktopEntries.google-chrome2 = {
     name = "Google Chrome";
     exec = "google-chrome-stable --disable-features=WaylandWpColorManagerV1 %U";
     icon = "google-chrome";
