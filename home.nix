@@ -39,6 +39,11 @@ in
   # };
   xdg.configFile."hypr/hyprland.conf".source = ./dotfiles/hypr/hyprland.conf;
   xdg.configFile."waybar/config.jsonc".source = ./dotfiles/waybar/config.jsonc;
+  xdg.configFile."waybar/style.css".source = ./dotfiles/waybar/style.css;
+  xdg.configFile."waybar/scripts" = {
+    source = ./dotfiles/waybar/scripts;
+    recursive = true;
+  };
   xdg.desktopEntries.google-chrome = {
     name = "Google Chrome";
     exec = "google-chrome-stable --disable-features=WaylandWpColorManagerV1 %U";
