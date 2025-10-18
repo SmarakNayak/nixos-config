@@ -14,9 +14,19 @@ in
     distrobox
     claude-distro
     claude-code
+    swappy
+    grim
+    slurp
   ];
   
   programs.home-manager.enable = true;
+
+  programs.bash = {
+    enable = true;
+    shellAliases = {
+      rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
+    };
+  };
 
   # Example: Configure git (you can remove this from configuration.nix if you move it here)
   # programs.git = {
@@ -27,7 +37,8 @@ in
   #     init.defaultBranch = "main";
   #   };
   # };
-  home.file.".config/hypr/hyprland.conf".source = ./dotfiles/hypr/hyprland.conf;
+  xdg.configFile."hypr/hyprland.conf".source = ./dotfiles/hypr/hyprland.conf;
+  xdg.configFile."waybar/config.jsonc".source = ./dotfiles/waybar/config.jsonc;
   xdg.desktopEntries.google-chrome = {
     name = "Google Chrome";
     exec = "google-chrome-stable --disable-features=WaylandWpColorManagerV1 %U";
