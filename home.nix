@@ -35,6 +35,7 @@ in
   #   };
   # };
   xdg.configFile."waybar/config.jsonc".source = ./dotfiles/waybar/config.jsonc;
+  xdg.configFile."waybar/config-niri.jsonc".source = ./dotfiles/waybar/config-niri.jsonc;
   xdg.configFile."waybar/style.css".source = ./dotfiles/waybar/style.css;
   xdg.configFile."waybar/scripts" = {
     source = ./dotfiles/waybar/scripts;
