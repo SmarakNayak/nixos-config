@@ -4,7 +4,7 @@
     "spacing": 4,
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["hyprland/window"],
-    "modules-right": ["idle_inhibitor", "custom/audio-output", "pulseaudio", "network", "power-profiles-daemon", "cpu", "memory", "temperature", "backlight", "keyboard-state", "battery", "clock", "tray"],
+    "modules-right": ["idle_inhibitor", "custom/audio-output", "custom/network", "power-profiles-daemon", "custom/cpu", "memory", "custom/gpu", "disk", "backlight", "keyboard-state", "battery", "clock", "tray"],
     "hyprland/window": {
         "max-length": 50,
         "separate-outputs": true
@@ -14,8 +14,14 @@
         "format-icons": ["", "", "", "", ""]
     },
     "clock": {
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%Y-%m-%d}"
+        "tooltip-format": "<tt>{calendar}</tt>",
+        "format-alt": "{:%Y-%m-%d}",
+        "calendar": {
+            "mode": "month",
+            "format": {
+                "today": "<span color='#cba6f7'><b>{}</b></span>"
+            }
+        }
     },
     "hyprland/workspaces": {
         "format": "{name}",
@@ -40,17 +46,30 @@
     "tray": {
         "spacing": 10
     },
-    "cpu": {
-        "format": "{usage}% ",
-        "tooltip": false
+    "custom/cpu": {
+        "exec": "~/.config/waybar/scripts/cpu.sh",
+        "return-type": "json",
+        "interval": 2,
+        "on-click": "missioncenter"
     },
     "memory": {
-        "format": "{}% "
+        "format": "  {used:0.1f}GB ",
+        "tooltip-format": "RAM: {used:0.1f}GiB / {total:0.1f}GiB ({percentage}%)\nSwap: {swapUsed:0.1f}GiB / {swapTotal:0.1f}GiB ({swapPercentage}%)\nAvailable: {avail:0.1f}GiB",
+        "tooltip": true,
+        "on-click": "missioncenter"
     },
-    "temperature": {
-        "critical-threshold": 80,
-        "format": "{temperatureC}°C {icon}",
-        "format-icons": ["", "", ""]
+    "custom/gpu": {
+        "exec": "~/.config/waybar/scripts/gpu.sh",
+        "return-type": "json",
+        "interval": 2,
+        "on-click": "missioncenter"
+    },
+    "disk": {
+        "interval": 30,
+        "format": "󰋊 {used} ",
+        "path": "/",
+        "tooltip": true,
+        "tooltip-format": "Storage: {path}\nUsed: {used} / {total} ({percentage_used}%)\nFree: {free}"
     },
     "backlight": {
         "format": "{percent}% {icon}",
@@ -67,13 +86,11 @@
             "power-saver": ""
         }
     },
-    "network": {
-        "format-wifi": "{essid} ({signalStrength}%) ",
-        "format-ethernet": "{ipaddr}/{cidr} ",
-        "tooltip-format": "{ifname} via {gwaddr} ",
-        "format-linked": "{ifname} (No IP) ",
-        "format-disconnected": "Disconnected ⚠",
-        "format-alt": "{ifname}: {ipaddr}/{cidr}"
+    "custom/network": {
+        "exec": "~/.config/waybar/scripts/network.sh",
+        "return-type": "json",
+        "interval": 5,
+        "on-click": "nm-connection-editor"
     },
     "pulseaudio": {
         "format": "{volume}% {icon} {format_source}",
@@ -97,6 +114,9 @@
     "custom/audio-output": {
         "exec": "~/.config/waybar/scripts/audio-output.sh",
         "on-click": "~/.config/waybar/scripts/toggle-audio.sh",
+        "on-click-right": "pavucontrol &",
+        "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
         "return-type": "json",
         "interval": 2,
         "signal": 8

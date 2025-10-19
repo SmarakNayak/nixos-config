@@ -10,12 +10,12 @@
         "format-icons": ["", "", "", "", ""]
     },
     "clock": {
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "tooltip-format": "<tt>{calendar}</tt>",
         "format-alt": "{:%Y-%m-%d}",
         "calendar": {
             "mode": "month",
             "format": {
-                "today": "<span color='#89b4fa'><b><u>{}</u></b></span>"
+                "today": "<span color='#cba6f7'><b>{}</b></span>"
             }
         }
     },
