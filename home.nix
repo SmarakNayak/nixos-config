@@ -14,9 +14,6 @@ in
     distrobox
     claude-distro
     claude-code
-    swappy
-    grim
-    slurp
   ];
   
   programs.home-manager.enable = true;
@@ -37,7 +34,6 @@ in
   #     init.defaultBranch = "main";
   #   };
   # };
-  xdg.configFile."hypr/hyprland.conf".source = ./dotfiles/hypr/hyprland.conf;
   xdg.configFile."waybar/config.jsonc".source = ./dotfiles/waybar/config.jsonc;
   xdg.configFile."waybar/style.css".source = ./dotfiles/waybar/style.css;
   xdg.configFile."waybar/scripts" = {
