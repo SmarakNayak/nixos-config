@@ -4,7 +4,7 @@
     "spacing": 4,
     "modules-left": ["niri/workspaces"],
     "modules-center": [],
-    "modules-right": ["idle_inhibitor", "custom/audio-output", "pulseaudio", "network", "power-profiles-daemon", "cpu", "memory", "temperature", "backlight", "keyboard-state", "battery", "clock", "tray"],
+    "modules-right": ["idle_inhibitor", "custom/audio-output", "network", "power-profiles-daemon", "cpu", "memory", "temperature", "backlight", "keyboard-state", "battery", "clock", "tray"],
     "battery": {
         "format": "{capacity}% {icon}",
         "format-icons": ["", "", "", "", ""]
@@ -14,7 +14,7 @@
         "format-alt": "{:%Y-%m-%d}"
     },
     "niri/workspaces": {
-        "format": "{name}",
+        "format": "{value}",
         "on-click": "activate"
     },
     "keyboard-state": {
@@ -93,6 +93,9 @@
     "custom/audio-output": {
         "exec": "~/.config/waybar/scripts/audio-output.sh",
         "on-click": "~/.config/waybar/scripts/toggle-audio.sh",
+        "on-click-right": "pavucontrol &",
+        "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
         "return-type": "json",
         "interval": 2,
         "signal": 8
