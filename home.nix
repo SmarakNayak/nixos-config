@@ -15,6 +15,7 @@ in
     claude-distro
     claude-code
     speedtest-go
+    networkmanagerapplet
     nerd-fonts.jetbrains-mono
     nerd-fonts.fira-code
   ];

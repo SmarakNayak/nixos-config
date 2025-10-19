@@ -4,7 +4,7 @@
     "spacing": 4,
     "modules-left": ["niri/workspaces"],
     "modules-center": ["niri/window"],
-    "modules-right": ["idle_inhibitor", "custom/audio-output", "custom/network", "power-profiles-daemon", "cpu", "memory", "temperature", "backlight", "keyboard-state", "battery", "clock", "tray"],
+    "modules-right": ["idle_inhibitor", "custom/audio-output", "custom/network", "power-profiles-daemon", "custom/cpu", "memory", "custom/gpu", "disk", "backlight", "keyboard-state", "battery", "clock", "tray"],
     "battery": {
         "format": "{capacity}% {icon}",
         "format-icons": ["", "", "", "", ""]
@@ -46,22 +46,30 @@
     "tray": {
         "spacing": 10
     },
-    "cpu": {
-        "format": "󰘚 {usage}% ",
-        "tooltip-format": "CPU: {usage}%\nLoad: {load}\nAvg freq: {avg_frequency}GHz",
-        "tooltip": true
+    "custom/cpu": {
+        "exec": "~/.config/waybar/scripts/cpu.sh",
+        "return-type": "json",
+        "interval": 2,
+        "on-click": "missioncenter"
     },
     "memory": {
-        "format": "󰍛 {}% ",
+        "format": "  {used:0.1f}GB ",
         "tooltip-format": "RAM: {used:0.1f}GiB / {total:0.1f}GiB ({percentage}%)\nSwap: {swapUsed:0.1f}GiB / {swapTotal:0.1f}GiB ({swapPercentage}%)\nAvailable: {avail:0.1f}GiB",
-        "tooltip": true
+        "tooltip": true,
+        "on-click": "missioncenter"
     },
-    "temperature": {
-        "critical-threshold": 80,
-        "format": "{temperatureC}°C {icon}",
-        "format-icons": ["", "", ""],
-        "tooltip-format": "Temperature: {temperatureC}°C ({temperatureF}°F)",
-        "tooltip": true
+    "custom/gpu": {
+        "exec": "~/.config/waybar/scripts/gpu.sh",
+        "return-type": "json",
+        "interval": 2,
+        "on-click": "missioncenter"
+    },
+    "disk": {
+        "interval": 30,
+        "format": "󰋊 {used} ",
+        "path": "/",
+        "tooltip": true,
+        "tooltip-format": "Storage: {path}\nUsed: {used} / {total} ({percentage_used}%)\nFree: {free}"
     },
     "backlight": {
         "format": "{percent}% {icon}",
@@ -81,7 +89,8 @@
     "custom/network": {
         "exec": "~/.config/waybar/scripts/network.sh",
         "return-type": "json",
-        "interval": 5
+        "interval": 5,
+        "on-click": "nm-connection-editor"
     },
     "pulseaudio": {
         "format": "{volume}% {icon} {format_source}",

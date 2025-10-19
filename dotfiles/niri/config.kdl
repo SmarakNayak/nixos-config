@@ -269,6 +269,7 @@ layout {
 
 // This line starts waybar, a commonly used bar for Wayland compositors.
 spawn-sh-at-startup "pkill waybar; sleep 0.1; waybar -c $HOME/.config/waybar/config-niri.jsonc"
+spawn-at-startup "nm-applet"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
