@@ -11,7 +11,13 @@
     },
     "clock": {
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%Y-%m-%d}"
+        "format-alt": "{:%Y-%m-%d}",
+        "calendar": {
+            "mode": "month",
+            "format": {
+                "today": "<span color='#89b4fa'><b><u>{}</u></b></span>"
+            }
+        }
     },
     "niri/workspaces": {
         "format": "{value}",
@@ -41,16 +47,21 @@
         "spacing": 10
     },
     "cpu": {
-        "format": "{usage}% ",
-        "tooltip": false
+        "format": "󰘚 {usage}% ",
+        "tooltip-format": "CPU: {usage}%\nLoad: {load}\nAvg freq: {avg_frequency}GHz",
+        "tooltip": true
     },
     "memory": {
-        "format": "{}% "
+        "format": "󰍛 {}% ",
+        "tooltip-format": "RAM: {used:0.1f}GiB / {total:0.1f}GiB ({percentage}%)\nSwap: {swapUsed:0.1f}GiB / {swapTotal:0.1f}GiB ({swapPercentage}%)\nAvailable: {avail:0.1f}GiB",
+        "tooltip": true
     },
     "temperature": {
         "critical-threshold": 80,
         "format": "{temperatureC}°C {icon}",
-        "format-icons": ["", "", ""]
+        "format-icons": ["", "", ""],
+        "tooltip-format": "Temperature: {temperatureC}°C ({temperatureF}°F)",
+        "tooltip": true
     },
     "backlight": {
         "format": "{percent}% {icon}",

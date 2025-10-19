@@ -15,6 +15,8 @@ in
     claude-distro
     claude-code
     speedtest-go
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.fira-code
   ];
   
   programs.home-manager.enable = true;
