@@ -14,6 +14,7 @@ in
     distrobox
     claude-distro
     claude-code
+    speedtest-go
   ];
   
   programs.home-manager.enable = true;
