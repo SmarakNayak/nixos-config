@@ -9,7 +9,6 @@ in
   home.stateVersion = "24.11";
 
   home.packages = with pkgs; [
-    # tree
     curl
     distrobox
     claude-distro
@@ -18,32 +17,83 @@ in
     networkmanagerapplet
     nerd-fonts.jetbrains-mono
     nerd-fonts.fira-code
-    # Modern CLI tools
-    yazi
-    zoxide
-    eza
-    bat
-    fd
-    ripgrep
-    btop
+    # CLI tools without home-manager modules
     procs
-    lazygit
-    delta
-    gh
-    fzf
-    atuin
-    jq
     sd
-    tmux
   ];
   
   programs.home-manager.enable = true;
 
   programs.bash = {
     enable = true;
+    enableCompletion = true;
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
     };
+  };
+
+  programs.fzf = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
+  programs.atuin = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
+  programs.zoxide = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
+  programs.eza = {
+    enable = true;
+    enableBashIntegration = true;
+    git = true;
+    icons = "auto";
+  };
+
+  programs.bat = {
+    enable = true;
+  };
+
+  programs.yazi = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
+  programs.lazygit = {
+    enable = true;
+  };
+
+  programs.btop = {
+    enable = true;
+  };
+
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+  };
+
+  programs.tmux = {
+    enable = true;
+  };
+
+  programs.ripgrep = {
+    enable = true;
+  };
+
+  programs.fd = {
+    enable = true;
+  };
+
+  programs.gh = {
+    enable = true;
+  };
+
+  programs.jq = {
+    enable = true;
   };
 
   # Example: Configure git (you can remove this from configuration.nix if you move it here)
