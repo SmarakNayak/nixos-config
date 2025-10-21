@@ -20,7 +20,6 @@ in
     # CLI tools without home-manager modules
     procs
     sd
-    blesh
   ];
   
   programs.home-manager.enable = true;
@@ -32,31 +31,51 @@ in
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
     };
     initExtra = ''
-      # Enable blesh (Bash Line Editor)
-      if [[ -f ${pkgs.blesh}/share/blesh/ble.sh ]]; then
-        source ${pkgs.blesh}/share/blesh/ble.sh
-      fi
+      # Enable menu-complete for cycling through completions
+      bind '"\t":menu-complete'
+      bind '"\e[Z":menu-complete-backward'  # Shift-Tab to go backwards
+      bind 'set show-all-if-ambiguous on'
+      bind 'set menu-complete-display-prefix on'
     '';
+  };
+
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+    shellAliases = {
+      rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
+    };
+    history = {
+      size = 10000;
+      path = "${config.xdg.dataHome}/zsh/history";
+    };
   };
 
   programs.fzf = {
     enable = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
   };
 
   programs.atuin = {
     enable = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
+    flags = [ "--disable-up-arrow" ];
   };
 
   programs.zoxide = {
     enable = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
   };
 
   programs.eza = {
     enable = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
     git = true;
     icons = "auto";
   };
@@ -68,6 +87,7 @@ in
   programs.yazi = {
     enable = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
   };
 
   programs.lazygit = {
