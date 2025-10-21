@@ -18,6 +18,23 @@ in
     networkmanagerapplet
     nerd-fonts.jetbrains-mono
     nerd-fonts.fira-code
+    # Modern CLI tools
+    yazi
+    zoxide
+    eza
+    bat
+    fd
+    ripgrep
+    btop
+    procs
+    lazygit
+    delta
+    gh
+    fzf
+    atuin
+    jq
+    sd
+    tmux
   ];
   
   programs.home-manager.enable = true;
@@ -55,7 +72,6 @@ in
     actions = {};
   };
   home.activation.clearWofiCache = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    echo 'HELLLO'
     run rm -f $HOME/.cache/wofi-drun
   '';
 }
