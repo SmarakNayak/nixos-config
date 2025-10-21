@@ -20,6 +20,7 @@ in
     # CLI tools without home-manager modules
     procs
     sd
+    blesh
   ];
   
   programs.home-manager.enable = true;
@@ -30,6 +31,12 @@ in
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
     };
+    initExtra = ''
+      # Enable blesh (Bash Line Editor)
+      if [[ -f ${pkgs.blesh}/share/blesh/ble.sh ]]; then
+        source ${pkgs.blesh}/share/blesh/ble.sh
+      fi
+    '';
   };
 
   programs.fzf = {
