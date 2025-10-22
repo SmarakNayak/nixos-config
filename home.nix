@@ -142,7 +142,7 @@ in
 
   programs.starship = {
     enable = true;
-    enableBashIntegration = true;
+    enableBashIntegration = false;
     enableZshIntegration = true;
     enableFishIntegration = true;
   };

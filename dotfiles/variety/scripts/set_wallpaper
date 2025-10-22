@@ -3,7 +3,7 @@
 # Called by Variety with the wallpaper path as $1
 
 WALLPAPER="$1"
-LOCKSCREEN_WALLPAPER="$HOME/.config/variety/lockscreen-wallpaper.jpg"
+LOCKSCREEN_WALLPAPER="$HOME/.config/variety/current-wallpaper.jpg"
 
 if [ -z "$WALLPAPER" ]; then
     echo "Usage: $0 <wallpaper-path>"

@@ -271,6 +271,7 @@ layout {
 spawn-sh-at-startup "pkill waybar; sleep 0.1; waybar -c $HOME/.config/waybar/config-niri.jsonc"
 spawn-at-startup "nm-applet"
 spawn-at-startup "mako"
+spawn-sh-at-startup "swaybg -i ~/.config/variety/current-wallpaper.jpg -m fill &"
 spawn-at-startup "variety"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
@@ -368,7 +369,7 @@ binds {
     Mod+T hotkey-overlay-title="Open a Terminal: ghostty" { spawn "ghostty"; }
     Mod+B hotkey-overlay-title="Open Browser: Google Chrome" { spawn "google-chrome-stable"; }
     Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
-    Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn-sh "swaylock -i ~/.config/variety/lockscreen-wallpaper.jpg -s fill"; }
+    Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn-sh "swaylock -i ~/.config/variety/current-wallpaper.jpg -s fill"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
