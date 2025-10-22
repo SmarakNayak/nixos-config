@@ -9,6 +9,10 @@
       xwayland-satellite
       alacritty
       fuzzel
+      swaylock
+      swaybg
+      variety
+      mako
     ];
 
     xdg.configFile."niri/config.kdl".source = ../dotfiles/niri/config.kdl;

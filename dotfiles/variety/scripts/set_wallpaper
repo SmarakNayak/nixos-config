@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Simple wallpaper setter for niri using swaybg
+# Called by Variety with the wallpaper path as $1
+
+WALLPAPER="$1"
+LOCKSCREEN_WALLPAPER="$HOME/.config/variety/lockscreen-wallpaper.jpg"
+
+if [ -z "$WALLPAPER" ]; then
+    echo "Usage: $0 <wallpaper-path>"
+    exit 1
+fi
+
+if [ ! -f "$WALLPAPER" ]; then
+    echo "Error: Wallpaper file not found: $WALLPAPER"
+    exit 1
+fi
+
+# Copy wallpaper for swaylock
+cp "$WALLPAPER" "$LOCKSCREEN_WALLPAPER" 2>/dev/null
+
+# Kill old swaybg process after starting new one to prevent flicker
+OLD_PID=$(pidof swaybg)
+swaybg -i "$WALLPAPER" -m fill &
+NEW_PID=$!
+
+if [ -n "$OLD_PID" ] && [ "$OLD_PID" != "$NEW_PID" ]; then
+    sleep 0.5
+    kill "$OLD_PID" 2>/dev/null
+fi
+
+exit 0

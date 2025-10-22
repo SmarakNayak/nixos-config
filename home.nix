@@ -140,6 +140,13 @@ in
     enable = true;
   };
 
+  programs.starship = {
+    enable = true;
+    enableBashIntegration = true;
+    enableZshIntegration = true;
+    enableFishIntegration = true;
+  };
+
   programs.fish = {
     enable = true;
     shellAliases = {
@@ -180,5 +187,10 @@ in
   };
   home.activation.clearWofiCache = lib.hm.dag.entryAfter ["writeBoundary"] ''
     run rm -f $HOME/.cache/wofi-drun
+  '';
+  home.activation.installVarietyScript = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    run mkdir -p $HOME/.config/variety/scripts
+    run cp -f ${./dotfiles/variety/scripts/set_wallpaper} $HOME/.config/variety/scripts/set_wallpaper
+    run chmod +x $HOME/.config/variety/scripts/set_wallpaper
   '';
 }
