@@ -156,9 +156,9 @@ in
 
   programs.git = {
     enable = true;
-    userName = "Smarak Nayak";
-    userEmail = "miltu.s.nayak@gmail.com";
-    extraConfig = {
+    settings = {
+      user.name = "Smarak Nayak";
+      user.email = "miltu.s.nayak@gmail.com";
       init.defaultBranch = "main";
     };
   };
