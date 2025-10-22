@@ -10,6 +10,7 @@
       ./hardware-configuration.nix
       ../../modules/niri.nix
       ../../modules/hyprland.nix
+      ../../modules/blesh.nix
     ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;

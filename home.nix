@@ -57,12 +57,14 @@ in
     enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;
+    enableFishIntegration = true;
   };
 
   programs.atuin = {
     enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;
+    enableFishIntegration = true;
     flags = [ "--disable-up-arrow" ];
   };
 
@@ -70,12 +72,14 @@ in
     enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;
+    enableFishIntegration = true;
   };
 
   programs.eza = {
     enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;
+    enableFishIntegration = true;
     git = true;
     icons = "auto";
   };
@@ -88,6 +92,7 @@ in
     enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;
+    enableFishIntegration = true;
   };
 
   programs.lazygit = {
@@ -121,6 +126,13 @@ in
 
   programs.jq = {
     enable = true;
+  };
+
+  programs.fish = {
+    enable = true;
+    shellAliases = {
+      rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
+    };
   };
 
   # Example: Configure git (you can remove this from configuration.nix if you move it here)
