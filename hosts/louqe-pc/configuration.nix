@@ -22,6 +22,7 @@
   };
   programs.firefox.enable = true;
   programs.steam.enable = true;
+  # programs.fish.enable = true; # May need this for system package completions
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [

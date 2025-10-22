@@ -1,0 +1,5 @@
+# Ghostty configuration
+keybind = shift+enter=text:\x1b\r
+
+# Use fish shell
+command = fish

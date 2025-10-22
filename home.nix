@@ -176,6 +176,7 @@ in
     source = ./dotfiles/waybar/scripts;
     recursive = true;
   };
+  xdg.configFile."ghostty/config".source = ./dotfiles/ghostty/config;
   xdg.desktopEntries.google-chrome = {
     name = "Google Chrome";
     exec = "google-chrome-stable --disable-features=WaylandWpColorManagerV1 %U";
