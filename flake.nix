@@ -34,6 +34,7 @@
             home-manager.useUserPackages = true;
             home-manager.users.miltu = import ./home.nix;
             home-manager.backupFileExtension = "backup";
+            home-manager.sharedModules = [ agenix.homeManagerModules.default ];
           }
         ];
       };
@@ -49,6 +50,7 @@
             home-manager.useUserPackages = true;
             home-manager.users.miltu = import ./home.nix;
             home-manager.backupFileExtension = "backup";
+            home-manager.sharedModules = [ agenix.homeManagerModules.default ];
           }
         ];
       };

@@ -20,6 +20,18 @@ in
     # CLI tools without home-manager modules
     procs
     sd
+    # GUI applications
+    helix
+    ghostty
+    wofi
+    waybar
+    google-chrome
+    pavucontrol
+    mission-center
+    signal-desktop
+    discord
+    vscode
+    tree
   ];
   
   programs.home-manager.enable = true;
@@ -103,10 +115,10 @@ in
     enable = true;
   };
 
-  programs.delta = {
-    enable = true;
-    enableGitIntegration = true;
-  };
+  # programs.delta = {
+  #   enable = true;
+  #   enableGitIntegration = true;
+  # };
 
   programs.tmux = {
     enable = true;
@@ -135,15 +147,21 @@ in
     };
   };
 
-  # Example: Configure git (you can remove this from configuration.nix if you move it here)
-  # programs.git = {
-  #   enable = true;
-  #   userName = "Smarak Nayak";
-  #   userEmail = "miltu.s.nayak@gmail.com";
-  #   extraConfig = {
-  #     init.defaultBranch = "main";
-  #   };
-  # };
+  programs.git = {
+    enable = true;
+    userName = "Smarak Nayak";
+    userEmail = "miltu.s.nayak@gmail.com";
+    extraConfig = {
+      init.defaultBranch = "main";
+    };
+  };
+
+  age.identityPaths = [ "${config.home.homeDirectory}/.config/age/master.key" ];
+  age.secrets.ssh-key = {
+    file = ./secrets/ssh-key.age;
+    path = "${config.home.homeDirectory}/.ssh/id_ed25519";
+    mode = "600";
+  };
   xdg.configFile."waybar/config.jsonc".source = ./dotfiles/waybar/config.jsonc;
   xdg.configFile."waybar/config-niri.jsonc".source = ./dotfiles/waybar/config-niri.jsonc;
   xdg.configFile."waybar/style.css".source = ./dotfiles/waybar/style.css;
