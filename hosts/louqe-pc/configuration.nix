@@ -20,6 +20,11 @@
     isNormalUser = true;
     extraGroups = [ "wheel" ]; # Enable 'sudo' for the user.
   };
+
+  # Increase sudo password timeout to 300 minutes
+  security.sudo.extraConfig = ''
+    Defaults timestamp_timeout=300
+  '';
   programs.firefox.enable = true;
   programs.steam.enable = true;
   # programs.fish.enable = true; # May need this for system package completions

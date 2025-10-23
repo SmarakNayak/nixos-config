@@ -30,10 +30,13 @@ in
     mission-center
     signal-desktop
     discord
-    vscode
     tree
+    # File managers
+    kdePackages.dolphin
+    xfce.thunar
+    nemo
   ];
-  
+
   programs.home-manager.enable = true;
 
   programs.bash = {
@@ -160,6 +163,22 @@ in
       user.name = "Smarak Nayak";
       user.email = "miltu.s.nayak@gmail.com";
       init.defaultBranch = "main";
+    };
+  };
+
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscode.fhs;
+  };
+
+  home.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+  };
+
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "inode/directory" = "org.kde.dolphin.desktop";
     };
   };
 
