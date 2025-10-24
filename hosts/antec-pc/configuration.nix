@@ -74,7 +74,9 @@
   };
 
   programs.firefox.enable = true;
-  
+  programs.fish.enable = true; # Enable system package completions
+  programs.zsh.enable = true; # Enable system package completions
+
   environment.sessionVariables = {
     EDITOR = "hx";
     VISUAL = "hx";

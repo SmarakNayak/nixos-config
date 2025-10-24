@@ -27,7 +27,8 @@
   '';
   programs.firefox.enable = true;
   programs.steam.enable = true;
-  # programs.fish.enable = true; # May need this for system package completions
+  programs.fish.enable = true; # Enable system package completions
+  programs.zsh.enable = true; # Enable system package completions
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
