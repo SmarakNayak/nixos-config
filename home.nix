@@ -20,6 +20,8 @@ in
     # CLI tools without home-manager modules
     procs
     sd
+    wl-clipboard
+    neofetch
     # GUI applications
     helix
     ghostty
@@ -31,6 +33,11 @@ in
     signal-desktop
     discord
     tree
+    # Media applications
+    mpv
+    spotify
+    imv
+    zathura
     # File managers
     kdePackages.dolphin
     xfce.thunar
