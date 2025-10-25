@@ -45,5 +45,11 @@
   system.stateVersion = "25.05"; # Did you read the comment?
 
   virtualisation.podman.enable = true;
+
+  # Ollama service with GPU acceleration
+  services.ollama = {
+    enable = true;
+    acceleration = "cuda"; # NVIDIA GPU acceleration
+  };
 }
 

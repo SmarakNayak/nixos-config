@@ -22,6 +22,7 @@ in
     sd
     wl-clipboard
     neofetch
+    ollama
     # GUI applications
     helix
     ghostty
@@ -58,6 +59,11 @@ in
       bind '"\e[Z":menu-complete-backward'  # Shift-Tab to go backwards
       bind 'set show-all-if-ambiguous on'
       bind 'set menu-complete-display-prefix on'
+
+      # Query Ollama with ?
+      function ? {
+        ollama run qwen2.5:7b "$*"
+      }
     '';
   };
 
@@ -73,6 +79,12 @@ in
       size = 10000;
       path = "${config.xdg.dataHome}/zsh/history";
     };
+    initExtra = ''
+      # Query Ollama with ?
+      function ? {
+        ollama run qwen2.5:7b "$*"
+      }
+    '';
   };
 
   programs.fzf = {
@@ -162,6 +174,12 @@ in
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
     };
+    shellInit = ''
+      # Query Ollama with ?
+      function ?
+        ollama run qwen2.5:7b $argv
+      end
+    '';
   };
 
   programs.git = {
