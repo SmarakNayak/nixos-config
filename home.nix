@@ -62,7 +62,7 @@ in
 
       # Query Ollama with ?
       function ? {
-        ollama run qwen2.5:7b "$*"
+        ollama run qwen3:8b --think=false "$*"
       }
 
       # Query Claude with ?? (persistent session per shell)
@@ -94,7 +94,7 @@ in
     initExtra = ''
       # Query Ollama with q
       function q {
-        ollama run qwen2.5:7b "$*"
+        ollama run qwen3:8b --think=false "$*"
       }
 
       # Query Claude with qq (persistent session per shell)
@@ -201,7 +201,7 @@ in
     shellInit = ''
       # Query Ollama with ?
       function ?
-        ollama run qwen2.5:7b $argv
+        ollama run qwen3:8b --think=false $argv
       end
 
       # Query Claude with ?? (persistent session per shell)
