@@ -64,6 +64,18 @@ in
       function ? {
         ollama run qwen2.5:7b "$*"
       }
+
+      # Query Claude with ?? (persistent session per shell)
+      function ?? {
+        if [ -z "$CLAUDE_SHELL_SESSION" ]; then
+          export CLAUDE_SHELL_SESSION=$(uuidgen 2>/dev/null || cat /proc/sys/kernel/random/uuid)
+          claude --print --verbose --output-format stream-json --include-partial-messages --session-id "$CLAUDE_SHELL_SESSION" "$@" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | .event.delta.text'
+          echo
+        else
+          claude --print --verbose --output-format stream-json --include-partial-messages --resume "$CLAUDE_SHELL_SESSION" "$@" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | .event.delta.text'
+          echo
+        fi
+      }
     '';
   };
 
@@ -80,9 +92,21 @@ in
       path = "${config.xdg.dataHome}/zsh/history";
     };
     initExtra = ''
-      # Query Ollama with ?
-      function ? {
+      # Query Ollama with q
+      function q {
         ollama run qwen2.5:7b "$*"
+      }
+
+      # Query Claude with qq (persistent session per shell)
+      function qq {
+        if [ -z "$CLAUDE_SHELL_SESSION" ]; then
+          export CLAUDE_SHELL_SESSION=$(uuidgen 2>/dev/null || cat /proc/sys/kernel/random/uuid)
+          claude --print --verbose --output-format stream-json --include-partial-messages --session-id "$CLAUDE_SHELL_SESSION" "$@" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | .event.delta.text'
+          echo
+        else
+          claude --print --verbose --output-format stream-json --include-partial-messages --resume "$CLAUDE_SHELL_SESSION" "$@" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | .event.delta.text'
+          echo
+        fi
       }
     '';
   };
@@ -178,6 +202,18 @@ in
       # Query Ollama with ?
       function ?
         ollama run qwen2.5:7b $argv
+      end
+
+      # Query Claude with ?? (persistent session per shell)
+      function ??
+        if test -z "$CLAUDE_SHELL_SESSION"
+          set -gx CLAUDE_SHELL_SESSION (uuidgen 2>/dev/null; or cat /proc/sys/kernel/random/uuid)
+          claude --print --verbose --output-format stream-json --include-partial-messages --session-id "$CLAUDE_SHELL_SESSION" "$argv" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | .event.delta.text'
+          echo
+        else
+          claude --print --verbose --output-format stream-json --include-partial-messages --resume "$CLAUDE_SHELL_SESSION" "$argv" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | .event.delta.text'
+          echo
+        end
       end
     '';
   };
