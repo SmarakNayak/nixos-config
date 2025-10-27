@@ -69,10 +69,10 @@ in
       function ?? {
         if [ -z "$CLAUDE_SHELL_SESSION" ]; then
           export CLAUDE_SHELL_SESSION=$(uuidgen 2>/dev/null || cat /proc/sys/kernel/random/uuid)
-          claude --print --verbose --output-format stream-json --include-partial-messages --session-id "$CLAUDE_SHELL_SESSION" "$@" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | .event.delta.text'
+          claude --print --verbose --output-format stream-json --include-partial-messages --session-id "$CLAUDE_SHELL_SESSION" "$@" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | if .event.delta.type == "text_delta" then .event.delta.text elif .event.delta.type == "input_json_delta" and .event.delta.partial_json == "" then "\n🔧 " elif .event.delta.type == "input_json_delta" then .event.delta.partial_json + if (.event.delta.partial_json | endswith("}")) then "\n" else "" end else "" end'
           echo
         else
-          claude --print --verbose --output-format stream-json --include-partial-messages --resume "$CLAUDE_SHELL_SESSION" "$@" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | .event.delta.text'
+          claude --print --verbose --output-format stream-json --include-partial-messages --resume "$CLAUDE_SHELL_SESSION" "$@" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | if .event.delta.type == "text_delta" then .event.delta.text elif .event.delta.type == "input_json_delta" and .event.delta.partial_json == "" then "\n🔧 " elif .event.delta.type == "input_json_delta" then .event.delta.partial_json + if (.event.delta.partial_json | endswith("}")) then "\n" else "" end else "" end'
           echo
         fi
       }
@@ -101,10 +101,10 @@ in
       function qq {
         if [ -z "$CLAUDE_SHELL_SESSION" ]; then
           export CLAUDE_SHELL_SESSION=$(uuidgen 2>/dev/null || cat /proc/sys/kernel/random/uuid)
-          claude --print --verbose --output-format stream-json --include-partial-messages --session-id "$CLAUDE_SHELL_SESSION" "$@" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | .event.delta.text'
+          claude --print --verbose --output-format stream-json --include-partial-messages --session-id "$CLAUDE_SHELL_SESSION" "$@" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | if .event.delta.type == "text_delta" then .event.delta.text elif .event.delta.type == "input_json_delta" and .event.delta.partial_json == "" then "\n🔧 " elif .event.delta.type == "input_json_delta" then .event.delta.partial_json + if (.event.delta.partial_json | endswith("}")) then "\n" else "" end else "" end'
           echo
         else
-          claude --print --verbose --output-format stream-json --include-partial-messages --resume "$CLAUDE_SHELL_SESSION" "$@" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | .event.delta.text'
+          claude --print --verbose --output-format stream-json --include-partial-messages --resume "$CLAUDE_SHELL_SESSION" "$@" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | if .event.delta.type == "text_delta" then .event.delta.text elif .event.delta.type == "input_json_delta" and .event.delta.partial_json == "" then "\n🔧 " elif .event.delta.type == "input_json_delta" then .event.delta.partial_json + if (.event.delta.partial_json | endswith("}")) then "\n" else "" end else "" end'
           echo
         fi
       }
@@ -208,10 +208,10 @@ in
       function ??
         if test -z "$CLAUDE_SHELL_SESSION"
           set -gx CLAUDE_SHELL_SESSION (uuidgen 2>/dev/null; or cat /proc/sys/kernel/random/uuid)
-          claude --print --verbose --output-format stream-json --include-partial-messages --session-id "$CLAUDE_SHELL_SESSION" "$argv" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | .event.delta.text'
+          claude --print --verbose --output-format stream-json --include-partial-messages --session-id "$CLAUDE_SHELL_SESSION" "$argv" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | if .event.delta.type == "text_delta" then .event.delta.text elif .event.delta.type == "input_json_delta" and .event.delta.partial_json == "" then "\n🔧 " elif .event.delta.type == "input_json_delta" then .event.delta.partial_json + if (.event.delta.partial_json | endswith("}")) then "\n" else "" end else "" end'
           echo
         else
-          claude --print --verbose --output-format stream-json --include-partial-messages --resume "$CLAUDE_SHELL_SESSION" "$argv" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | .event.delta.text'
+          claude --print --verbose --output-format stream-json --include-partial-messages --resume "$CLAUDE_SHELL_SESSION" "$argv" | jq --unbuffered -j 'select(.event.type == "content_block_delta") | if .event.delta.type == "text_delta" then .event.delta.text elif .event.delta.type == "input_json_delta" and .event.delta.partial_json == "" then "\n🔧 " elif .event.delta.type == "input_json_delta" then .event.delta.partial_json + if (.event.delta.partial_json | endswith("}")) then "\n" else "" end else "" end'
           echo
         end
       end
