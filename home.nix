@@ -23,6 +23,7 @@ in
     wl-clipboard
     neofetch
     ollama
+    unzip
     # GUI applications
     helix
     ghostty
@@ -91,7 +92,7 @@ in
       size = 10000;
       path = "${config.xdg.dataHome}/zsh/history";
     };
-    initExtra = ''
+    initContent = ''
       # Query Ollama with q
       function q {
         ollama run qwen3:8b --think=false "$*"
