@@ -53,7 +53,7 @@
         "on-click": "missioncenter"
     },
     "memory": {
-        "format": "  {used:0.1f}GB ",
+        "format": "  {used:0.1f}GB ", 
         "tooltip-format": "RAM: {used:0.1f}GiB / {total:0.1f}GiB ({percentage}%)\nSwap: {swapUsed:0.1f}GiB / {swapTotal:0.1f}GiB ({swapPercentage}%)\nAvailable: {avail:0.1f}GiB",
         "tooltip": true,
         "on-click": "missioncenter"
