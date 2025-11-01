@@ -18,7 +18,7 @@
   time.timeZone = "Australia/Sydney";
   users.users.miltu = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "adbusers" ]; # Enable 'sudo' for the user.
+    extraGroups = [ "wheel" "adbusers" "seat" ]; # Enable 'sudo' for the user.
   };
 
   # Increase sudo password timeout to 300 minutes
@@ -44,6 +44,9 @@
     nvidiaSettings = true;
   };
   system.stateVersion = "25.05"; # Did you read the comment?
+
+  # Lemurs TUI login manager
+  services.displayManager.lemurs.enable = true;
 
   virtualisation.podman.enable = true;
 
