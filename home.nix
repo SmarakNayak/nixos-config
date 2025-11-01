@@ -258,6 +258,7 @@ in
     recursive = true;
   };
   xdg.configFile."ghostty/config".source = ./dotfiles/ghostty/config;
+  xdg.configFile."mako/config".source = ./dotfiles/mako/config;
   xdg.desktopEntries.google-chrome = {
     name = "Google Chrome";
     exec = "google-chrome-stable --disable-features=WaylandWpColorManagerV1 %U";

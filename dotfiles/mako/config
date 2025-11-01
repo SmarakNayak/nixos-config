@@ -1,0 +1,36 @@
+# Mako notification daemon configuration
+
+# Default timeout in milliseconds (5 seconds)
+default-timeout=5000
+
+# Allow applications to override timeout
+ignore-timeout=1
+
+# Appearance
+font=sans-serif 10
+background-color=#1e1e2e
+text-color=#cdd6f4
+border-color=#89b4fa
+border-size=2
+border-radius=8
+padding=10
+margin=10
+
+# Position on screen
+anchor=top-right
+
+# Maximum visible notifications
+max-visible=5
+
+# Urgency-based timeouts
+[urgency=low]
+default-timeout=3000
+border-color=#94e2d5
+
+[urgency=normal]
+default-timeout=5000
+border-color=#89b4fa
+
+[urgency=critical]
+default-timeout=0
+border-color=#f38ba8
