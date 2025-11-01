@@ -54,6 +54,22 @@
           }
         ];
       };
+      msi-laptop = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit self; };
+        modules = [
+          ./hosts/msi-laptop/configuration.nix
+          agenix.nixosModules.default
+          home-manager.nixosModules.home-manager
+          {
+            nixpkgs.overlays = [ claude-code.overlays.default ];
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.miltu = import ./home.nix;
+            home-manager.backupFileExtension = "backup";
+            home-manager.sharedModules = [ agenix.homeManagerModules.default ];
+          }
+        ];
+      };
     };
   };
 }
