@@ -3,8 +3,13 @@
 # Get CPU name
 CPU_NAME=$(lscpu | grep "Model name:" | sed 's/Model name:[[:space:]]*//' | sed 's/(R)//g;s/(TM)//g;s/  */ /g')
 
-# Get CPU usage
-CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
+# Get CPU usage (user + system + interrupts, excluding iowait)
+CPU_LINE=$(top -bn1 | grep "Cpu(s)")
+US=$(echo "$CPU_LINE" | awk '{print $2}' | sed 's/us,//')
+SY=$(echo "$CPU_LINE" | awk '{print $4}' | sed 's/sy,//')
+HI=$(echo "$CPU_LINE" | awk '{print $12}' | sed 's/hi,//')
+SI=$(echo "$CPU_LINE" | awk '{print $14}' | sed 's/si,//')
+CPU_USAGE=$(awk "BEGIN {printf \"%.1f\", $US + $SY + $HI + $SI}")
 CPU_USAGE_INT=$(printf "%.0f" "$CPU_USAGE")
 
 # Get CPU temperature
