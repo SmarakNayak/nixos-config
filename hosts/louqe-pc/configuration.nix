@@ -53,6 +53,15 @@
     acceleration = "cuda"; # NVIDIA GPU acceleration
   };
 
+  # Ly TUI login manager
+  services.displayManager.ly = {
+    enable = true;
+    settings = {
+      xinitrc = "";   # Hide xinitrc option (X11 not configured)
+      setup_cmd = ""; # Don't use xsession-wrapper for shell sessions
+    };
+  };
+
   # Firewall configuration
   networking.firewall.allowedTCPPorts = [ 8081 ]; # For Expo
 }
