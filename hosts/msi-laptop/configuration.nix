@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./power-management.nix
       ../../modules/niri.nix
       ../../modules/hyprland.nix
     ];
@@ -37,9 +38,13 @@
   ];
   # nvidia settings
   hardware.graphics.enable = true;
+
+  # Completely disable NVIDIA GPU to save power
+  hardware.nvidiaOptimus.disable = true;
+
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
-    open = false; # RTX 3050 Ti Mobile - using proprietary driver
+    open = true; # RTX 3050 Ti Mobile - using proprietary driver
     modesetting.enable = true;
     nvidiaSettings = true;
 
@@ -75,8 +80,11 @@
     acceleration = "cuda";
   };
 
-  powerManagement.enable = true;
-  services.power-profiles-daemon.enable = true;
+  # Bluetooth with blueman applet
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = false;  # Don't auto-start bluetooth (saves power)
+  services.blueman.enable = true;
+
 
   # Firewall configuration
   networking.firewall.allowedTCPPorts = [ 8081 ]; # For Expo

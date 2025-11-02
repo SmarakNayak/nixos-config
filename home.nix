@@ -31,6 +31,7 @@ in
     waybar
     google-chrome
     pavucontrol
+    blueman
     mission-center
     signal-desktop
     discord
