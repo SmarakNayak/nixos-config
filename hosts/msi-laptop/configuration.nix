@@ -39,9 +39,23 @@
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
-    open = false; # for anything prior to 2000 series (1660ti)
+    open = false; # RTX 3050 Ti Mobile - using proprietary driver
     modesetting.enable = true;
     nvidiaSettings = true;
+
+    # PRIME Offload: Use Intel iGPU by default, NVIDIA on-demand for battery saving
+    prime = {
+      offload = {
+        enable = true;
+        enableOffloadCmd = true;  # Provides 'nvidia-offload' command
+      };
+      intelBusId = "PCI:0:2:0";   # Intel TigerLake-H GT1
+      nvidiaBusId = "PCI:1:0:0";  # RTX 3050 Ti Mobile
+    };
+
+    # Aggressive power management for better battery life
+    powerManagement.enable = true;
+    powerManagement.finegrained = true;  # Runtime D3 power state (deep sleep)
   };
   system.stateVersion = "25.05"; # Did you read the comment?
 
@@ -50,11 +64,13 @@
 
   virtualisation.podman.enable = true;
 
-  # Ollama service with GPU acceleration
   services.ollama = {
     enable = true;
-    acceleration = "cuda"; # NVIDIA GPU acceleration
+    acceleration = "cuda";
   };
+
+  powerManagement.enable = true;
+  services.power-profiles-daemon.enable = true;
 
   # Firewall configuration
   networking.firewall.allowedTCPPorts = [ 8081 ]; # For Expo
