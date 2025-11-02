@@ -60,7 +60,13 @@
   system.stateVersion = "25.05"; # Did you read the comment?
 
   # Ly TUI login manager
-  services.displayManager.ly.enable = true;
+  services.displayManager.ly = {
+    enable = true;
+    settings = {
+      xinitrc = "";   # Hide xinitrc option (X11 not configured)
+      setup_cmd = ""; # Don't use xsession-wrapper for shell sessions
+    };
+  };
 
   virtualisation.podman.enable = true;
 
