@@ -40,6 +40,7 @@ in
     spotify
     imv
     zathura
+    pinta
     # File managers
     kdePackages.dolphin
     xfce.thunar
