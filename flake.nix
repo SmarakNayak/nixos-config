@@ -18,12 +18,18 @@
       url = "github:sadjow/claude-code-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-ai-tools = {
+      url = "github:numtide/nix-ai-tools";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
   };
 
-  outputs = { self, nixpkgs, agenix, home-manager, claude-code, ... }@inputs: {
+  outputs = { self, nixpkgs, agenix, home-manager, claude-code, nix-ai-tools, ... }@inputs: {
     nixosConfigurations= {
       louqe-pc = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit self; };
+        specialArgs = { inherit self nix-ai-tools; };
         modules = [
           ./hosts/louqe-pc/configuration.nix
           agenix.nixosModules.default
@@ -35,11 +41,12 @@
             home-manager.users.miltu = import ./home.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
+            home-manager.extraSpecialArgs = { inherit nix-ai-tools; };
           }
         ];
       };
       antec-pc = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit self; };
+        specialArgs = { inherit self nix-ai-tools; };
         modules = [
           ./hosts/antec-pc/configuration.nix
           agenix.nixosModules.default
@@ -51,11 +58,12 @@
             home-manager.users.miltu = import ./home.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
+            home-manager.extraSpecialArgs = { inherit nix-ai-tools; };
           }
         ];
       };
       msi-laptop = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit self; };
+        specialArgs = { inherit self nix-ai-tools; };
         modules = [
           ./hosts/msi-laptop/configuration.nix
           agenix.nixosModules.default
@@ -67,6 +75,7 @@
             home-manager.users.miltu = import ./home.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
+            home-manager.extraSpecialArgs = { inherit nix-ai-tools; };
           }
         ];
       };

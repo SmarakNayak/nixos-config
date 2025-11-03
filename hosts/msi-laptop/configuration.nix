@@ -8,7 +8,8 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./power-management-auto-cpufreq.nix
+      ./power-management-baseline.nix
+      ./power-testing-mode.nix  # TEMPORARY: Remove after power testing!
       ../../modules/niri.nix
       ../../modules/hyprland.nix
     ];

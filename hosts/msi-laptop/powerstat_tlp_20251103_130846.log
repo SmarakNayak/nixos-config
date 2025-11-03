@@ -1,0 +1,99 @@
+Running for 420.0 seconds (84 samples at 5.0 second intervals).
+Power measurements will start in 60 seconds time.
+
+Waiting 60 seconds before starting (gathering samples). Waiting 59 seconds before starting (gathering samples). Waiting 58 seconds before starting (gathering samples). Waiting 57 seconds before starting (gathering samples). Waiting 56 seconds before starting (gathering samples). Waiting 55 seconds before starting (gathering samples). Waiting 54 seconds before starting (gathering samples). Waiting 53 seconds before starting (gathering samples). Waiting 52 seconds before starting (gathering samples). Waiting 51 seconds before starting (gathering samples). Waiting 50 seconds before starting (gathering samples). Waiting 49 seconds before starting (gathering samples). Waiting 48 seconds before starting (gathering samples). Waiting 47 seconds before starting (gathering samples). Waiting 46 seconds before starting (gathering samples). Waiting 45 seconds before starting (gathering samples). Waiting 44 seconds before starting (gathering samples). Waiting 43 seconds before starting (gathering samples). Waiting 42 seconds before starting (gathering samples). Waiting 41 seconds before starting (gathering samples). Waiting 40 seconds before starting (gathering samples). Waiting 39 seconds before starting (gathering samples). Waiting 38 seconds before starting (gathering samples). Waiting 37 seconds before starting (gathering samples). Waiting 36 seconds before starting (gathering samples). Waiting 35 seconds before starting (gathering samples). Waiting 34 seconds before starting (gathering samples). Waiting 33 seconds before starting (gathering samples). Waiting 32 seconds before starting (gathering samples). Waiting 31 seconds before starting (gathering samples). Waiting 30 seconds before starting (gathering samples). Waiting 29 seconds before starting (gathering samples). Waiting 28 seconds before starting (gathering samples). Waiting 27 seconds before starting (gathering samples). Waiting 26 seconds before starting (gathering samples). Waiting 25 seconds before starting (gathering samples). Waiting 24 seconds before starting (gathering samples). Waiting 23 seconds before starting (gathering samples). Waiting 22 seconds before starting (gathering samples). Waiting 21 seconds before starting (gathering samples). Waiting 20 seconds before starting (gathering samples). Waiting 19 seconds before starting (gathering samples). Waiting 18 seconds before starting (gathering samples). Waiting 17 seconds before starting (gathering samples). Waiting 16 seconds before starting (gathering samples). Waiting 15 seconds before starting (gathering samples). Waiting 14 seconds before starting (gathering samples). Waiting 13 seconds before starting (gathering samples). Waiting 12 seconds before starting (gathering samples). Waiting 11 seconds before starting (gathering samples). Waiting 10 seconds before starting (gathering samples). Waiting 9 seconds before starting (gathering samples). Waiting 8 seconds before starting (gathering samples). Waiting 7 seconds before starting (gathering samples). Waiting 6 seconds before starting (gathering samples). Waiting 5 seconds before starting (gathering samples). Waiting 4 seconds before starting (gathering samples). Waiting 3 seconds before starting (gathering samples). Waiting 2 seconds before starting (gathering samples). Waiting 1 seconds before starting (gathering samples).                                                                                  Time    User  Nice   Sys  Idle    IO  Run Ctxt/s  IRQ/s Fork Exec Exit  Watts
+13:09:59   1.0   0.0   1.3  85.6  12.1    1   1181   2089  199  124  203  14.09 
+13:10:04   1.0   0.0   1.2  85.8  12.0    3   1187   2036  199  126  194  14.11 
+13:10:09   0.8   0.0   1.1  86.0  12.1    1   1006   1843  168  107  173  12.46 
+13:10:14   0.9   0.0   1.4  85.5  12.1    1   1131   2132  203  129  203  12.04 
+13:10:19   1.0   0.0   1.3  85.6  12.1    1   1223   2066  203  129  203  12.04 
+13:10:24   0.8   0.0   1.2  85.8  12.2    1   1102   1943  177  113  177  14.95 
+13:10:29   0.9   0.0   1.2  85.5  12.4    2   1101   1883  186  120  177  13.96 
+13:10:34   1.1   0.0   1.4  85.3  12.1    2   1230   2154  216  140  217  13.95 
+13:10:39   1.0   0.0   1.4  85.4  12.2    2   1266   2302  212  130  217  12.47 
+13:10:44   1.0   0.0   1.3  85.4  12.3    1   1213   2239  203  130  206  14.43 
+13:10:49   0.9   0.0   1.2  85.8  12.2    1   1041   1941  177  113  177  15.12 
+13:10:54   0.9   0.0   1.2  85.7  12.2    1   1057   1910  177  113  177  14.38 
+13:10:59   1.1   0.0   1.5  85.7  11.7    1   1245   2283  229  145  229  14.37 
+13:11:04   0.9   0.0   1.2  85.8  12.2    1   1120   1975  174  110  165  15.21 
+13:11:09   0.9   0.0   1.1  85.9  12.1    1   1047   1802  168  107  177  13.46 
+13:11:14   1.0   0.0   1.2  85.5  12.3    1   1185   2056  203  129  203  10.58 
+13:11:19   1.0   0.0   1.4  85.3  12.3    2   1114   2047  203  133  194  11.10 
+13:11:24   1.0   0.0   1.3  85.5  12.2    2   1245   2179  208  130  216  13.55 
+13:11:29   1.0   0.0   1.2  85.7  12.1    1   1117   1960  202  128  203  14.73 
+13:11:34   0.9   0.0   1.1  85.9  12.1    1   1054   1840  177  113  177  14.60 
+13:11:39   1.0   0.0   1.2  85.5  12.3    1   1196   2060  200  126  191  14.00 
+13:11:44   0.9   0.0   1.4  85.7  12.1    1   1122   2131  194  123  203  11.89 
+13:11:49   0.9   0.0   1.1  85.9  12.1    1   1036   1844  177  113  177  12.04 
+13:11:54   1.0   0.0   1.3  85.5  12.2    1   1228   2092  204  129  203  13.91 
+13:11:59   0.9   0.0   1.3  85.5  12.3    1   1092   1962  186  122  182  13.87 
+13:12:04   1.0   0.0   1.5  85.3  12.2    3   1258   2219  223  138  223  13.58 
+13:12:09   1.0   0.0   1.3  85.3  12.4    1   1201   2144  204  131  208  14.90 
+13:12:14   0.9   0.0   1.1  85.8  12.2    1   1081   1801  178  113  178  15.30 
+13:12:19   0.9   0.0   1.2  85.8  12.2    1   1044   1905  178  113  177  14.30 
+13:12:24   1.0   0.0   1.2  85.6  12.1    1   1236   2160  203  129  203  14.62 
+13:12:29   0.9   0.0   1.4  85.3  12.4    1   1137   2120  203  129  203  14.16 
+13:12:34   1.0   0.0   1.3  85.6  12.2    1   1195   2177  203  129  203  14.39 
+13:12:39   0.8   0.0   1.2  85.7  12.2    1   1080   1875  179  113  179  14.10 
+13:12:44   0.9   0.0   1.2  85.4  12.5    1   1536   2248  183  119  170  14.03 
+13:12:49   1.2   0.0   1.5  84.9  12.4    1   1266   2245  241  150  254  14.43 
+13:12:54   1.1   0.0   1.2  85.3  12.4    1   1118   1898  177  113  178  15.18 
+13:12:59   0.9   0.0   1.2  85.6  12.3    1   1036   1809  177  113  177  14.69 
+13:13:04   1.0   0.0   1.2  85.5  12.3    1   1252   2189  203  129  203  14.88 
+13:13:09   0.9   0.0   1.2  85.5  12.4    2   1086   1862  181  118  177  14.68 
+13:13:14   0.9   0.0   1.4  85.3  12.4    1   1114   2014  199  124  203  14.46 
+13:13:19   1.0   0.0   1.2  85.5  12.3    1   1173   2069  200  126  192  14.38 
+13:13:24   0.9   0.0   1.2  85.5  12.5    1   1146   1959  177  116  190  14.56 
+13:13:29   1.1   0.0   1.3  85.5  12.2    2   1248   2159  224  140  225  14.02 
+13:13:34   1.0   0.0   1.4  85.5  12.1    1   1173   2180  203  129  206  10.40 
+  Time    User  Nice   Sys  Idle    IO  Run Ctxt/s  IRQ/s Fork Exec Exit  Watts
+13:13:39   0.9   0.0   1.2  85.6  12.4    1   1037   1823  177  113  177  11.46 
+13:13:44   1.0   0.0   1.2  85.4  12.4    1   1165   2005  203  129  203  11.93 
+13:13:49   0.8   0.0   1.2  85.6  12.4    1   1075   1872  178  113  177  15.13 
+13:13:54   0.9   0.0   1.2  85.6  12.3    2   1090   1915  186  119  173  14.61 
+13:13:59   1.0   0.0   1.3  88.8   8.9    1   1194   2185  208  130  222  13.77 
+13:14:04   0.9   0.0   1.2  91.7   6.1    2   1123   1928  183  120  177  14.48 
+13:14:09   0.9   0.0   1.2  91.6   6.2    3   1105   1938  192  121  194  12.79 
+13:14:14   1.1   0.0   1.3  91.5   6.2    1   1185   2213  212  134  216  10.47 
+13:14:19   0.9   0.0   1.4  86.0  11.7    1   1209   2213  203  129  203  14.08 
+13:14:24   1.0   0.0   1.2  85.7  12.1    3   1210   1946  191  123  187  14.42 
+13:14:29   1.0   0.0   1.2  85.7  12.2    1   1130   1948  190  119  195  14.85 
+13:14:34   0.9   0.0   1.2  85.8  12.1    1   1054   1825  177  113  177  15.45 
+13:14:39   1.0   0.0   1.4  85.3  12.3    2   1208   2219  219  140  215  11.85 
+13:14:44   0.9   0.0   1.3  85.6  12.2    1   1091   2042  187  118  191  12.05 
+13:14:49   0.9   0.0   1.3  85.7  12.1    1   1131   1900  186  122  182  14.50 
+13:14:54   1.1   0.0   1.3  85.4  12.3    1   1223   2159  224  140  228  14.41 
+13:14:59   0.8   0.0   1.2  85.7  12.3    1   1070   1925  174  110  165  14.41 
+13:15:04   1.0   0.0   1.4  85.6  12.0    1   1222   2214  194  123  203  13.95 
+13:15:09   1.0   0.0   1.3  85.5  12.3    1   1197   2153  203  129  203  14.91 
+13:15:14   0.9   0.0   1.1  85.7  12.3    1   1023   1752  177  113  177  14.59 
+13:15:19   0.9   0.0   1.2  85.5  12.4    4   1122   1883  183  120  177  13.33 
+13:15:24   1.1   0.0   1.4  85.2  12.3    2   1210   2239  218  136  220  13.78 
+13:15:29   0.9   0.0   1.3  85.4  12.4    1   1165   2083  191  124  191  14.00 
+13:15:34   1.1   0.0   1.3  85.3  12.3    1   1282   2334  221  137  216  14.31 
+13:15:39   0.8   0.0   1.1  85.8  12.3    1   1040   1885  168  107  177  12.67 
+13:15:44   0.9   0.0   1.2  85.7  12.2    1   1057   1896  177  113  177  11.79 
+13:15:49   1.1   0.0   1.5  85.0  12.3    1   1276   2367  229  145  229  14.06 
+13:15:54   0.8   0.0   1.2  85.7  12.3    1   1032   1777  177  113  177  15.01 
+13:15:59   1.1   0.0   1.2  85.7  12.0    1   1116   2111  177  113  177  14.05 
+13:16:04   1.0   0.0   1.2  85.4  12.4    1   1196   2099  203  129  203  13.79 
+13:16:09   1.0   0.0   1.4  85.5  12.1    2   1144   2052  199  126  186  11.45 
+13:16:14   0.9   0.0   1.2  85.7  12.2    1   1090   2002  178  116  187  11.78 
+13:16:19   1.1   0.0   1.3  85.4  12.2    1   1227   2121  225  140  228  14.99 
+13:16:24   0.9   0.0   1.2  85.8  12.1    1   1082   1979  177  113  177  13.90 
+13:16:29   1.0   0.0   1.3  85.8  12.0    2   1219   1912  204  131  203  14.13 
+13:16:34   1.0   0.0   1.4  85.6  12.0    1   1145   2163  202  127  203  14.91 
+13:16:39   0.9   0.0   1.2  85.8  12.1    1   1076   1884  178  113  177  14.03 
+13:16:44   1.1   0.0   1.3  85.6  12.0    1   1312   2249  204  129  204  13.71 
+13:16:49   0.8   0.0   1.2  85.6  12.3    1   1063   1884  178  113  177  13.95 
+13:16:54   1.0   0.0   1.4  85.5  12.0    5   1139   2126  208  135  199  14.22 
+-------- ----- ----- ----- ----- ----- ---- ------ ------ ---- ---- ---- ------ 
+ Average   1.0   0.0   1.3  85.8  12.0  1.3 1150.7 2036.0 194.5 123.7 194.6  13.77 
+ GeoMean   1.0   0.0   1.3  85.8  11.9  1.2 1147.6 2030.4 193.8 123.3 193.7  13.71 
+  StdDev   0.1   0.0   0.1   1.2   1.2  0.7   85.6  150.5 16.7  9.9 18.2   1.21 
+-------- ----- ----- ----- ----- ----- ---- ------ ------ ---- ---- ---- ------ 
+ Minimum   0.8   0.0   1.1  84.9   6.1  1.0 1005.8 1752.2 168.0 107.0 165.0  10.40 
+ Maximum   1.2   0.0   1.5  91.7  12.5  5.0 1536.4 2366.6 241.0 150.0 254.0  15.45 
+-------- ----- ----- ----- ----- ----- ---- ------ ------ ---- ---- ---- ------ 
+Summary:
+System:  13.77 Watts on average with standard deviation 1.21  

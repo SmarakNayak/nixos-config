@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, nix-ai-tools, ... }:
 
 let
   claude-distro = import ./distrobox-packages/claude-code.nix { inherit pkgs; };
@@ -13,6 +13,7 @@ in
     distrobox
     claude-distro
     claude-code
+    nix-ai-tools.packages.${pkgs.system}.gemini-cli
     speedtest-go
     networkmanagerapplet
     nerd-fonts.jetbrains-mono

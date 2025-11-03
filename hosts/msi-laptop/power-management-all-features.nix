@@ -1,50 +1,41 @@
 { config, lib, pkgs, ... }:
 
 {
+  # Test: All features combined WITHOUT any power daemon
+  # This tests the cumulative effect of all manual optimizations
+  # thermald + i915 + laptop-mode + wifi + 60Hz + powertop (but NO daemon)
+
   # Enable base power management
   powerManagement.enable = true;
 
-  # Thermald - Proactively prevents overheating on Intel CPUs
+  # Thermald
   services.thermald.enable = true;
 
-  # Intel GPU (i915) power management - saves 1-2W
+  # Intel GPU (i915) power management
   boot.kernelParams = [
-    "i915.enable_guc=3"       # Enable GuC submission and HuC firmware
-    "i915.enable_fbc=1"       # Framebuffer compression
-    "i915.enable_psr=2"       # Panel Self Refresh (PSR2 if supported)
-    "i915.fastboot=1"         # Fast boot by preserving display mode
+    "i915.enable_guc=3"
+    "i915.enable_fbc=1"
+    "i915.enable_psr=2"
+    "i915.fastboot=1"
   ];
 
-  # Laptop mode for disk power management - saves ~0.5W
+  # Laptop mode for disk power management
   boot.kernel.sysctl = {
     "vm.laptop_mode" = 5;
   };
 
-  # Auto-cpufreq - Automatic CPU frequency scaling
-  services.auto-cpufreq.enable = true;
-  services.auto-cpufreq.settings = {
-    battery = {
-      governor = "powersave";
-      turbo = "never";
-    };
-    charger = {
-      governor = "performance";
-      turbo = "auto";
-    };
-  };
-
-  # Disable conflicting services
-  services.power-profiles-daemon.enable = false;
-  services.tlp.enable = false;
-
   # Powertop auto-tune
   powerManagement.powertop.enable = true;
 
-  # Enable WiFi power saving in NetworkManager
+  # NO power daemon
+  services.power-profiles-daemon.enable = false;
+  services.tlp.enable = false;
+  services.auto-cpufreq.enable = false;
+
+  # WiFi power saving
   networking.networkmanager.wifi.powersave = true;
 
-  # Set display to 60Hz for better battery life
-  # Works with both Niri and Hyprland
+  # 60Hz display
   home-manager.users.miltu = {
     systemd.user.services.set-60hz = {
       Unit = {
@@ -55,13 +46,9 @@
       Service = {
         Type = "oneshot";
         ExecStart = "${pkgs.writeShellScript "set-60hz" ''
-          # Wait for compositor to start
           sleep 2
-
-          # Try Niri first
           if ${pkgs.niri}/bin/niri msg outputs &>/dev/null; then
             ${pkgs.niri}/bin/niri msg output eDP-1 mode 1920x1080@60
-          # Then try Hyprland
           elif pgrep -x Hyprland &>/dev/null; then
             ${pkgs.hyprland}/bin/hyprctl keyword monitor eDP-1,1920x1080@60,auto,1
           fi
