@@ -35,6 +35,7 @@
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
     git
+    powerstat
   ];
   # nvidia settings
   hardware.graphics.enable = true;
