@@ -25,17 +25,13 @@
     };
   };
 
-  # Allow passwordless sudo for nixos-rebuild and reboot during testing
+  # Allow passwordless sudo for nixos-rebuild during testing
   security.sudo.extraRules = [
     {
       users = [ "miltu" ];
       commands = [
         {
-          command = "${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --flake *";
-          options = [ "NOPASSWD" ];
-        }
-        {
-          command = "${pkgs.systemd}/bin/reboot";
+          command = "/run/current-system/sw/bin/nixos-rebuild";
           options = [ "NOPASSWD" ];
         }
       ];
@@ -52,10 +48,13 @@
     enable = true;
     description = "Automated Power Management Testing";
     after = [ "graphical-session.target" ];
-    wantedBy = [ "default.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    path = with pkgs; [ bash coreutils jq sudo systemd ];
+    script = ''
+      ${pkgs.bash}/bin/bash /home/miltu/nixos-config/hosts/msi-laptop/power-test.sh
+    '';
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.bash}/bin/bash /home/miltu/nixos-config/hosts/msi-laptop/power-test.sh";
       StandardOutput = "journal";
       StandardError = "journal";
     };

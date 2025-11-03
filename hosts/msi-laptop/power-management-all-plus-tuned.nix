@@ -23,8 +23,8 @@
     "vm.laptop_mode" = 5;
   };
 
-  # Powertop + tuned
-  powerManagement.powertop.enable = true;
+  # Tuned daemon (NO powertop - testing tuned only)
+  powerManagement.powertop.enable = false;
   services.tuned.enable = true;
 
   # Disable conflicting daemons

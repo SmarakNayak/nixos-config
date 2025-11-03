@@ -3,7 +3,7 @@
 {
   # Test: All features combined WITHOUT any power daemon
   # This tests the cumulative effect of all manual optimizations
-  # thermald + i915 + laptop-mode + wifi + 60Hz + powertop (but NO daemon)
+  # thermald + i915 + laptop-mode + wifi + 60Hz (NO daemon, NO powertop)
 
   # Enable base power management
   powerManagement.enable = true;
@@ -24,8 +24,8 @@
     "vm.laptop_mode" = 5;
   };
 
-  # Powertop auto-tune
-  powerManagement.powertop.enable = true;
+  # NO powertop auto-tune (testing manual optimizations only)
+  powerManagement.powertop.enable = false;
 
   # NO power daemon
   services.power-profiles-daemon.enable = false;

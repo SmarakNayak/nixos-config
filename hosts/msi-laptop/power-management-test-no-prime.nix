@@ -16,4 +16,6 @@
   hardware.nvidiaOptimus.disable = lib.mkForce false;
   hardware.nvidia.prime.offload.enable = lib.mkForce false;
   hardware.nvidia.prime.offload.enableOffloadCmd = lib.mkForce false;
+  # Disable finegrained power management since it requires offload
+  hardware.nvidia.powerManagement.finegrained = lib.mkForce false;
 }

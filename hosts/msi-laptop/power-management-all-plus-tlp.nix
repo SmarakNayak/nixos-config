@@ -24,8 +24,8 @@
     "vm.laptop_mode" = 5;
   };
 
-  # TLP with aggressive settings + powertop
-  powerManagement.powertop.enable = true;
+  # TLP with aggressive settings (NO powertop - testing TLP only)
+  powerManagement.powertop.enable = false;
   services.power-profiles-daemon.enable = false;
   services.tlp = {
     enable = true;
