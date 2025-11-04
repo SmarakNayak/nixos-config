@@ -20,7 +20,7 @@ CONFIGS=(
     # Baseline
     "power-management-baseline.nix"
 
-    # Individual feature tests (8 tests)
+    # Individual feature tests (9 tests)
     "power-management-test-60hz.nix"
     "power-management-test-wifi.nix"
     "power-management-test-i915.nix"
@@ -29,6 +29,7 @@ CONFIGS=(
     "power-management-test-powertop.nix"
     "power-management-test-gpu-enabled.nix"
     "power-management-test-no-prime.nix"
+    "power-management-test-no-gpu-power-management.nix"
 
     # Power daemon tests - daemons ONLY (5 tests)
     "power-management-test-ppd-only.nix"
