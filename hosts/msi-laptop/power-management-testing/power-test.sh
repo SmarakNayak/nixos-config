@@ -8,8 +8,8 @@ SCRIPT_PATH=$(realpath "$0")
 # This script tests different power management configs and survives reboots
 
 STATE_FILE="$HOME/.power-test-state.json"
-RESULTS_DIR="$HOME/nixos-config/hosts/msi-laptop/power-test-results"
-FAILED_DIR="$HOME/nixos-config/hosts/msi-laptop/power-test-failed"
+RESULTS_DIR="$HOME/nixos-config/hosts/msi-laptop/power-management-testing/power-test-results"
+FAILED_DIR="$HOME/nixos-config/hosts/msi-laptop/power-management-testing/power-test-failed"
 CONFIG_FILE="$HOME/nixos-config/hosts/msi-laptop/configuration.nix"
 FLAKE_DIR="$HOME/nixos-config"
 HOSTNAME="msi-laptop"
@@ -19,6 +19,12 @@ CONFIGS=(
     "power-management-test-retry.nix"
     # Baseline
     "power-management-baseline.nix"
+
+    # Incremental section tests (4 tests)
+    "power-management-incremental-1.nix"  # Section 1: NVIDIA + minimal TLP
+    "power-management-incremental-2.nix"  # Section 1+2: NVIDIA + kitchensink TLP
+    "power-management-incremental-3.nix"  # All sections without powertop
+    "power-management-incremental-4.nix"  # All sections with powertop
 
     # Individual feature tests (9 tests)
     "power-management-test-60hz.nix"
@@ -122,8 +128,9 @@ apply_config() {
     # Backup current config
     cp "$CONFIG_FILE" "$CONFIG_FILE.backup"
 
-    # Replace the power management import line
-    sed -i "s|./power-management.*\.nix|./$config|g" "$CONFIG_FILE"
+    # Replace the power management import line (but not power-testing-mode.nix)
+    sed -i "s|./power-management-testing/power-management-.*\.nix|./power-management-testing/$config|g" "$CONFIG_FILE"
+    sed -i "s|./power-management\.nix|./power-management-testing/$config|g" "$CONFIG_FILE"
 
     echo "Rebuilding NixOS with $config..."
     cd "$FLAKE_DIR"

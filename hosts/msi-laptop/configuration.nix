@@ -8,7 +8,8 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./power-management.nix
+      ./power-management-testing/power-management-incremental-1.nix
+      ./power-management-testing/power-testing-mode.nix
       ../../modules/niri.nix
       ../../modules/hyprland.nix
     ];
@@ -42,7 +43,8 @@
 
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
-    open = true; # RTX 3050 Ti Mobile - using proprietary driver
+    package = config.boot.kernelPackages.nvidiaPackages.beta;
+    open = false; # RTX 3050 Ti Mobile - using proprietary driver
     modesetting.enable = true;
     nvidiaSettings = true;
   };

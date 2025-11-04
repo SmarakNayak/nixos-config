@@ -26,6 +26,7 @@
   };
 
   # Allow passwordless sudo for nixos-rebuild during testing
+  security.sudo.enable = true;
   security.sudo.extraRules = [
     {
       users = [ "miltu" ];
@@ -51,7 +52,7 @@
     wantedBy = [ "graphical-session.target" ];
     path = with pkgs; [ bash coreutils jq sudo systemd ];
     script = ''
-      ${pkgs.bash}/bin/bash /home/miltu/nixos-config/hosts/msi-laptop/power-test.sh
+      ${pkgs.bash}/bin/bash /home/miltu/nixos-config/hosts/msi-laptop/power-management-testing/power-test.sh
     '';
     serviceConfig = {
       Type = "oneshot";
