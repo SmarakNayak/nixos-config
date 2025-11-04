@@ -8,8 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./power-management-testing/power-management-incremental-1.nix
-      ./power-management-testing/power-testing-mode.nix
+      ./power-management.nix
       ../../modules/niri.nix
       ../../modules/hyprland.nix
     ];
@@ -74,5 +73,14 @@
 
   # Firewall configuration
   networking.firewall.allowedTCPPorts = [ 8081 ]; # For Expo
+
+  # Performance specialisation - disables power-management optimizations
+  specialisation.performance = {
+    inheritParentConfig = true;
+    configuration = {
+      # Disable the power-management module
+      disabledModules = [ ./power-management.nix ];
+    };
+  };
 }
 

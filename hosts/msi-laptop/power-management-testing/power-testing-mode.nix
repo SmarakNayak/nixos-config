@@ -50,7 +50,7 @@
     description = "Automated Power Management Testing";
     after = [ "graphical-session.target" ];
     wantedBy = [ "graphical-session.target" ];
-    path = with pkgs; [ bash coreutils jq sudo systemd ];
+    path = with pkgs; [ bash coreutils gnused jq systemd powerstat ] ++ [ "/run/wrappers" ];
     script = ''
       ${pkgs.bash}/bin/bash /home/miltu/nixos-config/hosts/msi-laptop/power-management-testing/power-test.sh
     '';

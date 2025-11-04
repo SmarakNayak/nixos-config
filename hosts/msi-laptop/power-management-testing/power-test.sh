@@ -136,7 +136,7 @@ apply_config() {
     cd "$FLAKE_DIR"
 
     # Try rebuild, handle failure gracefully
-    if ! sudo nixos-rebuild switch --flake ".#$HOSTNAME" 2>&1 | tee "$FAILED_DIR/rebuild_${config%.nix}_$(date +%Y%m%d_%H%M%S).log"; then
+    if ! sudo /run/current-system/sw/bin/nixos-rebuild switch --flake ".#$HOSTNAME" 2>&1 | tee "$FAILED_DIR/rebuild_${config%.nix}_$(date +%Y%m%d_%H%M%S).log"; then
         echo "ERROR: Rebuild failed for $config"
         echo "Restoring backup configuration..."
         cp "$CONFIG_FILE.backup" "$CONFIG_FILE"
