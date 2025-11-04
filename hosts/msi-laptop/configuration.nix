@@ -36,7 +36,17 @@
   environment.systemPackages = with pkgs; [
     git
     powerstat
+    intel-gpu-tools
+    nvtopPackages.intel
   ];
+  # Grant CAP_PERFMON to intel_gpu_top for GPU monitoring
+  security.wrappers.intel_gpu_top = {
+    owner = "root";
+    group = "root";
+    capabilities = "cap_perfmon=ep";
+    source = "${pkgs.intel-gpu-tools}/bin/intel_gpu_top";
+  };
+
   # nvidia settings
   hardware.graphics.enable = true;
 
@@ -73,6 +83,11 @@
 
   # Firewall configuration
   networking.firewall.allowedTCPPorts = [ 8081 ]; # For Expo
+
+  swapDevices = [{
+    device = "/swap/swapfile";
+    size = 32 * 1024; # Creates a 32GB swap file
+  }];
 
   # Performance specialisation - disables power-management optimizations
   specialisation.performance = {
