@@ -8,8 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./power-management-baseline.nix
-      ./power-testing-mode.nix  # TEMPORARY: Remove after power testing!
+      ./power-management.nix
       ../../modules/niri.nix
       ../../modules/hyprland.nix
     ];
@@ -41,28 +40,11 @@
   # nvidia settings
   hardware.graphics.enable = true;
 
-  # Completely disable NVIDIA GPU to save power
-  hardware.nvidiaOptimus.disable = true;
-
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
     open = true; # RTX 3050 Ti Mobile - using proprietary driver
     modesetting.enable = true;
     nvidiaSettings = true;
-
-    # PRIME Offload: Use Intel iGPU by default, NVIDIA on-demand for battery saving
-    prime = {
-      offload = {
-        enable = true;
-        enableOffloadCmd = true;  # Provides 'nvidia-offload' command
-      };
-      intelBusId = "PCI:0:2:0";   # Intel TigerLake-H GT1
-      nvidiaBusId = "PCI:1:0:0";  # RTX 3050 Ti Mobile
-    };
-
-    # Aggressive power management for better battery life
-    powerManagement.enable = true;
-    powerManagement.finegrained = true;  # Runtime D3 power state (deep sleep)
   };
   system.stateVersion = "25.05"; # Did you read the comment?
 
