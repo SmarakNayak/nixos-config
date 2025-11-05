@@ -12,6 +12,7 @@
       hyprpaper
       hypridle
       swaylock
+      dpms-off
     ];
 
     wayland.windowManager.hyprland = {
@@ -49,6 +50,7 @@
       settings = {
         general = {
           lock_cmd = "${pkgs.swaylock}/bin/swaylock -f";
+          on_lock_cmd = "sleep 30 && pidof swaylock && dpms-off";
           before_sleep_cmd = "${pkgs.swaylock}/bin/swaylock -f";
         };
       };
