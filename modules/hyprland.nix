@@ -48,6 +48,7 @@
       systemdTarget = "hyprland-session.target";  # Pin to Hyprland-specific target
       settings = {
         general = {
+          lock_cmd = "${pkgs.swaylock}/bin/swaylock -f";
           before_sleep_cmd = "${pkgs.swaylock}/bin/swaylock -f";
         };
       };
