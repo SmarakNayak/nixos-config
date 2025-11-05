@@ -19,20 +19,25 @@
       source = ../dotfiles/hypr/random-wallpaper.sh;
       executable = true;
     };
-  };
 
-  # System-level service to lock screen before suspend/hibernate
-  systemd.services.swaylock-on-sleep = {
-    description = "Lock screen before suspend/hibernate";
-    before = [ "sleep.target" ];
-    wantedBy = [ "sleep.target" ];
+    xdg.configFile."hypr/show_special_workspace.sh" = {
+      source = ../dotfiles/hypr/show_special_workspace.sh;
+      executable = true;
+    };
 
-    serviceConfig = {
-      Type = "forking";
-      User = "miltu";
-      Environment = "XDG_RUNTIME_DIR=/run/user/1000";
-      ExecStart = "${pkgs.bash}/bin/bash -c 'export WAYLAND_DISPLAY=$(ls /run/user/1000/wayland-* 2>/dev/null | head -n1 | xargs basename); ${pkgs.swaylock}/bin/swaylock -f'";
-      TimeoutStartSec = "infinity";
+    xdg.configFile."hypr/hide_special_workspace.sh" = {
+      source = ../dotfiles/hypr/hide_special_workspace.sh;
+      executable = true;
+    };
+
+    # hypridle: lock screen before suspend/hibernate
+    services.hypridle = {
+      enable = true;
+      settings = {
+        general = {
+          before_sleep_cmd = "${pkgs.swaylock}/bin/swaylock -f";
+        };
+      };
     };
   };
 }
