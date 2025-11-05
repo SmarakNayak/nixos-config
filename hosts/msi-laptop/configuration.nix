@@ -99,7 +99,7 @@
   services.logind.settings.Login = {
     HandleLidSwitch = "hibernate";              # Close lid → hibernate
     HandleLidSwitchExternalPower = "suspend";   # Close lid on AC → suspend
-    # HandlePowerKey = "hibernate";             # Power button → hibernate (commented out)
+    HandlePowerKey = "hibernate";
   };
 
   # Performance specialisation - disables power-management optimizations

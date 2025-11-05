@@ -10,8 +10,15 @@
       grim
       slurp
       hyprpaper
+      hypridle
       swaylock
     ];
+
+   wayland.windowManager.hyprland = {
+     enable = true;
+     systemd.enable = true;  # Creates hyprland-session.target
+     extraConfig = "# Using manual config file";  # Suppress warning
+   };
 
     xdg.configFile."hypr/hyprland.conf".source = ../dotfiles/hypr/hyprland.conf;
     xdg.configFile."hypr/hyprpaper.conf".source = ../dotfiles/hypr/hyprpaper.conf;
@@ -33,6 +40,7 @@
     # hypridle: lock screen before suspend/hibernate
     services.hypridle = {
       enable = true;
+      systemdTarget = "hyprland-session.target";  # Pin to Hyprland-specific target
       settings = {
         general = {
           before_sleep_cmd = "${pkgs.swaylock}/bin/swaylock -f";
