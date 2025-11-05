@@ -89,6 +89,19 @@
     size = 32 * 1024; # Creates a 32GB swap file
   }];
 
+  # Hibernation configuration
+  boot.resumeDevice = "/dev/disk/by-uuid/ce9d6127-ce90-4480-8a86-b9d075e5e943";
+  boot.kernelParams = [
+    "resume_offset=11837774"
+  ];
+
+  # Lid and power button behavior
+  services.logind.settings.Login = {
+    HandleLidSwitch = "hibernate";              # Close lid → hibernate
+    HandleLidSwitchExternalPower = "suspend";   # Close lid on AC → suspend
+    # HandlePowerKey = "hibernate";             # Power button → hibernate (commented out)
+  };
+
   # Performance specialisation - disables power-management optimizations
   specialisation.performance = {
     inheritParentConfig = true;
