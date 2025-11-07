@@ -38,6 +38,9 @@
     powerstat
     intel-gpu-tools
     nvtopPackages.intel
+    pulseaudio   # For pactl - better mute LED support
+    brightnessctl  # For laptop brightness control
+    playerctl    # For media playback control
   ];
   # Grant CAP_PERFMON to intel_gpu_top for GPU monitoring
   security.wrappers.intel_gpu_top = {
