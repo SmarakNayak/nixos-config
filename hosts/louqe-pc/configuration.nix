@@ -47,6 +47,11 @@
 
   virtualisation.podman.enable = true;
 
+  # Bluetooth with blueman applet
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;  # Auto-start bluetooth for immediate availability
+  services.blueman.enable = true;
+
   # Ollama service with GPU acceleration
   services.ollama = {
     enable = true;
