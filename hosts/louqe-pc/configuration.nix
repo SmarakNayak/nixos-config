@@ -67,6 +67,10 @@
     };
   };
 
+  # GNOME Keyring - auto-unlock on login
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.ly.enableGnomeKeyring = true;
+
   # Firewall configuration
   networking.firewall.allowedTCPPorts = [ 8081 ]; # For Expo
 }

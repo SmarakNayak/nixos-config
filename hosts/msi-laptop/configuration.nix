@@ -71,6 +71,10 @@
     };
   };
 
+  # GNOME Keyring - auto-unlock on login
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.ly.enableGnomeKeyring = true;
+
   virtualisation.podman.enable = true;
 
   services.ollama = {
