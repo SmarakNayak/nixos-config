@@ -36,6 +36,7 @@ in
     mission-center
     signal-desktop
     discord
+    whatsapp-for-linux
     tree
     # Media applications
     mpv
