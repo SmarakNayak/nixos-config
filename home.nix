@@ -4,6 +4,10 @@ let
   claude-distro = import ./distrobox-packages/claude-code.nix { inherit pkgs; };
 in
 {
+  imports = [
+    ./scripts.nix
+  ];
+
   home.username = "miltu";
   home.homeDirectory = "/home/miltu";
   home.stateVersion = "24.11";
@@ -39,7 +43,6 @@ in
     whatsapp-for-linux
     tree
     # Gaming
-    # gamescope - Steam launch options: gamescope -w 2560 -h 1440 -W 2560 -H 1440 -r 165 -f -- %command%
     gamescope
     # Media applications
     mpv
@@ -267,11 +270,6 @@ in
   xdg.configFile."ghostty/config".source = ./dotfiles/ghostty/config;
   xdg.configFile."mako/config".source = ./dotfiles/mako/config;
 
-  # Gamescope wrapper script for M32Q monitor
-  home.file.".local/bin/gamescope-m32q" = {
-    source = ./dotfiles/gamescope/gamescope-m32q;
-    executable = true;
-  };
   xdg.desktopEntries.google-chrome = {
     name = "Google Chrome";
     exec = "google-chrome-stable --disable-features=WaylandWpColorManagerV1 %U";
