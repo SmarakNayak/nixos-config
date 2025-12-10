@@ -266,6 +266,12 @@ in
   };
   xdg.configFile."ghostty/config".source = ./dotfiles/ghostty/config;
   xdg.configFile."mako/config".source = ./dotfiles/mako/config;
+
+  # Gamescope wrapper script for M32Q monitor
+  home.file.".local/bin/gamescope-m32q" = {
+    source = ./dotfiles/gamescope/gamescope-m32q;
+    executable = true;
+  };
   xdg.desktopEntries.google-chrome = {
     name = "Google Chrome";
     exec = "google-chrome-stable --disable-features=WaylandWpColorManagerV1 %U";
@@ -278,6 +284,10 @@ in
   home.activation.clearWofiCache = lib.hm.dag.entryAfter ["writeBoundary"] ''
     run rm -f $HOME/.cache/wofi-drun
   '';
+  # Use home.activation instead of home.file for Variety script because:
+  # - home.file creates read-only symlinks to Nix store
+  # - Variety expects to manage its own ~/.config/variety/ directory
+  # - Copying the script allows Variety to modify configs without breaking
   home.activation.installVarietyScript = lib.hm.dag.entryAfter ["writeBoundary"] ''
     run mkdir -p $HOME/.config/variety/scripts
     run cp -f ${./dotfiles/variety/scripts/set_wallpaper} $HOME/.config/variety/scripts/set_wallpaper
