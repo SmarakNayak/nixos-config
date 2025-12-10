@@ -276,6 +276,7 @@ in
   };
   xdg.configFile."ghostty/config".source = ./dotfiles/ghostty/config;
   xdg.configFile."mako/config".source = ./dotfiles/mako/config;
+  xdg.configFile."claude/settings.json".source = ./dotfiles/claude/settings.json;
 
   xdg.desktopEntries.google-chrome = {
     name = "Google Chrome";
