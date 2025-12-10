@@ -38,6 +38,9 @@ in
     discord
     whatsapp-for-linux
     tree
+    # Gaming
+    # gamescope - Steam launch options: gamescope -w 2560 -h 1440 -W 2560 -H 1440 -r 165 -f -- %command%
+    gamescope
     # Media applications
     mpv
     spotify
