@@ -6,7 +6,7 @@ let
     # Gamescope wrapper optimized for Gigabyte M32Q (2560x1440@165Hz)
     # Usage in Steam launch options: gamescope-m32q %command%
 
-    exec ${pkgs.gamescope}/bin/gamescope -w 2560 -h 1440 -W 2560 -H 1440 -r 165 -f -- "$@"
+    exec ${pkgs.gamescope}/bin/gamescope -w 2560 -h 1440 -W 2560 -H 1440 -r 165 -- "$@"
   '';
 in
 {
