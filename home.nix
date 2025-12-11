@@ -39,7 +39,7 @@ in
     mission-center
     signal-desktop
     discord
-    whatsapp-for-linux
+    wasistlos
     tree
     # Gaming
     gamescope

@@ -55,7 +55,7 @@
   # Ollama service with GPU acceleration
   services.ollama = {
     enable = true;
-    acceleration = "cuda"; # NVIDIA GPU acceleration
+    package = pkgs.ollama-cuda; # NVIDIA GPU acceleration
   };
 
   # Ly TUI login manager
