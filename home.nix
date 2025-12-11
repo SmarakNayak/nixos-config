@@ -30,7 +30,6 @@ in
     ollama
     unzip
     # GUI applications
-    helix
     ghostty
     wofi
     waybar
@@ -209,6 +208,20 @@ in
     enableBashIntegration = false;
     enableZshIntegration = true;
     enableFishIntegration = true;
+  };
+
+  programs.helix = {
+    enable = true;
+    extraPackages = with pkgs; [
+      # Language servers
+      typescript-language-server
+      rust-analyzer
+      vscode-langservers-extracted  # json, html, css
+      # Python
+      python312Packages.python-lsp-server
+      ruff
+      ty
+    ];
   };
 
   programs.fish = {
