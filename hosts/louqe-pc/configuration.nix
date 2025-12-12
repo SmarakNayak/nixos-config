@@ -52,6 +52,9 @@
   hardware.bluetooth.powerOnBoot = true;  # Auto-start bluetooth for immediate availability
   services.blueman.enable = true;
 
+  # Xbox One controller support
+  hardware.xone.enable = true;
+
   # Ollama service with GPU acceleration
   services.ollama = {
     enable = true;

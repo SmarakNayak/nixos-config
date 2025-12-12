@@ -17,7 +17,7 @@ in
     distrobox
     claude-distro
     claude-code
-    nix-ai-tools.packages.${pkgs.system}.gemini-cli
+    nix-ai-tools.packages.${pkgs.stdenv.hostPlatform.system}.gemini-cli
     speedtest-go
     networkmanagerapplet
     nerd-fonts.jetbrains-mono
@@ -43,6 +43,7 @@ in
     tree
     # Gaming
     gamescope
+    heroic
     # Media applications
     mpv
     spotify
