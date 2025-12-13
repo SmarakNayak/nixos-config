@@ -43,6 +43,7 @@ in
     tree
     # Gaming
     gamescope
+    mangohud
     heroic
     # Media applications
     mpv
@@ -218,6 +219,8 @@ in
       typescript-language-server
       rust-analyzer
       vscode-langservers-extracted  # json, html, css
+      nil
+      nixd
       # Python
       python312Packages.python-lsp-server
       ruff

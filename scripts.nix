@@ -6,7 +6,8 @@ let
     # Gamescope wrapper optimized for Gigabyte M32Q (2560x1440@165Hz)
     # Usage in Steam launch options: gamescope-m32q %command%
 
-    exec ${pkgs.gamescope}/bin/gamescope -w 2560 -h 1440 -W 2560 -H 1440 -r 165 -- "$@"
+    export MANGOHUD_CONFIG="no_display=1,refresh_rate"
+    exec ${pkgs.gamescope}/bin/gamescope -w 2560 -h 1440 -W 2560 -H 1440 --mangoapp --adaptive-sync -- "$@"
   '';
 in
 {
