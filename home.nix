@@ -230,10 +230,23 @@ in
 
   programs.fish = {
     enable = true;
+    plugins = [
+      {
+        name = "fzf-fish";
+        src = pkgs.fishPlugins.fzf-fish.src;
+      }
+      {
+        name = "fifc";
+        src = pkgs.fishPlugins.fifc.src;
+      }
+    ];
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
     };
     shellInit = ''
+      # fifc configuration
+      set -U fifc_editor hx
+
       # Query Ollama with ?
       function ?
         ollama run qwen3:8b --think=false $argv
