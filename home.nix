@@ -29,6 +29,7 @@ in
     neofetch
     ollama
     unzip
+    file
     # GUI applications
     ghostty
     wofi
@@ -66,6 +67,8 @@ in
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
     };
     initExtra = ''
+      export SHELL=${pkgs.bash}/bin/bash
+
       # Enable menu-complete for cycling through completions
       bind '"\t":menu-complete'
       bind '"\e[Z":menu-complete-backward'  # Shift-Tab to go backwards
@@ -104,6 +107,8 @@ in
       path = "${config.xdg.dataHome}/zsh/history";
     };
     initContent = ''
+      export SHELL=${pkgs.zsh}/bin/zsh
+
       # Query Ollama with q
       function q {
         ollama run qwen3:8b --think=false "$*"
@@ -244,6 +249,7 @@ in
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
     };
     shellInit = ''
+      set -g SHELL ${pkgs.fish}/bin/fish
       # fifc configuration
       set -U fifc_editor hx
 
