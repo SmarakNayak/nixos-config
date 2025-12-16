@@ -52,9 +52,6 @@
   hardware.bluetooth.powerOnBoot = true;  # Auto-start bluetooth for immediate availability
   services.blueman.enable = true;
 
-  # Xbox One controller support
-  hardware.xone.enable = true;
-
   # Ollama service with GPU acceleration
   services.ollama = {
     enable = true;
@@ -76,5 +73,18 @@
 
   # Firewall configuration
   networking.firewall.allowedTCPPorts = [ 8081 ]; # For Expo
+
+  # Windows partition mounts (read-only)
+  fileSystems."/mnt/winboot" = {
+    device = "/dev/disk/by-uuid/1692E45D92E4433B";
+    fsType = "ntfs3";
+    options = [ "ro" "nofail" ];
+  };
+
+  fileSystems."/mnt/winbigdisk" = {
+    device = "/dev/disk/by-uuid/1664C08164C06559";
+    fsType = "ntfs3";
+    options = [ "ro" "nofail" ];
+  };
 }
 
