@@ -281,6 +281,31 @@ in
     };
   };
 
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;
+    matchBlocks = {
+      "hetzner-green" = {
+        hostname = "65.21.25.120";
+        user = "ubuntu";
+        identityFile = "~/.ssh/id_hetzner";
+        extraOptions = {
+          Compression = "yes";
+          SetEnv = "TERM=xterm-256color";
+        };
+      };
+      "hetzner-blue" = {
+        hostname = "37.27.139.85";
+        user = "ubuntu";
+        identityFile = "~/.ssh/id_hetzner";
+        extraOptions = {
+          Compression = "yes";
+          SetEnv = "TERM=xterm-256color";
+        };
+      };
+    };
+  };
+
   programs.vscode = {
     enable = true;
     package = pkgs.vscode.fhs;
@@ -316,6 +341,8 @@ in
     recursive = true;
   };
   xdg.configFile."ghostty/config".source = ./dotfiles/ghostty/config;
+  xdg.configFile."ghostty/hetzner-green.conf".source = ./dotfiles/ghostty/hetzner-green.conf;
+  xdg.configFile."ghostty/hetzner-blue.conf".source = ./dotfiles/ghostty/hetzner-blue.conf;
   xdg.configFile."mako/config".source = ./dotfiles/mako/config;
   home.file.".claude/settings.json".source = ./dotfiles/claude/settings.json;
 
@@ -327,6 +354,22 @@ in
     categories = [ "Network" "WebBrowser" ];
     mimeType = [ "text/html" "text/xml" ];
     actions = {};
+  };
+
+  xdg.desktopEntries.hetzner-green = {
+    name = "Hetzner - Green";
+    exec = "ghostty --config-file=${config.xdg.configHome}/ghostty/hetzner-green.conf";
+    icon = "com.mitchellh.ghostty";
+    type = "Application";
+    categories = [ "System" "TerminalEmulator" ];
+  };
+
+  xdg.desktopEntries.hetzner-blue = {
+    name = "Hetzner - Blue";
+    exec = "ghostty --config-file=${config.xdg.configHome}/ghostty/hetzner-blue.conf";
+    icon = "com.mitchellh.ghostty";
+    type = "Application";
+    categories = [ "System" "TerminalEmulator" ];
   };
   home.activation.clearWofiCache = lib.hm.dag.entryAfter ["writeBoundary"] ''
     run rm -f $HOME/.cache/wofi-drun
