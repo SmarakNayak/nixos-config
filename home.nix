@@ -303,6 +303,11 @@ in
     path = "${config.home.homeDirectory}/.ssh/id_ed25519";
     mode = "600";
   };
+  age.secrets.ssh-key-hetzner = {
+    file = ./secrets/ssh-key-hetzner.age;
+    path = "${config.home.homeDirectory}/.ssh/id_hetzner";
+    mode = "600";
+  };
   xdg.configFile."waybar/config.jsonc".source = ./dotfiles/waybar/config.jsonc;
   xdg.configFile."waybar/config-niri.jsonc".source = ./dotfiles/waybar/config-niri.jsonc;
   xdg.configFile."waybar/style.css".source = ./dotfiles/waybar/style.css;
