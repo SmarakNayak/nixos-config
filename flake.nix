@@ -23,13 +23,17 @@
       url = "github:numtide/nix-ai-tools";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    
+
+    ghostty = {
+      url = "github:ghostty-org/ghostty";
+    };
+
   };
 
-  outputs = { self, nixpkgs, agenix, home-manager, claude-code, nix-ai-tools, ... }@inputs: {
+  outputs = { self, nixpkgs, agenix, home-manager, claude-code, nix-ai-tools, ghostty, ... }@inputs: {
     nixosConfigurations= {
       louqe-pc = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit self nix-ai-tools; };
+        specialArgs = { inherit self nix-ai-tools ghostty; };
         modules = [
           ./hosts/louqe-pc/configuration.nix
           agenix.nixosModules.default
@@ -41,12 +45,12 @@
             home-manager.users.miltu = import ./home.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
-            home-manager.extraSpecialArgs = { inherit nix-ai-tools; };
+            home-manager.extraSpecialArgs = { inherit nix-ai-tools ghostty; };
           }
         ];
       };
       antec-pc = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit self nix-ai-tools; };
+        specialArgs = { inherit self nix-ai-tools ghostty; };
         modules = [
           ./hosts/antec-pc/configuration.nix
           agenix.nixosModules.default
@@ -58,12 +62,12 @@
             home-manager.users.miltu = import ./home.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
-            home-manager.extraSpecialArgs = { inherit nix-ai-tools; };
+            home-manager.extraSpecialArgs = { inherit nix-ai-tools ghostty; };
           }
         ];
       };
       msi-laptop = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit self nix-ai-tools; };
+        specialArgs = { inherit self nix-ai-tools ghostty; };
         modules = [
           ./hosts/msi-laptop/configuration.nix
           agenix.nixosModules.default
@@ -75,7 +79,7 @@
             home-manager.users.miltu = import ./home.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
-            home-manager.extraSpecialArgs = { inherit nix-ai-tools; };
+            home-manager.extraSpecialArgs = { inherit nix-ai-tools ghostty; };
           }
         ];
       };

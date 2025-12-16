@@ -1,4 +1,4 @@
-{ config, pkgs, lib, nix-ai-tools, ... }:
+{ config, pkgs, lib, nix-ai-tools, ghostty, ... }:
 
 let
   claude-distro = import ./distrobox-packages/claude-code.nix { inherit pkgs; };
@@ -31,7 +31,7 @@ in
     unzip
     file
     # GUI applications
-    ghostty
+    ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
     wofi
     waybar
     google-chrome
