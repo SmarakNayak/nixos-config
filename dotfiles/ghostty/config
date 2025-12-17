@@ -1,5 +1,9 @@
 # Ghostty configuration
 keybind = shift+enter=text:\x1b\r
 
+# Smart copy/paste keybindings:
+keybind = performable:ctrl+c=copy_to_clipboard
+keybind = super+v=paste_from_clipboard
+
 # Use fish shell
 command = fish
