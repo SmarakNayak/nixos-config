@@ -19,7 +19,7 @@
   time.timeZone = "Australia/Sydney";
   users.users.miltu = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "adbusers" ]; # Enable 'sudo' for the user.
+    extraGroups = [ "wheel" ]; # Enable 'sudo' for the user.
   };
 
   # Increase sudo password timeout to 300 minutes
@@ -30,11 +30,11 @@
   programs.steam.enable = true;
   programs.fish.enable = true; # Enable system package completions
   programs.zsh.enable = true; # Enable system package completions
-  programs.adb.enable = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
     git
+    android-tools  # Provides adb command (replaces programs.adb)
     powerstat
     intel-gpu-tools
     nvtopPackages.intel

@@ -54,7 +54,7 @@ in
     pinta
     # File managers
     kdePackages.dolphin
-    xfce.thunar
+    thunar
     nemo
   ];
 
