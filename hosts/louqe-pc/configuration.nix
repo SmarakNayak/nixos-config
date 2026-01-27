@@ -64,6 +64,8 @@
     settings = {
       xinitrc = "";   # Hide xinitrc option (X11 not configured)
       setup_cmd = ""; # Don't use xsession-wrapper for shell sessions
+      save = true;    # Save selected session as default
+      load = true;    # Load saved session on startup
     };
   };
 
