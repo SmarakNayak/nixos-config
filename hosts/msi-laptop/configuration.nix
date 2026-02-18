@@ -81,7 +81,7 @@
 
   services.ollama = {
     enable = true;
-    acceleration = "cuda";
+    package = pkgs.ollama-cuda; # NVIDIA GPU acceleration
   };
 
   # Bluetooth with blueman applet
