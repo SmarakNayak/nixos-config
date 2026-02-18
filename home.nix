@@ -308,7 +308,12 @@ in
 
   programs.vscode = {
     enable = true;
-    package = pkgs.vscode.fhs;
+    package = pkgs.vscode.fhsWithPackages (pkgs: with pkgs; [
+      rustup
+      gcc
+      pkg-config
+      openssl.dev
+    ]);
   };
 
   home.sessionVariables = {
