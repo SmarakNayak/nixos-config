@@ -52,6 +52,10 @@
   hardware.bluetooth.powerOnBoot = true;  # Auto-start bluetooth for immediate availability
   services.blueman.enable = true;
 
+  # AppImage support (double-click to run)
+  programs.appimage.enable = true;
+  programs.appimage.binfmt = true;
+
   # Ollama service with GPU acceleration
   services.ollama = {
     enable = true;
