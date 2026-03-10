@@ -26,7 +26,7 @@ in
     procs
     sd
     wl-clipboard
-    neofetch
+    fastfetch
     ollama
     unzip
     file
@@ -168,6 +168,7 @@ in
     enableBashIntegration = true;
     enableZshIntegration = true;
     enableFishIntegration = true;
+    shellWrapperName = "y";
   };
 
   programs.direnv = {
