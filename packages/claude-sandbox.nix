@@ -4,7 +4,8 @@
 #
 # --unshare-all        isolates all namespaces (pid, ipc, uts, mount, user, cgroup)
 # --share-net          re-enables network so Claude can reach the Anthropic API
-# --new-session        prevents terminal injection attacks (TIOCSTI)
+# --new-session        prevents terminal injection attacks (TIOCSTI), but breaks terminal resize (SIGWINCH)
+# Pass --secure to enable --new-session; omit for normal use with working resize
 # --uid/--gid          preserves real uid/gid inside the user namespace (default would be root)
 # --proc/--dev         minimal proc and dev filesystems required for programs to run
 # --tmpfs /tmp         fresh tmp to avoid leaks from other processes
@@ -21,8 +22,14 @@ pkgs.writeShellScriptBin "claude-sandbox" ''
   mkdir -p "$HOME/.claude"
   touch "$HOME/.claude.json"
 
+  NEW_SESSION=""
+  if [ "$1" = "--secure" ]; then
+    NEW_SESSION="--new-session"
+    shift
+  fi
+
   exec ${pkgs.bubblewrap}/bin/bwrap \
-    --unshare-all --share-net --new-session \
+    --unshare-all --share-net $NEW_SESSION \
     --uid "$(id -u)" --gid "$(id -g)" \
     --proc /proc --dev /dev --tmpfs /tmp \
     --ro-bind /nix /nix \
