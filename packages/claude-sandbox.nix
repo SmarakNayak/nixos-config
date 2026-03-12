@@ -14,7 +14,8 @@
 # --tmpfs $HOME        blank home - hides ssh keys, dotfiles, shell history, credentials
 # --bind ~/.claude(s)     punch through claude state and config for persistence
 # --ro-bind ~/.config/git/config  git needs user identity
-# --bind $XDG_RUNTIME_DIR/gcr/ssh  gcr ssh agent socket for git push/pull over ssh urls
+# --ro-bind ~/.ssh/known_hosts+config  host verification and ssh config (no private keys)
+# --bind $XDG_RUNTIME_DIR/gcr/ssh      gcr ssh agent socket for git push/pull over ssh urls
 # --bind $PWD          read-write access to the project directory
 pkgs.writeShellScriptBin "claude-sandbox" ''
   mkdir -p "$HOME/.claude"
@@ -30,6 +31,8 @@ pkgs.writeShellScriptBin "claude-sandbox" ''
     --tmpfs "$HOME" \
     --bind "$HOME/.claude" "$HOME/.claude" --bind "$HOME/.claude.json" "$HOME/.claude.json" \
     --ro-bind-try "$HOME/.config/git/config" "$HOME/.config/git/config" \
+    --ro-bind-try "$HOME/.ssh/known_hosts" "$HOME/.ssh/known_hosts" \
+    --ro-bind-try "$HOME/.ssh/config" "$HOME/.ssh/config" \
     --bind-try "$XDG_RUNTIME_DIR/gcr/ssh" "$XDG_RUNTIME_DIR/gcr/ssh" \
     --setenv SSH_AUTH_SOCK "$XDG_RUNTIME_DIR/gcr/ssh" \
     --bind "$PWD" "$PWD" --chdir "$PWD" \
