@@ -9,12 +9,12 @@
 # --proc/--dev         minimal proc and dev filesystems required for programs to run
 # --tmpfs /tmp         fresh tmp to avoid leaks from other processes
 # --ro-bind /nix       actual binaries live here
-# --ro-bind /etc       ssl certs, dns, tls etc (--tmpfs /etc/ssh to block bad SSH config includes)
+# --ro-bind /etc       ssl certs, dns, tls etc (--tmpfs /etc/ssh to remove SSH config with readonly perms)
 # --ro-bind /run/current-system  symlinks to /nix/store binaries (needed for PATH)
 # --tmpfs $HOME        blank home - hides ssh keys, dotfiles, shell history, credentials
 # --bind ~/.claude(s)     punch through claude state and config for persistence
 # --ro-bind ~/.config/git/config  git needs user identity
-# --bind $XDG_RUNTIME_DIR/gcr/ssh      gcr ssh agent socket for git push/pull over ssh urls
+# --bind $SSH_AUTH_SOCK                ssh agent socket (set by UWSM) for git push/pull over ssh urls
 # --bind $PWD          read-write access to the project directory
 pkgs.writeShellScriptBin "claude-sandbox" ''
   mkdir -p "$HOME/.claude"
@@ -30,8 +30,7 @@ pkgs.writeShellScriptBin "claude-sandbox" ''
     --tmpfs "$HOME" \
     --bind "$HOME/.claude" "$HOME/.claude" --bind "$HOME/.claude.json" "$HOME/.claude.json" \
     --ro-bind-try "$HOME/.config/git/config" "$HOME/.config/git/config" \
-    --bind-try "$XDG_RUNTIME_DIR/gcr/ssh" "$XDG_RUNTIME_DIR/gcr/ssh" \
-    --setenv SSH_AUTH_SOCK "$XDG_RUNTIME_DIR/gcr/ssh" \
+    --bind-try "$SSH_AUTH_SOCK" "$SSH_AUTH_SOCK" \
     --bind "$PWD" "$PWD" --chdir "$PWD" \
     -- ${pkgs.claude-code}/bin/claude --dangerously-skip-permissions "$@"
 ''

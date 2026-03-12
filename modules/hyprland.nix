@@ -1,7 +1,10 @@
 { config, pkgs, ... }:
 {
   # System-level: Enable hyprland session
-  programs.hyprland.enable = true;
+  programs.hyprland = {
+    enable = true;
+    withUWSM = true;
+  };
 
   # Home-manager: Manage hyprland config and packages
   home-manager.users.miltu = {
@@ -18,6 +21,7 @@
     wayland.windowManager.hyprland = {
       enable = true;
       systemd.enable = true;  # Creates hyprland-session.target
+      # systemd.enable = false;  # UWSM manages the systemd session
       extraConfig = "# Using manual config file";  # Suppress warning
     };
     
