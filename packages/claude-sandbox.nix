@@ -9,7 +9,7 @@
 # --proc/--dev         minimal proc and dev filesystems required for programs to run
 # --tmpfs /tmp         fresh tmp to avoid leaks from other processes
 # --ro-bind /nix       actual binaries live here
-# --ro-bind /etc       ssl certs, dns, tls etc
+# --ro-bind /etc       ssl certs, dns, tls etc (--tmpfs /etc/ssh to block bad SSH config includes)
 # --ro-bind /run/current-system  symlinks to /nix/store binaries (needed for PATH)
 # --tmpfs $HOME        blank home - hides ssh keys, dotfiles, shell history, credentials
 # --bind ~/.claude(s)     punch through claude state and config for persistence
@@ -25,7 +25,7 @@ pkgs.writeShellScriptBin "claude-sandbox" ''
     --uid "$(id -u)" --gid "$(id -g)" \
     --proc /proc --dev /dev --tmpfs /tmp \
     --ro-bind /nix /nix \
-    --ro-bind /etc /etc \
+    --ro-bind /etc /etc --tmpfs /etc/ssh \
     --ro-bind-try /run/current-system /run/current-system \
     --tmpfs "$HOME" \
     --bind "$HOME/.claude" "$HOME/.claude" --bind "$HOME/.claude.json" "$HOME/.claude.json" \
