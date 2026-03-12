@@ -1,7 +1,8 @@
 { config, pkgs, lib, nix-ai-tools, ghostty, ... }:
 
 let
-  claude-distro = import ./distrobox-packages/claude-code.nix { inherit pkgs; };
+  claude-distro = import ./packages/claude-distrobox.nix { inherit pkgs; };
+  claude-sandbox = import ./packages/claude-sandbox.nix { inherit pkgs; };
 in
 {
   imports = [
@@ -16,6 +17,7 @@ in
     curl
     distrobox
     claude-distro
+    claude-sandbox
     claude-code
     nix-ai-tools.packages.${pkgs.stdenv.hostPlatform.system}.gemini-cli
     speedtest-go
