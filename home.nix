@@ -1,8 +1,9 @@
-{ config, pkgs, lib, nix-ai-tools, ghostty, ... }:
+{ config, pkgs, lib, llm-agents, ghostty, ... }:
 
 let
   claude-distro = import ./packages/claude-distrobox.nix { inherit pkgs; };
   claude-sandbox = import ./packages/claude-sandbox.nix { inherit pkgs; };
+  opencode-sandbox = import ./packages/opencode-sandbox.nix { inherit pkgs; };
 in
 {
   imports = [
@@ -19,7 +20,9 @@ in
     claude-distro
     claude-sandbox
     claude-code
-    nix-ai-tools.packages.${pkgs.stdenv.hostPlatform.system}.gemini-cli
+    opencode-sandbox
+    opencode
+    llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.gemini-cli
     speedtest-go
     networkmanagerapplet
     nerd-fonts.jetbrains-mono
@@ -342,6 +345,10 @@ in
     path = "${config.home.homeDirectory}/.ssh/id_hetzner";
     mode = "600";
   };
+  age.secrets.deepseek-api-key = {
+    file = ./secrets/deepseek-api-key.age;
+    path = "${config.home.homeDirectory}/.config/opencode/deepseek-api-key";
+  };
   xdg.configFile."waybar/config.jsonc".source = ./dotfiles/waybar/config.jsonc;
   xdg.configFile."waybar/config-niri.jsonc".source = ./dotfiles/waybar/config-niri.jsonc;
   xdg.configFile."waybar/style.css".source = ./dotfiles/waybar/style.css;
@@ -354,6 +361,11 @@ in
   xdg.configFile."ghostty/hetzner-blue.conf".source = ./dotfiles/ghostty/hetzner-blue.conf;
   xdg.configFile."mako/config".source = ./dotfiles/mako/config;
   home.file.".claude/settings.json".source = ./dotfiles/claude/settings.json;
+  # {file:...} syntax reads file contents at runtime - see https://opencode.ai/docs/config/
+  xdg.configFile."opencode/opencode.json".text = builtins.toJSON {
+    "$schema" = "https://opencode.ai/config.json";
+    provider.deepseek.options.apiKey = "{file:${config.age.secrets.deepseek-api-key.path}}";
+  };
 
   xdg.desktopEntries.google-chrome = {
     name = "Google Chrome";
