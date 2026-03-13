@@ -1,4 +1,4 @@
-{ config, pkgs, lib, llm-agents, ghostty, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   claude-distro = import ./packages/claude-distrobox.nix { inherit pkgs; };
@@ -22,7 +22,7 @@ in
     claude-code
     opencode-sandbox
     opencode
-    llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.gemini-cli
+    gemini-cli
     speedtest-go
     networkmanagerapplet
     nerd-fonts.jetbrains-mono
@@ -36,7 +36,7 @@ in
     unzip
     file
     # GUI applications
-    ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
+    ghostty
     wofi
     waybar
     google-chrome

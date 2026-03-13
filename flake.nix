@@ -33,53 +33,62 @@
   outputs = { self, nixpkgs, agenix, home-manager, claude-code, llm-agents, ghostty, ... }@inputs: {
     nixosConfigurations= {
       louqe-pc = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit self llm-agents ghostty; };
+        specialArgs = { inherit self; };
         modules = [
           ./hosts/louqe-pc/configuration.nix
           agenix.nixosModules.default
           home-manager.nixosModules.home-manager
           {
-            nixpkgs.overlays = [ claude-code.overlays.default llm-agents.overlays.default ];
+            nixpkgs.overlays = [
+              claude-code.overlays.default
+              llm-agents.overlays.default
+              ghostty.overlays.default
+            ];
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.miltu = import ./home.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
-            home-manager.extraSpecialArgs = { inherit llm-agents ghostty; };
           }
         ];
       };
       antec-pc = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit self llm-agents ghostty; };
+        specialArgs = { inherit self; };
         modules = [
           ./hosts/antec-pc/configuration.nix
           agenix.nixosModules.default
           home-manager.nixosModules.home-manager
           {
-            nixpkgs.overlays = [ claude-code.overlays.default llm-agents.overlays.default ];
+            nixpkgs.overlays = [
+              claude-code.overlays.default
+              llm-agents.overlays.default
+              ghostty.overlays.default
+            ];
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.miltu = import ./home.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
-            home-manager.extraSpecialArgs = { inherit llm-agents ghostty; };
           }
         ];
       };
       msi-laptop = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit self llm-agents ghostty; };
+        specialArgs = { inherit self; };
         modules = [
           ./hosts/msi-laptop/configuration.nix
           agenix.nixosModules.default
           home-manager.nixosModules.home-manager
           {
-            nixpkgs.overlays = [ claude-code.overlays.default llm-agents.overlays.default ];
+            nixpkgs.overlays = [
+              claude-code.overlays.default
+              llm-agents.overlays.default
+              ghostty.overlays.default
+            ];
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.miltu = import ./home.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
-            home-manager.extraSpecialArgs = { inherit llm-agents ghostty; };
           }
         ];
       };
