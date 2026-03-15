@@ -8,6 +8,7 @@ in
 {
   imports = [
     ./scripts.nix
+    ./modules/email.nix
   ];
 
   home.username = "miltu";
@@ -16,6 +17,7 @@ in
 
   home.packages = with pkgs; [
     curl
+    git-agecrypt
     distrobox
     claude-distro
     claude-sandbox
@@ -286,6 +288,22 @@ in
       user.email = "miltu.s.nayak@gmail.com";
       init.defaultBranch = "main";
     };
+    includes = [{
+      condition = "hasconfig:remote.*.url:*github.com*SmarakNayak/nixos-config.git";
+      contents = {
+        "filter \"git-agecrypt\"" = {
+          required = true;
+          smudge = "${pkgs.git-agecrypt}/bin/git-agecrypt smudge -f %f";
+          clean = "${pkgs.git-agecrypt}/bin/git-agecrypt clean -f %f";
+        };
+        "diff \"git-agecrypt\"" = {
+          textconv = "${pkgs.git-agecrypt}/bin/git-agecrypt textconv";
+        };
+        "git-agecrypt \"config\"" = {
+          identity = "/home/miltu/.config/age/master.key";
+        };
+      };
+    }];
   };
 
   programs.ssh = {
