@@ -2,7 +2,7 @@
 
 let
   secretsFile = ../secrets/email.nix;
-  isDecrypted = builtins.substring 0 23 (builtins.readFile secretsFile) == "# THIS_FILE_IS_DECRYPTED";
+  isDecrypted = builtins.substring 0 24 (builtins.readFile secretsFile) == "# THIS_FILE_IS_DECRYPTED";
   emails = if isDecrypted then import secretsFile else {
     gmail1        = "gmail1@example.com";
     gmail2        = "gmail2@example.com";
@@ -13,10 +13,8 @@ let
   };
 in
 {
-  home.packages = [ pkgs.thunderbird ];
-
   accounts.email.accounts = {
-    gmail1 = {
+    gmail-casual = {
       primary = true;
       address = emails.gmail1;
       realName = "Smarak Nayak";
@@ -26,7 +24,7 @@ in
       thunderbird.enable = true;
     };
 
-    gmail2 = {
+    gmail-proper = {
       address = emails.gmail2;
       realName = "Smarak Nayak";
       flavor = "gmail.com";
@@ -35,7 +33,7 @@ in
       thunderbird.enable = true;
     };
 
-    gmail3 = {
+    gmail-work = {
       address = emails.gmail3;
       realName = "Smarak Nayak";
       flavor = "gmail.com";
@@ -50,13 +48,27 @@ in
       userName = emails.hotmail;
       aliases = [ emails.hotmailAlias1 emails.hotmailAlias2 ];
       imap = { host = "outlook.office365.com"; port = 993; tls.enable = true; };
-      smtp = { host = "smtp-mail.outlook.com"; port = 587; tls.enable = true; tls.useStartTls = true; };
-      thunderbird.enable = true;
+      smtp = { host = "smtp.office365.com"; port = 587; tls.enable = true; tls.useStartTls = true; };
+      thunderbird = {
+        enable = true;
+        settings = id: {
+          "mail.server.server_${id}.authMethod" = 10;
+          "mail.smtpserver.smtp_${id}.authMethod" = 10;
+        };
+      };
     };
   };
 
   programs.thunderbird = {
     enable = true;
     profiles.default.isDefault = true;
+    package = pkgs.thunderbird.override {
+      extraPolicies.ExtensionSettings = {
+        "{4753278b-acea-4b2b-a111-1fc9450d239d}" = {
+          installation_mode = "normal_installed";
+          install_url = "https://addons.thunderbird.net/thunderbird/downloads/file/1044595/betterunsubscribe-2.8.0-tb.xpi";
+        };
+      };
+    };
   };
 }
