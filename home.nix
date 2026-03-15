@@ -287,6 +287,9 @@ in
       user.name = "Smarak Nayak";
       user.email = "miltu.s.nayak@gmail.com";
       init.defaultBranch = "main";
+      "git-agecrypt \"config\"" = {
+        identity = "${config.home.homeDirectory}/.config/age/master.key";
+      };
     };
     includes = [{
       condition = "hasconfig:remote.*.url:*github.com*SmarakNayak/nixos-config.git";
@@ -298,9 +301,6 @@ in
         };
         "diff \"git-agecrypt\"" = {
           textconv = "${pkgs.git-agecrypt}/bin/git-agecrypt textconv";
-        };
-        "git-agecrypt \"config\"" = {
-          identity = "/home/miltu/.config/age/master.key";
         };
       };
     }];
