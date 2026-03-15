@@ -68,6 +68,10 @@ in
           installation_mode = "normal_installed";
           install_url = "https://addons.thunderbird.net/thunderbird/downloads/file/1044595/betterunsubscribe-2.8.0-tb.xpi";
         };
+        "{7a43661d-9ce4-4693-9dbd-f68cfc673618}" = {
+          installation_mode = "normal_installed";
+          install_url = "https://addons.thunderbird.net/thunderbird/downloads/file/1036936/bulkdelete-1.1.0-tb.xpi";
+        };
       };
     };
   };
