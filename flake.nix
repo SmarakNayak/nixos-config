@@ -28,9 +28,13 @@
       url = "github:ghostty-org/ghostty";
     };
 
+    comfyui-nix = {
+      url = "github:utensils/comfyui-nix";
+    };
+
   };
 
-  outputs = { self, nixpkgs, agenix, home-manager, claude-code, llm-agents, ghostty, ... }@inputs: {
+  outputs = { self, nixpkgs, agenix, home-manager, claude-code, llm-agents, ghostty, comfyui-nix, ... }@inputs: {
     nixosConfigurations= {
       louqe-pc = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit self; };
@@ -43,6 +47,7 @@
               claude-code.overlays.default
               llm-agents.overlays.default
               ghostty.overlays.default
+              comfyui-nix.overlays.default
             ];
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
@@ -63,6 +68,7 @@
               claude-code.overlays.default
               llm-agents.overlays.default
               ghostty.overlays.default
+              comfyui-nix.overlays.default
             ];
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
@@ -83,6 +89,7 @@
               claude-code.overlays.default
               llm-agents.overlays.default
               ghostty.overlays.default
+              comfyui-nix.overlays.default
             ];
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
