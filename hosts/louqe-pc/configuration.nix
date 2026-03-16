@@ -46,6 +46,7 @@
   system.stateVersion = "25.05"; # Did you read the comment?
 
   virtualisation.podman.enable = true;
+  hardware.nvidia-container-toolkit.enable = true;
 
   # Bluetooth with blueman applet
   hardware.bluetooth.enable = true;
