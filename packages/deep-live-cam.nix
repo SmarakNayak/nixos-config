@@ -24,7 +24,7 @@ pkgs.writeShellScriptBin "deep-live-cam" ''
       sudo apt-get update -qq
       sudo apt-get install -y -qq \
         python3.11 python3.11-venv python3.11-dev python3.11-tk \
-        python3-pip git ffmpeg libgl1 libglib2.0-0
+        python3-pip git wget ffmpeg libgl1 libglib2.0-0
 
       git clone https://github.com/hacksider/Deep-Live-Cam "'"$INSTALL_DIR"'"
       cd "'"$INSTALL_DIR"'"
@@ -34,6 +34,10 @@ pkgs.writeShellScriptBin "deep-live-cam" ''
       pip install --quiet --upgrade pip
       pip install --quiet torch torchvision --index-url https://download.pytorch.org/whl/cu121
       pip install --quiet -r requirements.txt
+
+      mkdir -p models
+      wget -q -O models/gfpgan-1024.onnx https://huggingface.co/hacksider/deep-live-cam/resolve/main/gfpgan-1024.onnx
+
       touch .installed
     '
   fi

@@ -5,6 +5,7 @@ let
   claude-sandbox = import ./packages/claude-sandbox.nix { inherit pkgs; };
   opencode-sandbox = import ./packages/opencode-sandbox.nix { inherit pkgs; };
   deep-live-cam = import ./packages/deep-live-cam.nix { inherit pkgs; };
+  facefusion = import ./packages/facefusion.nix { inherit pkgs; };
 in
 {
   imports = [
@@ -22,6 +23,7 @@ in
     distrobox
     claude-distro
     deep-live-cam
+    facefusion
     claude-sandbox
     claude-code
     opencode-sandbox
@@ -56,6 +58,7 @@ in
     mangohud
     heroic
     # Media applications
+    davinci-resolve
     mpv
     spotify
     imv

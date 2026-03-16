@@ -1,3 +1,6 @@
+# FHS needed, so uses distrobox rather than docker so the ubuntu container automatically mounts the
+# host home directory — giving claude access to files (Downloads, projects,
+# etc.) without any manual volume configuration.
 { pkgs, ... }:
 
 pkgs.writeShellScriptBin "claude-distro" ''
