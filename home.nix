@@ -24,7 +24,7 @@ in
     claude-distro
     deep-live-cam
     facefusion
-    comfyui-cuda
+    comfy-ui-cuda
     claude-sandbox
     claude-code
     opencode-sandbox
