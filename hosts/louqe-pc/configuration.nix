@@ -34,6 +34,8 @@
   environment.systemPackages = with pkgs; [
     git
     android-tools  # Provides adb command (replaces programs.adb)
+    resources      # Task manager with force-kill support
+    (import ../../packages/stability-matrix.nix { inherit pkgs; })
   ];
   # nvidia settings
   hardware.graphics.enable = true;
