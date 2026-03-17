@@ -65,8 +65,6 @@ in
     pinta
     # File managers
     kdePackages.dolphin
-    thunar
-    nemo
     # AI image generation
     stability-matrix
   ];
