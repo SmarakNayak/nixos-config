@@ -1,5 +1,15 @@
 { config, pkgs, ... }:
 {
+  # XDG Desktop Portal — consistent file/folder chooser dialogs
+  xdg.portal = {
+    enable = true;
+    extraPortals = []; #Installed at a user level
+    config.hyprland = {
+      default = [ "hyprland" "gtk" ];
+      "org.freedesktop.impl.portal.FileChooser" = [ "kde" ];
+    };
+  };
+
   # System-level: Enable hyprland session
   programs.hyprland = {
     enable = true;
@@ -16,6 +26,11 @@
       hypridle
       swaylock
       dpms-off
+      # Portal packages must be in home.packages so their .portal files land in
+      # /etc/profiles/per-user/$USER/ — the first XDG_DATA_DIRS entry the daemon scans
+      # This is because wayland.windowManager.hyprland puts the hyprland portal there
+      kdePackages.xdg-desktop-portal-kde
+      xdg-desktop-portal-gtk
     ];
 
     wayland.windowManager.hyprland = {
