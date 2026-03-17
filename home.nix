@@ -4,8 +4,7 @@ let
   claude-distro = import ./packages/claude-distrobox.nix { inherit pkgs; };
   claude-sandbox = import ./packages/claude-sandbox.nix { inherit pkgs; };
   opencode-sandbox = import ./packages/opencode-sandbox.nix { inherit pkgs; };
-  deep-live-cam = import ./packages/deep-live-cam.nix { inherit pkgs; };
-  facefusion = import ./packages/facefusion.nix { inherit pkgs; };
+facefusion = import ./packages/facefusion.nix { inherit pkgs; };
 in
 {
   imports = [
@@ -22,8 +21,7 @@ in
     git-agecrypt
     distrobox
     claude-distro
-    deep-live-cam
-    facefusion
+facefusion
     comfy-ui-cuda
     claude-sandbox
     claude-code
