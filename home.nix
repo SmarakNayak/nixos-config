@@ -21,7 +21,7 @@ in
     git-agecrypt
     distrobox
     claude-distro
-facefusion
+    facefusion
     comfy-ui-cuda
     claude-sandbox
     claude-code
