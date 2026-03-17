@@ -4,7 +4,7 @@ let
   claude-distro = import ./packages/claude-distrobox.nix { inherit pkgs; };
   claude-sandbox = import ./packages/claude-sandbox.nix { inherit pkgs; };
   opencode-sandbox = import ./packages/opencode-sandbox.nix { inherit pkgs; };
-facefusion = import ./packages/facefusion.nix { inherit pkgs; };
+  facefusion = import ./packages/facefusion.nix { inherit pkgs; };
 in
 {
   imports = [
