@@ -32,9 +32,13 @@
       url = "github:utensils/comfyui-nix";
     };
 
+    stability-matrix-nix = {
+      url = "github:SmarakNayak/stability-matrix-nix";
+    };
+
   };
 
-  outputs = { self, nixpkgs, agenix, home-manager, claude-code, llm-agents, ghostty, comfyui-nix, ... }@inputs: {
+  outputs = { self, nixpkgs, agenix, home-manager, claude-code, llm-agents, ghostty, comfyui-nix, stability-matrix-nix, ... }@inputs: {
     nixosConfigurations= {
       louqe-pc = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit self; };
@@ -48,6 +52,7 @@
               llm-agents.overlays.default
               ghostty.overlays.default
               comfyui-nix.overlays.default
+              stability-matrix-nix.overlays.default
             ];
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
@@ -69,6 +74,7 @@
               llm-agents.overlays.default
               ghostty.overlays.default
               comfyui-nix.overlays.default
+              stability-matrix-nix.overlays.default
             ];
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
@@ -90,6 +96,7 @@
               llm-agents.overlays.default
               ghostty.overlays.default
               comfyui-nix.overlays.default
+              stability-matrix-nix.overlays.default
             ];
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;

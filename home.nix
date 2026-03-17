@@ -69,6 +69,8 @@ in
     kdePackages.dolphin
     thunar
     nemo
+    # AI image generation
+    stability-matrix
   ];
 
   programs.home-manager.enable = true;
