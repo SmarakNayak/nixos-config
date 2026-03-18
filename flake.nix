@@ -84,6 +84,12 @@
           }
         ];
       };
+      test-vm = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/test-vm/configuration.nix
+        ];
+      };
       msi-laptop = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit self; };
         modules = [
@@ -107,5 +113,6 @@
         ];
       };
     };
+    packages.x86_64-linux.test-vm = self.nixosConfigurations.test-vm.config.system.build.vm;
   };
 }

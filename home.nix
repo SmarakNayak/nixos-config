@@ -76,6 +76,7 @@ in
     enableCompletion = true;
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
+      vm-run = "nix run ~/nixos-config#test-vm";
     };
     initExtra = ''
       export SHELL=${pkgs.bash}/bin/bash
@@ -112,6 +113,7 @@ in
     syntaxHighlighting.enable = true;
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
+      vm-run = "nix run ~/nixos-config#test-vm";
     };
     history = {
       size = 10000;
@@ -259,6 +261,7 @@ in
     ];
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
+      vm-run = "nix run ~/nixos-config#test-vm";
     };
     shellInit = ''
       set -g SHELL ${pkgs.fish}/bin/fish
