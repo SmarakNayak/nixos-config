@@ -63,6 +63,7 @@ in
     imv
     zathura
     pinta
+    krita
     # File managers
     kdePackages.dolphin
     # AI image generation
