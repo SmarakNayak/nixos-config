@@ -1,42 +1,59 @@
 * {
-    border: none;
-    border-radius: 0;
-    font-family: "JetBrainsMono Nerd Font", monospace;
-    font-size: 13px;
-    min-height: 0;
+  border: none;
+  border-radius: 0;
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+  min-height: 0;
 }
 
 window#waybar {
-    background: rgba(30, 30, 46, 0.9);
-    color: #cdd6f4;
+  background: rgba(30, 30, 46, 0.9);
+  color: #cdd6f4;
 }
 
 /* Workspaces */
 #workspaces {
-    padding: 0 5px;
+  padding: 0 5px;
 }
 
 #workspaces button {
-    padding: 0 8px;
-    color: #6c7086;
-    background: transparent;
-    border-bottom: 2px solid transparent;
+  padding: 0 8px;
+  color: #6c7086;
+  background: transparent;
+  border-bottom: 2px solid transparent;
 }
 
+/* non-empty persistent workspaces */
+#workspaces button.persistent {
+  color: #89b4fa;
+}
+
+/* empty persistent workspaces */
+#workspaces button.empty {
+  color: #6c7086;
+}
+
+/* visible workspaces */
+#workspaces button.visible {
+  color: #89b4fa;
+  border-bottom: 2px solid #585b70;
+}
+
+/* active workspaces */
 #workspaces button.active {
-    color: #89b4fa;
-    border-bottom: 2px solid #89b4fa;
+  color: #89b4fa;
+  border-bottom: 2px solid #89b4fa;
 }
 
 #workspaces button:hover {
-    background: rgba(137, 180, 250, 0.1);
-    color: #89b4fa;
+  background: rgba(137, 180, 250, 0.1);
+  color: #89b4fa;
 }
 
 /* Window title */
 #window {
-    padding: 0 10px;
-    color: #cdd6f4;
+  padding: 0 10px;
+  color: #cdd6f4;
 }
 
 /* Right modules */
@@ -46,44 +63,44 @@ window#waybar {
 #battery,
 #clock,
 #tray {
-    padding: 0 10px;
-    margin: 0 2px;
-    background: rgba(49, 50, 68, 0.8);
-    border-radius: 5px;
+  padding: 0 10px;
+  margin: 0 2px;
+  background: rgba(49, 50, 68, 0.8);
+  border-radius: 5px;
 }
 
 /* Battery states */
 #battery.charging {
-    color: #a6e3a1;
+  color: #a6e3a1;
 }
 
 #battery.warning:not(.charging) {
-    color: #f9e2af;
+  color: #f9e2af;
 }
 
 #battery.critical:not(.charging) {
-    color: #f38ba8;
+  color: #f38ba8;
 }
 
 /* Pulseaudio */
 #pulseaudio {
-    color: #cba6f7;
+  color: #cba6f7;
 }
 
 #pulseaudio.muted {
-    color: #6c7086;
+  color: #6c7086;
 }
 
 /* Audio Output Toggle */
 #custom-audio-output {
-    color: #f5c2e7;
+  color: #f5c2e7;
 }
 
 #custom-audio-output:hover {
-    background: rgba(245, 194, 231, 0.2);
+  background: rgba(245, 194, 231, 0.2);
 }
 
 /* Clock */
 #clock {
-    color: #89dceb;
+  color: #89dceb;
 }

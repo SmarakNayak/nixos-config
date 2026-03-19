@@ -25,7 +25,11 @@
     },
     "hyprland/workspaces": {
         "format": "{name}",
-        "all-outputs": false
+        "all-outputs": false,
+        "persistent-workspaces": {
+            "DP-1": [1, 2, 3, 4, 5],
+            "HDMI-A-1": [6, 7, 8, 9, 10]
+        }
     },
     "keyboard-state": {
         "numlock": true,
