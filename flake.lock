@@ -473,11 +473,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1773732489,
-        "narHash": "sha256-3+lwGT21K4eJDFDVi6rEhh0zIfU/oJlKsckBE38p4XE=",
+        "lastModified": 1774743243,
+        "narHash": "sha256-3ryV/o0f4jHCC5RsHiqVvtqqztgVCpsWJNlQdsWAFho=",
         "owner": "SmarakNayak",
         "repo": "stability-matrix-nix",
-        "rev": "563b0531006874c8835342994651765b52a0396e",
+        "rev": "a783ee36e8a9f8af1c84e3abdfe210863bd55d61",
         "type": "github"
       },
       "original": {

@@ -5,6 +5,15 @@ let
   claude-sandbox = import ./packages/claude-sandbox.nix { inherit pkgs; };
   opencode-sandbox = import ./packages/opencode-sandbox.nix { inherit pkgs; };
   facefusion = import ./packages/facefusion.nix { inherit pkgs; };
+  krita-ai-diffusion = import ./packages/krita-ai-diffusion.nix { inherit pkgs; };
+  krita-with-ai = pkgs.krita.overrideAttrs (old: {
+    buildCommand = ''
+      ${old.buildCommand or ""}
+      wrapProgram $out/bin/krita \
+        --prefix QT_PLUGIN_PATH : ${pkgs.qt5.qtimageformats}/${pkgs.qt5.qtbase.qtPluginPrefix} \
+        --prefix XDG_DATA_DIRS : ${krita-ai-diffusion}/share
+    '';
+  });
 in
 {
   imports = [
@@ -63,7 +72,9 @@ in
     imv
     zathura
     pinta
-    krita
+    krita-with-ai
+    protonvpn-gui
+    qalculate-gtk
     # File managers
     kdePackages.dolphin
     # AI image generation

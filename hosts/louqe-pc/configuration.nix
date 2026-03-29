@@ -18,7 +18,7 @@
   time.timeZone = "Australia/Sydney";
   users.users.miltu = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable 'sudo' for the user.
+    extraGroups = [ "wheel" "networkmanager" ]; # Enable 'sudo' for the user. networkmanager for ProtonVPN.
   };
 
   # Increase sudo password timeout to 300 minutes
