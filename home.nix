@@ -6,6 +6,9 @@ let
   opencode-sandbox = import ./packages/opencode-sandbox.nix { inherit pkgs; };
   facefusion = import ./packages/facefusion.nix { inherit pkgs; };
   krita-ai-diffusion = import ./packages/krita-ai-diffusion.nix { inherit pkgs; };
+  # krita-vision-tools (AI object selection) is disabled until upstream adds Python 3.13 support
+  # Track: https://github.com/Acly/krita-vision-tools/issues/68
+  # krita-vision-tools = import ./packages/krita-vision-tools.nix { inherit pkgs; };
   krita-with-ai = pkgs.krita.overrideAttrs (old: {
     buildCommand = ''
       ${old.buildCommand or ""}
