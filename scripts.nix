@@ -7,7 +7,7 @@ let
     # Usage in Steam launch options: gamescope-m32q %command%
 
     export MANGOHUD_CONFIG="no_display=1,refresh_rate"
-    exec ${pkgs.gamescope}/bin/gamescope -w 2560 -h 1440 -W 2560 -H 1440 --mangoapp --adaptive-sync -- "$@"
+    exec ${pkgs.gamescope}/bin/gamescope -w 2560 -h 1440 -W 2560 -H 1440 --mangoapp --adaptive-sync --force-grab-cursor -- "$@"
   '';
 in
 {

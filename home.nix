@@ -62,6 +62,7 @@ in
     mission-center
     signal-desktop
     discord
+    telegram-desktop
     wasistlos
     tree
     # Gaming
@@ -78,6 +79,7 @@ in
     krita-with-ai
     protonvpn-gui
     qalculate-gtk
+    libreoffice
     # File managers
     kdePackages.dolphin
     # AI image generation
