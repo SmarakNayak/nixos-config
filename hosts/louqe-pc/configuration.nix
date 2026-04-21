@@ -80,6 +80,14 @@
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.ly.enableGnomeKeyring = true;
 
+  hardware.ledger.enable = true;
+
+  # Keystone hardware wallet udev rules
+  services.udev.extraRules = ''
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="3001", MODE="0666", TAG+="uaccess"
+    # SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="3001", MODE="0666", TAG+="uaccess"
+  '';
+
   # Firewall configuration
   networking.firewall.allowedTCPPorts = [ 8081 ]; # For Expo
 
