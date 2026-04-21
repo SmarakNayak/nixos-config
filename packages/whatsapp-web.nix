@@ -3,7 +3,7 @@
 let
   icon = pkgs.fetchurl {
     url = "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg";
-    hash = "sha256-6gBB5VXMxOVSGzOJ7W2GpI2sAPtOiMZxb+RYUNbZD1I=";
+    hash = "sha256-3WpNssOUyhGqirCHNp8vUKEub4dOSdt7HVYJ0Kj7KMo=";
   };
 
   desktopItem = pkgs.makeDesktopItem {

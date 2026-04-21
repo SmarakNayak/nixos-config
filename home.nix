@@ -7,6 +7,7 @@ let
   facefusion = import ./packages/facefusion.nix { inherit pkgs; };
   krita-ai-diffusion = import ./packages/krita-ai-diffusion.nix { inherit pkgs; };
   whatsapp-web = import ./packages/whatsapp-web.nix { inherit pkgs; };
+  messenger-web = import ./packages/messenger-web.nix { inherit pkgs; };
   # krita-vision-tools (AI object selection) is disabled until upstream adds Python 3.13 support
   # Track: https://github.com/Acly/krita-vision-tools/issues/68
   # krita-vision-tools = import ./packages/krita-vision-tools.nix { inherit pkgs; };
@@ -65,6 +66,7 @@ in
     discord
     telegram-desktop
     whatsapp-web
+    messenger-web
     tree
     # Gaming
     gamescope
