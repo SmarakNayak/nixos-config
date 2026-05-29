@@ -2,7 +2,10 @@
 
 let
   secretsFile = ../secrets/email.nix;
-  isDecrypted = builtins.substring 0 24 (builtins.readFile secretsFile) == "# THIS_FILE_IS_DECRYPTED";
+  decryptedEmailHash = "4b324ca2f223d5f25bbdcd793dbfa4ef9698e1cae166fceecc6c095f26a4c268";
+  # git-agecrypt leaves encrypted files as bytes that builtins.readFile may not
+  # represent as a Nix string, so use hashFile as a binary-safe guard.
+  isDecrypted = builtins.hashFile "sha256" secretsFile == decryptedEmailHash;
   emails = if isDecrypted then import secretsFile else {
     gmail1        = "gmail1@example.com";
     gmail2        = "gmail2@example.com";
