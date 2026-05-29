@@ -10,6 +10,9 @@
     };
   };
 
+  # GTK apps use dconf for settings such as middle-click primary paste.
+  programs.dconf.enable = true;
+
   # System-level: Enable hyprland session
   programs.hyprland = {
     enable = true;

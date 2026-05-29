@@ -372,6 +372,10 @@ in
     # GTK_USE_PORTAL = "1"; #not needed for modern apps i.e. gtk>4
   };
 
+  dconf.settings."org/gnome/desktop/interface" = {
+    gtk-enable-primary-paste = true;
+  };
+
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
@@ -401,7 +405,7 @@ in
     source = ./dotfiles/waybar/scripts;
     recursive = true;
   };
-  xdg.configFile."ghostty/config".source = ./dotfiles/ghostty/config;
+  xdg.configFile."ghostty/config.ghostty".source = ./dotfiles/ghostty/config;
   xdg.configFile."ghostty/hetzner-green.conf".source = ./dotfiles/ghostty/hetzner-green.conf;
   xdg.configFile."ghostty/hetzner-blue.conf".source = ./dotfiles/ghostty/hetzner-blue.conf;
   xdg.configFile."mako/config".source = ./dotfiles/mako/config;

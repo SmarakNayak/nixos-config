@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
 {
+  # GTK apps use dconf for settings such as middle-click primary paste.
+  programs.dconf.enable = true;
+
   # System-level: Enable niri session
   programs.niri.enable = true;
 
