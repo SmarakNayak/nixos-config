@@ -340,6 +340,12 @@ in
     enable = true;
     enableDefaultConfig = false;
     settings = {
+      "antec-pc" = {
+        Hostname = "antec-pc.local";
+        User = "miltu";
+        IdentityFile = "~/.ssh/antec-admin";
+        IdentitiesOnly = "yes";
+      };
       "hetzner-green" = {
         Hostname = "65.21.25.120";
         User = "ubuntu";
