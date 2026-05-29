@@ -15,6 +15,7 @@
 # --tmpfs $HOME        blank home - hides ssh keys, dotfiles, shell history, credentials
 # --bind ~/.codex      punch through codex config and instructions for persistence
 # --ro-bind ~/.config/git/config  git needs user identity
+# --ro-bind ~/.config/git/ignore  global gitignore
 # --ro-bind ~/.ssh/known_hosts    host key verification for SSH git remotes
 # --bind $SSH_AUTH_SOCK                ssh agent socket (set by UWSM) for git push/pull over ssh urls
 # --bind $PWD          read-write access to the project directory
@@ -37,6 +38,7 @@ pkgs.writeShellScriptBin "codex-sandbox" ''
     --tmpfs "$HOME" \
     --bind "$HOME/.codex" "$HOME/.codex" \
     --ro-bind-try "$HOME/.config/git/config" "$HOME/.config/git/config" \
+    --ro-bind-try "$HOME/.config/git/ignore" "$HOME/.config/git/ignore" \
     --ro-bind-try "$HOME/.ssh/known_hosts" "$HOME/.ssh/known_hosts" \
     --bind-try "$SSH_AUTH_SOCK" "$SSH_AUTH_SOCK" \
     --bind "$PWD" "$PWD" --chdir "$PWD" \
