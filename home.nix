@@ -394,6 +394,11 @@ in
     path = "${config.home.homeDirectory}/.ssh/id_hetzner";
     mode = "600";
   };
+  age.secrets.antec-admin-ssh-key = {
+    file = ./secrets/antec-admin-ssh-key.age;
+    path = "${config.home.homeDirectory}/.ssh/antec-admin";
+    mode = "600";
+  };
   age.secrets.deepseek-api-key = {
     file = ./secrets/deepseek-api-key.age;
     path = "${config.home.homeDirectory}/.config/opencode/deepseek-api-key";

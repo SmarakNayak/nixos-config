@@ -9,5 +9,6 @@ in {
   # 4. Declare it in home.nix under age.secrets and reference the .path
   "ssh-key.age".publicKeys = [ master ];
   "ssh-key-hetzner.age".publicKeys = [ master ];
+  "antec-admin-ssh-key.age".publicKeys = [ master ];
   "deepseek-api-key.age".publicKeys = [ master ];
 }
