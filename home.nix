@@ -4,6 +4,7 @@ let
   claude-distro = import ./packages/claude-distrobox.nix { inherit pkgs; };
   claude-sandbox = import ./packages/claude-sandbox.nix { inherit pkgs; };
   opencode-sandbox = import ./packages/opencode-sandbox.nix { inherit pkgs; };
+  codex-sandbox = import ./packages/codex-sandbox.nix { inherit pkgs; };
   facefusion = import ./packages/facefusion.nix { inherit pkgs; };
   krita-ai-diffusion = import ./packages/krita-ai-diffusion.nix { inherit pkgs; };
   whatsapp-web = import ./packages/whatsapp-web.nix { inherit pkgs; };
@@ -40,8 +41,10 @@ in
     claude-sandbox
     claude-code
     opencode-sandbox
-    opencode
-    gemini-cli
+    llm-agents.opencode
+    codex-sandbox
+    llm-agents.codex
+    llm-agents.gemini-cli
     speedtest-go
     networkmanagerapplet
     nerd-fonts.jetbrains-mono
@@ -80,7 +83,7 @@ in
     zathura
     pinta
     krita-with-ai
-    protonvpn-gui
+    proton-vpn
     qalculate-gtk
     libreoffice
     # File managers
@@ -336,24 +339,20 @@ in
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks = {
+    settings = {
       "hetzner-green" = {
-        hostname = "65.21.25.120";
-        user = "ubuntu";
-        identityFile = "~/.ssh/id_hetzner";
-        extraOptions = {
-          Compression = "yes";
-          SetEnv = "TERM=xterm-256color";
-        };
+        Hostname = "65.21.25.120";
+        User = "ubuntu";
+        IdentityFile = "~/.ssh/id_hetzner";
+        Compression = "yes";
+        SetEnv = { TERM = "xterm-256color"; };
       };
       "hetzner-blue" = {
-        hostname = "37.27.139.85";
-        user = "ubuntu";
-        identityFile = "~/.ssh/id_hetzner";
-        extraOptions = {
-          Compression = "yes";
-          SetEnv = "TERM=xterm-256color";
-        };
+        Hostname = "37.27.139.85";
+        User = "ubuntu";
+        IdentityFile = "~/.ssh/id_hetzner";
+        Compression = "yes";
+        SetEnv = { TERM = "xterm-256color"; };
       };
     };
   };

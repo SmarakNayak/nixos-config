@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ../../modules/caches.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -85,6 +86,7 @@
   # Nvidia Proprietary Drivers
   services.xserver.videoDrivers = [ "nvidia" ]; #enables nvidia
   nixpkgs.config.allowUnfree = true;
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.nvidia.acceptLicense = true;
   hardware = {
     graphics.enable = true; #seems optional - maybe set somewhere else

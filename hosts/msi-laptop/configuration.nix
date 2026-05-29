@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./power-management.nix
+      ../../modules/caches.nix
       ../../modules/niri.nix
       ../../modules/hyprland.nix
     ];

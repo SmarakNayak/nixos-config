@@ -35,6 +35,7 @@
 
     wayland.windowManager.hyprland = {
       enable = true;
+      configType = "hyprlang";
       systemd.enable = true;  # Creates hyprland-session.target
       # systemd.enable = false;  # UWSM manages the systemd session
       extraConfig = "# Using manual config file";  # Suppress warning
