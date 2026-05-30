@@ -13,6 +13,7 @@
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 5;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "antec-pc";
   networking.networkmanager.enable = true;
@@ -88,6 +89,7 @@
   services.xserver.videoDrivers = [ "nvidia" ]; #enables nvidia
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.trusted-users = [ "root" "miltu" ];
   nixpkgs.config.nvidia.acceptLicense = true;
   hardware = {
     graphics.enable = true; #seems optional - maybe set somewhere else
@@ -180,4 +182,3 @@
   system.stateVersion = "25.05"; # Did you read the comment?
 
 }
-
