@@ -111,7 +111,7 @@
     kitty
     google-chrome
     # debugging utils
-    xorg.xrandr
+    xrandr
     inxi
     pciutils
     virtualgl

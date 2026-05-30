@@ -40,7 +40,7 @@ in
     enableCompletion = true;
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
-      rebuild-antec = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc --sudo";
+      rebuild-antec = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc --sudo --ask-sudo-password";
       vm-run = "nix run ~/nixos-config#test-vm";
     };
     initExtra = ''
@@ -80,7 +80,7 @@ in
     syntaxHighlighting.enable = true;
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
-      rebuild-antec = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc --sudo";
+      rebuild-antec = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc --sudo --ask-sudo-password";
       vm-run = "nix run ~/nixos-config#test-vm";
     };
     history = {
@@ -203,7 +203,7 @@ in
     ];
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
-      rebuild-antec = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc --sudo";
+      rebuild-antec = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc --sudo --ask-sudo-password";
       vm-run = "nix run ~/nixos-config#test-vm";
     };
     shellInit = ''
