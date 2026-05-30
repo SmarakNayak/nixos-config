@@ -301,6 +301,11 @@ in
     path = "${config.home.homeDirectory}/.ssh/antec-admin";
     mode = "600";
   };
+  age.secrets.smarak-agent-github-app = {
+    file = ../secrets/smarak-agent-github-app.age;
+    path = "${config.home.homeDirectory}/.config/smarak-agent/smarak-agent-github-app.pem";
+    mode = "600";
+  };
   age.secrets.deepseek-api-key = {
     file = ../secrets/deepseek-api-key.age;
     path = "${config.home.homeDirectory}/.config/opencode/deepseek-api-key";
