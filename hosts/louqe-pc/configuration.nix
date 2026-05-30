@@ -11,6 +11,7 @@
       ../../modules/niri.nix
       ../../modules/hyprland.nix
       ../../modules/caches.nix
+      ../../modules/mdns.nix
     ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -105,4 +106,3 @@
     options = [ "ro" "nofail" ];
   };
 }
-
