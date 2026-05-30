@@ -1,30 +1,13 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 let
-  claude-distro = import ./packages/claude-distrobox.nix { inherit pkgs; };
-  claude-sandbox = import ./packages/claude-sandbox.nix { inherit pkgs; };
-  opencode-sandbox = import ./packages/opencode-sandbox.nix { inherit pkgs; };
-  codex-sandbox = import ./packages/codex-sandbox.nix { inherit pkgs; };
-  facefusion = import ./packages/facefusion.nix { inherit pkgs; };
-  krita-ai-diffusion = import ./packages/krita-ai-diffusion.nix { inherit pkgs; };
-  whatsapp-web = import ./packages/whatsapp-web.nix { inherit pkgs; };
-  messenger-web = import ./packages/messenger-web.nix { inherit pkgs; };
-  # krita-vision-tools (AI object selection) is disabled until upstream adds Python 3.13 support
-  # Track: https://github.com/Acly/krita-vision-tools/issues/68
-  # krita-vision-tools = import ./packages/krita-vision-tools.nix { inherit pkgs; };
-  krita-with-ai = pkgs.krita.overrideAttrs (old: {
-    buildCommand = ''
-      ${old.buildCommand or ""}
-      wrapProgram $out/bin/krita \
-        --prefix QT_PLUGIN_PATH : ${pkgs.qt5.qtimageformats}/${pkgs.qt5.qtbase.qtPluginPrefix} \
-        --prefix XDG_DATA_DIRS : ${krita-ai-diffusion}/share
-    '';
-  });
+  claude-sandbox = import ../packages/claude-sandbox.nix { inherit pkgs; };
+  opencode-sandbox = import ../packages/opencode-sandbox.nix { inherit pkgs; };
+  codex-sandbox = import ../packages/codex-sandbox.nix { inherit pkgs; };
 in
 {
   imports = [
-    ./scripts.nix
-    ./modules/email.nix
+    ../scripts.nix
   ];
 
   home.username = "miltu";
@@ -34,10 +17,6 @@ in
   home.packages = with pkgs; [
     curl
     git-agecrypt
-    distrobox
-    claude-distro
-    facefusion
-    comfy-ui-cuda
     claude-sandbox
     claude-code
     opencode-sandbox
@@ -46,50 +25,12 @@ in
     llm-agents.codex
     llm-agents.gemini-cli
     speedtest-go
-    networkmanagerapplet
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.fira-code
-    # CLI tools without home-manager modules
     procs
     sd
-    wl-clipboard
     fastfetch
-    ollama
     unzip
     file
-    # GUI applications
-    ghostty
-    wofi
-    waybar
-    google-chrome
-    pavucontrol
-    blueman
-    mission-center
-    signal-desktop
-    discord
-    telegram-desktop
-    whatsapp-web
-    messenger-web
     tree
-    # Gaming
-    gamescope
-    mangohud
-    heroic
-    # Media applications
-    davinci-resolve
-    mpv
-    spotify
-    imv
-    zathura
-    pinta
-    krita-with-ai
-    proton-vpn
-    qalculate-gtk
-    libreoffice
-    # File managers
-    kdePackages.dolphin
-    # AI image generation
-    stability-matrix
   ];
 
   programs.home-manager.enable = true;
@@ -104,18 +45,20 @@ in
     initExtra = ''
       export SHELL=${pkgs.bash}/bin/bash
 
-      # Enable menu-complete for cycling through completions
       bind '"\t":menu-complete'
-      bind '"\e[Z":menu-complete-backward'  # Shift-Tab to go backwards
+      bind '"\e[Z":menu-complete-backward'
       bind 'set show-all-if-ambiguous on'
       bind 'set menu-complete-display-prefix on'
 
-      # Query Ollama with ?
       function ? {
-        ollama run qwen3:8b --think=false "$*"
+        if command -v ollama >/dev/null 2>&1; then
+          ollama run qwen3:8b --think=false "$*"
+        else
+          echo "ollama is not installed in this profile" >&2
+          return 127
+        fi
       }
 
-      # Query Claude with ?? (persistent session per shell)
       function ?? {
         if [ -z "$CLAUDE_SHELL_SESSION" ]; then
           export CLAUDE_SHELL_SESSION=$(uuidgen 2>/dev/null || cat /proc/sys/kernel/random/uuid)
@@ -145,12 +88,15 @@ in
     initContent = ''
       export SHELL=${pkgs.zsh}/bin/zsh
 
-      # Query Ollama with q
       function q {
-        ollama run qwen3:8b --think=false "$*"
+        if command -v ollama >/dev/null 2>&1; then
+          ollama run qwen3:8b --think=false "$*"
+        else
+          echo "ollama is not installed in this profile" >&2
+          return 127
+        fi
       }
 
-      # Query Claude with qq (persistent session per shell)
       function qq {
         if [ -z "$CLAUDE_SHELL_SESSION" ]; then
           export CLAUDE_SHELL_SESSION=$(uuidgen 2>/dev/null || cat /proc/sys/kernel/random/uuid)
@@ -195,9 +141,7 @@ in
     icons = "auto";
   };
 
-  programs.bat = {
-    enable = true;
-  };
+  programs.bat.enable = true;
 
   programs.yazi = {
     enable = true;
@@ -214,38 +158,13 @@ in
     nix-direnv.enable = true;
   };
 
-  programs.lazygit = {
-    enable = true;
-  };
-
-  programs.btop = {
-    enable = true;
-  };
-
-  # programs.delta = {
-  #   enable = true;
-  #   enableGitIntegration = true;
-  # };
-
-  programs.tmux = {
-    enable = true;
-  };
-
-  programs.ripgrep = {
-    enable = true;
-  };
-
-  programs.fd = {
-    enable = true;
-  };
-
-  programs.gh = {
-    enable = true;
-  };
-
-  programs.jq = {
-    enable = true;
-  };
+  programs.lazygit.enable = true;
+  programs.btop.enable = true;
+  programs.tmux.enable = true;
+  programs.ripgrep.enable = true;
+  programs.fd.enable = true;
+  programs.gh.enable = true;
+  programs.jq.enable = true;
 
   programs.starship = {
     enable = true;
@@ -257,13 +176,11 @@ in
   programs.helix = {
     enable = true;
     extraPackages = with pkgs; [
-      # Language servers
       typescript-language-server
       rust-analyzer
-      vscode-langservers-extracted  # json, html, css
+      vscode-langservers-extracted
       nil
       nixd
-      # Python
       python312Packages.python-lsp-server
       ruff
       ty
@@ -288,15 +205,17 @@ in
     };
     shellInit = ''
       set -g SHELL ${pkgs.fish}/bin/fish
-      # fifc configuration
       set -U fifc_editor hx
 
-      # Query Ollama with ?
       function ?
-        ollama run qwen3:8b --think=false $argv
+        if command -q ollama
+          ollama run qwen3:8b --think=false $argv
+        else
+          echo "ollama is not installed in this profile" >&2
+          return 127
+        end
       end
 
-      # Query Claude with ?? (persistent session per shell)
       function ??
         if test -z "$CLAUDE_SHELL_SESSION"
           set -gx CLAUDE_SHELL_SESSION (uuidgen 2>/dev/null; or cat /proc/sys/kernel/random/uuid)
@@ -363,105 +282,30 @@ in
     };
   };
 
-  programs.vscode = {
-    enable = true;
-    package = pkgs.vscode.fhsWithPackages (pkgs: with pkgs; [
-      rustup
-      gcc
-      pkg-config
-      openssl.dev
-    ]);
-  };
-
-  home.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-    # GTK_USE_PORTAL = "1"; #not needed for modern apps i.e. gtk>4
-  };
-
-  dconf.settings."org/gnome/desktop/interface" = {
-    gtk-enable-primary-paste = true;
-  };
-
-  xdg.mimeApps = {
-    enable = true;
-    defaultApplications = {
-      "inode/directory" = "org.kde.dolphin.desktop";
-    };
-  };
-
   age.identityPaths = [ "${config.home.homeDirectory}/.config/age/master.key" ];
   age.secrets.ssh-key = {
-    file = ./secrets/ssh-key.age;
+    file = ../secrets/ssh-key.age;
     path = "${config.home.homeDirectory}/.ssh/id_ed25519";
     mode = "600";
   };
   age.secrets.ssh-key-hetzner = {
-    file = ./secrets/ssh-key-hetzner.age;
+    file = ../secrets/ssh-key-hetzner.age;
     path = "${config.home.homeDirectory}/.ssh/id_hetzner";
     mode = "600";
   };
   age.secrets.antec-admin-ssh-key = {
-    file = ./secrets/antec-admin-ssh-key.age;
+    file = ../secrets/antec-admin-ssh-key.age;
     path = "${config.home.homeDirectory}/.ssh/antec-admin";
     mode = "600";
   };
   age.secrets.deepseek-api-key = {
-    file = ./secrets/deepseek-api-key.age;
+    file = ../secrets/deepseek-api-key.age;
     path = "${config.home.homeDirectory}/.config/opencode/deepseek-api-key";
   };
-  xdg.configFile."waybar/config.jsonc".source = ./dotfiles/waybar/config.jsonc;
-  xdg.configFile."waybar/config-niri.jsonc".source = ./dotfiles/waybar/config-niri.jsonc;
-  xdg.configFile."waybar/style.css".source = ./dotfiles/waybar/style.css;
-  xdg.configFile."waybar/scripts" = {
-    source = ./dotfiles/waybar/scripts;
-    recursive = true;
-  };
-  xdg.configFile."ghostty/config.ghostty".source = ./dotfiles/ghostty/config;
-  xdg.configFile."ghostty/hetzner-green.conf".source = ./dotfiles/ghostty/hetzner-green.conf;
-  xdg.configFile."ghostty/hetzner-blue.conf".source = ./dotfiles/ghostty/hetzner-blue.conf;
-  xdg.configFile."mako/config".source = ./dotfiles/mako/config;
-  home.file.".claude/settings.json".source = ./dotfiles/claude/settings.json;
-  # {file:...} syntax reads file contents at runtime - see https://opencode.ai/docs/config/
+
+  home.file.".claude/settings.json".source = ../dotfiles/claude/settings.json;
   xdg.configFile."opencode/opencode.json".text = builtins.toJSON {
     "$schema" = "https://opencode.ai/config.json";
     provider.deepseek.options.apiKey = "{file:${config.age.secrets.deepseek-api-key.path}}";
   };
-
-  xdg.desktopEntries.google-chrome = {
-    name = "Google Chrome";
-    exec = "google-chrome-stable --disable-features=WaylandWpColorManagerV1 %U";
-    icon = "google-chrome";
-    type = "Application";
-    categories = [ "Network" "WebBrowser" ];
-    mimeType = [ "text/html" "text/xml" ];
-    actions = {};
-  };
-
-  xdg.desktopEntries.hetzner-green = {
-    name = "Hetzner - Green";
-    exec = "ghostty --config-file=${config.xdg.configHome}/ghostty/hetzner-green.conf";
-    icon = "com.mitchellh.ghostty";
-    type = "Application";
-    categories = [ "System" "TerminalEmulator" ];
-  };
-
-  xdg.desktopEntries.hetzner-blue = {
-    name = "Hetzner - Blue";
-    exec = "ghostty --config-file=${config.xdg.configHome}/ghostty/hetzner-blue.conf";
-    icon = "com.mitchellh.ghostty";
-    type = "Application";
-    categories = [ "System" "TerminalEmulator" ];
-  };
-  home.activation.clearWofiCache = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    run rm -f $HOME/.cache/wofi-drun
-  '';
-  # Use home.activation instead of home.file for Variety script because:
-  # - home.file creates read-only symlinks to Nix store
-  # - Variety expects to manage its own ~/.config/variety/ directory
-  # - Copying the script allows Variety to modify configs without breaking
-  home.activation.installVarietyScript = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    run mkdir -p $HOME/.config/variety/scripts
-    run cp -f ${./dotfiles/variety/scripts/set_wallpaper} $HOME/.config/variety/scripts/set_wallpaper
-    run chmod +x $HOME/.config/variety/scripts/set_wallpaper
-  '';
 }
