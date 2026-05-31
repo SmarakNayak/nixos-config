@@ -9,6 +9,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    hermes-agent = {
+      url = "github:NousResearch/hermes-agent";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -38,7 +43,7 @@
 
   };
 
-  outputs = { self, nixpkgs, agenix, home-manager, claude-code, llm-agents, ghostty, comfyui-nix, stability-matrix-nix, ... }@inputs: {
+  outputs = { self, nixpkgs, agenix, hermes-agent, home-manager, claude-code, llm-agents, ghostty, comfyui-nix, stability-matrix-nix, ... }@inputs: {
     nixosConfigurations= {
       louqe-pc = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit self; };
@@ -67,6 +72,7 @@
         modules = [
           ./hosts/antec-pc/configuration.nix
           agenix.nixosModules.default
+          hermes-agent.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             nixpkgs.overlays = [
