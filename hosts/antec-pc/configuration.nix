@@ -89,6 +89,12 @@
     group = "hermes";
     mode = "0400";
   };
+  age.secrets.hermes-telegram-bot-token = {
+    file = ../../secrets/telegram-bot-token.age;
+    owner = "hermes";
+    group = "hermes";
+    mode = "0400";
+  };
 
   # Hermes invokes Podman directly as its non-root service account.
   virtualisation.podman.enable = true;
@@ -137,12 +143,15 @@
       set -eu
       umask 077
       env_file=/var/lib/hermes/.hermes/.env
-      secret_file=${config.age.secrets.hermes-deepseek-api-key.path}
+      deepseek_secret_file=${config.age.secrets.hermes-deepseek-api-key.path}
+      telegram_secret_file=${config.age.secrets.hermes-telegram-bot-token.path}
 
-      test -r "$secret_file"
+      test -r "$deepseek_secret_file"
+      test -r "$telegram_secret_file"
       : > "$env_file"
       chmod 0600 "$env_file"
-      printf 'DEEPSEEK_API_KEY=%s\n' "$(cat "$secret_file")" >> "$env_file"
+      printf 'DEEPSEEK_API_KEY=%s\n' "$(cat "$deepseek_secret_file")" >> "$env_file"
+      printf 'TELEGRAM_BOT_TOKEN=%s\n' "$(cat "$telegram_secret_file")" >> "$env_file"
     '';
   };
 
@@ -159,6 +168,7 @@
     # dotenv file. Unrelated rebuilds do not restart the service.
     restartTriggers = [
       config.age.secrets.hermes-deepseek-api-key.file
+      config.age.secrets.hermes-telegram-bot-token.file
     ];
 
     serviceConfig = {

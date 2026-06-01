@@ -12,4 +12,5 @@ in {
   "antec-admin-ssh-key.age".publicKeys = [ master ];
   "deepseek-api-key.age".publicKeys = [ master ];
   "smarak-agent-github-app.age".publicKeys = [ master ];
+  "telegram-bot-token.age".publicKeys = [ master ];
 }
