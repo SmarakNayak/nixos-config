@@ -67,7 +67,7 @@
   users.users.miltu = {
     isNormalUser = true;
     home = "/home/miltu";
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "hermes" ];
     packages = with pkgs; [
       tree
     ];
@@ -150,7 +150,7 @@
   systemd.services.hermes-agent = {
     environment = {
       # The upstream Docker-compatible terminal backend supports Podman directly.
-      HERMES_DOCKER_BINARY = lib.getExe pkgs.podman;
+      HERMES_DOCKER_BINARY = lib.getExe config.virtualisation.podman.package;
       # Python dependencies must be declared in the immutable Nix package.
       HERMES_DISABLE_LAZY_INSTALLS = "1";
     };
