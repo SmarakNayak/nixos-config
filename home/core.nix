@@ -126,7 +126,7 @@ in
     enableBashIntegration = true;
     enableZshIntegration = true;
     enableFishIntegration = true;
-    flags = [ "--disable-up-arrow" ];
+    flags = [ "--disable-up-arrow" "--disable-ai" ];
   };
 
   programs.zoxide = {
