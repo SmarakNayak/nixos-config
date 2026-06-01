@@ -151,6 +151,8 @@
     environment = {
       # The upstream Docker-compatible terminal backend supports Podman directly.
       HERMES_DOCKER_BINARY = lib.getExe pkgs.podman;
+      # Python dependencies must be declared in the immutable Nix package.
+      HERMES_DISABLE_LAZY_INSTALLS = "1";
     };
 
     # Restart Hermes after a declared key change so it reloads the composed
@@ -223,6 +225,7 @@
           HOME=/var/lib/hermes \
           HERMES_HOME=/var/lib/hermes/.hermes \
           HERMES_DOCKER_BINARY=${lib.getExe podman} \
+          HERMES_DISABLE_LAZY_INSTALLS=1 \
           PATH=/run/current-system/sw/bin \
           TERM="''${TERM:-xterm-256color}" \
           ${config.services.hermes-agent.package}/bin/hermes "$@"
