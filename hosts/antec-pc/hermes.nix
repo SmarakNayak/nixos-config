@@ -13,6 +13,10 @@ let
 in
 
 {
+  imports = [
+    ./hermes-github-app.nix
+  ];
+
   # Extend the service account created by the upstream Hermes module. Rootless
   # Podman maps additional container users to an unprivileged ID range.
   users.users.hermes.autoSubUidGidRange = true;
@@ -38,7 +42,6 @@ in
     group = "hermes";
     mode = "0400";
   };
-
   # Hermes invokes Podman directly as its non-root service account.
   virtualisation.podman.enable = true;
 
