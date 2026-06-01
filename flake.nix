@@ -78,6 +78,7 @@
             nixpkgs.overlays = [
               claude-code.overlays.default
               llm-agents.overlays.default
+              hermes-agent.overlays.default
               ghostty.overlays.default
               comfyui-nix.overlays.default
               stability-matrix-nix.overlays.default

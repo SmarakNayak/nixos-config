@@ -13,4 +13,5 @@ in {
   "deepseek-api-key.age".publicKeys = [ master ];
   "smarak-agent-github-app.age".publicKeys = [ master ];
   "telegram-bot-token.age".publicKeys = [ master ];
+  "telegram-chat-id.age".publicKeys = [ master ];
 }

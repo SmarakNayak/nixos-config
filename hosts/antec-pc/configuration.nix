@@ -4,6 +4,18 @@
 
 { config, lib, pkgs, ... }:
 
+let
+  # The `messaging` extra (python-telegram-bot, discord.py, slack) was dropped
+  # from upstream's `[all]` on 2026-05-12 and routed to runtime lazy-install.
+  # Lazy installs are disabled here, so bake those deps into the sealed venv.
+  # Both the gateway service and the interactive hermes-service wrapper must
+  # share this exact package, or the wrapper's send_message tool fails with
+  # "python-telegram-bot not installed".
+  hermesAgent = pkgs.hermes-agent.override {
+    extraDependencyGroups = [ "messaging" ];
+  };
+in
+
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -95,12 +107,21 @@
     group = "hermes";
     mode = "0400";
   };
+  age.secrets.hermes-telegram-chat-id = {
+    file = ../../secrets/telegram-chat-id.age;
+    owner = "hermes";
+    group = "hermes";
+    mode = "0400";
+  };
 
   # Hermes invokes Podman directly as its non-root service account.
   virtualisation.podman.enable = true;
 
   services.hermes-agent = {
     enable = true;
+
+    # Shared messaging-enabled package (see hermesAgent in the let block).
+    package = hermesAgent;
 
     settings = {
       # Use DeepSeek V4 Pro through direct DEEPSEEK_API_KEY access.
@@ -110,6 +131,11 @@
         # Upstream defaults to local host execution. Use the Docker-compatible
         # sandbox implementation and select Podman through HERMES_DOCKER_BINARY.
         backend = "docker";
+
+        # The host workspace is mounted at /workspace inside the sandbox.
+        # Override the module's host-side working directory before Hermes
+        # bridges it into TERMINAL_CWD for container startup.
+        cwd = "/workspace";
 
         # Expose only the dedicated persistent workspace to generated commands.
         docker_volumes = [
@@ -145,13 +171,21 @@
       env_file=/var/lib/hermes/.hermes/.env
       deepseek_secret_file=${config.age.secrets.hermes-deepseek-api-key.path}
       telegram_secret_file=${config.age.secrets.hermes-telegram-bot-token.path}
+      telegram_chat_id_file=${config.age.secrets.hermes-telegram-chat-id.path}
 
       test -r "$deepseek_secret_file"
       test -r "$telegram_secret_file"
+      test -r "$telegram_chat_id_file"
       : > "$env_file"
       chmod 0600 "$env_file"
       printf 'DEEPSEEK_API_KEY=%s\n' "$(cat "$deepseek_secret_file")" >> "$env_file"
       printf 'TELEGRAM_BOT_TOKEN=%s\n' "$(cat "$telegram_secret_file")" >> "$env_file"
+      # The Telegram chat Hermes treats as its home channel doubles as the
+      # allowlist of users permitted to talk to the bot. For a private chat the
+      # user ID and chat ID are identical, so one secret feeds both.
+      telegram_chat_id="$(cat "$telegram_chat_id_file")"
+      printf 'TELEGRAM_HOME_CHANNEL=%s\n' "$telegram_chat_id" >> "$env_file"
+      printf 'TELEGRAM_ALLOWED_USERS=%s\n' "$telegram_chat_id" >> "$env_file"
     '';
   };
 
@@ -164,16 +198,26 @@
       HERMES_DISABLE_LAZY_INSTALLS = "1";
     };
 
+    # Rootless Podman locates newuidmap/newgidmap via PATH. The module's PATH is
+    # Nix-store-only, so the setuid wrappers in /run/wrappers/bin must be added
+    # explicitly (listed first so the setuid copies win over any plain ones).
+    path = [ "/run/wrappers" "/run/current-system/sw" ];
+
     # Restart Hermes after a declared key change so it reloads the composed
     # dotenv file. Unrelated rebuilds do not restart the service.
     restartTriggers = [
       config.age.secrets.hermes-deepseek-api-key.file
       config.age.secrets.hermes-telegram-bot-token.file
+      config.age.secrets.hermes-telegram-chat-id.file
     ];
 
     serviceConfig = {
-      # Pin the desired upstream hardening defaults explicitly.
-      NoNewPrivileges = lib.mkForce true;
+      # Rootless Podman must run the setuid newuidmap/newgidmap helpers to map
+      # its subuid range. NoNewPrivileges blocks setuid, so the gateway cannot
+      # cold-init its namespace with it enabled. Allowing it here lets Podman
+      # initialize directly — far simpler than a pre-warming init service. The
+      # remaining hardening below still confines the unprivileged hermes account.
+      NoNewPrivileges = lib.mkForce false;
       ProtectSystem = lib.mkForce "strict";
       PrivateTmp = lib.mkForce true;
       UMask = lib.mkForce "0007";
@@ -234,11 +278,11 @@
         ${coreutils}/bin/env -i \
           HOME=/var/lib/hermes \
           HERMES_HOME=/var/lib/hermes/.hermes \
-          HERMES_DOCKER_BINARY=${lib.getExe podman} \
+          HERMES_DOCKER_BINARY=${lib.getExe config.virtualisation.podman.package} \
           HERMES_DISABLE_LAZY_INSTALLS=1 \
-          PATH=/run/current-system/sw/bin \
+          PATH=/run/wrappers/bin:/run/current-system/sw/bin \
           TERM="''${TERM:-xterm-256color}" \
-          ${config.services.hermes-agent.package}/bin/hermes "$@"
+          ${hermesAgent}/bin/hermes "$@"
     '')
     google-chrome
     # debugging utils
