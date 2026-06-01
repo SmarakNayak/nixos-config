@@ -201,6 +201,7 @@
     wget
     helix
     kitty
+    ghostty
     google-chrome
     # debugging utils
     xrandr
