@@ -51,6 +51,13 @@ in
     # Shared messaging-enabled package (see hermesAgent in the let block).
     package = hermesAgent;
 
+    # Browser tools run from the host-side gateway, outside the terminal
+    # sandbox. Use Nixpkgs packages instead of runtime npm/browser downloads.
+    extraPackages = [
+      pkgs.agent-browser
+      pkgs.chromium
+    ];
+
     settings = {
       # Use DeepSeek V4 Pro through direct DEEPSEEK_API_KEY access.
       model = "deepseek-v4-pro";
@@ -127,6 +134,7 @@ in
       HERMES_DOCKER_BINARY = lib.getExe config.virtualisation.podman.package;
       # Python dependencies must be declared in the immutable Nix package.
       HERMES_DISABLE_LAZY_INSTALLS = "1";
+      AGENT_BROWSER_EXECUTABLE_PATH = lib.getExe pkgs.chromium;
     };
 
     # Rootless Podman locates newuidmap/newgidmap via PATH. The module's PATH is
@@ -178,7 +186,8 @@ in
           HERMES_HOME=/var/lib/hermes/.hermes \
           HERMES_DOCKER_BINARY=${lib.getExe config.virtualisation.podman.package} \
           HERMES_DISABLE_LAZY_INSTALLS=1 \
-          PATH=/run/wrappers/bin:/run/current-system/sw/bin \
+          AGENT_BROWSER_EXECUTABLE_PATH=${lib.getExe pkgs.chromium} \
+          PATH=/run/wrappers/bin:/run/current-system/sw/bin:${lib.makeBinPath [ pkgs.agent-browser pkgs.chromium ]} \
           TERM="''${TERM:-xterm-256color}" \
           ${hermesAgent}/bin/hermes "$@"
     '')
