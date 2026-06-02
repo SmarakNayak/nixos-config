@@ -70,6 +70,9 @@ in
           "/var/lib/hermes/workspace:/workspace"
         ];
 
+        # Give generated commands a Nix-enabled base environment.
+        docker_image = "nixos/nix";
+
         # Keep accidental cwd mounts and credential forwarding disabled.
         docker_mount_cwd_to_workspace = false;
         docker_forward_env = [];

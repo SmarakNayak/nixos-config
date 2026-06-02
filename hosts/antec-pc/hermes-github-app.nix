@@ -23,7 +23,7 @@ let
 
     test "$host" = github.com || exit 0
     printf 'username=x-access-token\n'
-    printf 'password=%s\n' "$(/bin/cat /workspace/.hermes-github/token)"
+    printf 'password=%s\n' "$(cat /workspace/.hermes-github/token)"
   '';
 
   # Make gh use the same refreshed installation token as Git without exposing
@@ -32,8 +32,8 @@ let
     #!/bin/sh
     set -eu
 
-    export GH_TOKEN="$(/bin/cat /workspace/.hermes-github/token)"
-    for gh in /usr/local/bin/gh /usr/bin/gh /bin/gh; do
+    export GH_TOKEN="$(cat /workspace/.hermes-github/token)"
+    for gh in /root/.nix-profile/bin/gh /nix/var/nix/profiles/default/bin/gh /usr/local/bin/gh /usr/bin/gh /bin/gh; do
       test -x "$gh" || continue
       exec "$gh" "$@"
     done
@@ -159,7 +159,7 @@ in
     # private key remains on the host.
     docker_extra_args = [
       "--env=GIT_CONFIG_GLOBAL=/workspace/.hermes-github/gitconfig"
-      "--env=PATH=/workspace/.hermes-github:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      "--env=PATH=/workspace/.hermes-github:/root/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     ];
   };
 
