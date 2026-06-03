@@ -205,13 +205,24 @@ let
 
     # write_atomic <dest> <mode> — write stdin to <dest> via a sibling temp + mv.
     # The rename is atomic on the same filesystem, so readers (and the sole copy
-    # of a refresh token) never see a partial write. Callers only reach this
-    # after a successful exchange, so a failed refresh never overwrites a good
-    # token — set -e aborts before we get here.
+    # of a refresh token) never see a partial write.
+    #
+    # REFUSE EMPTY INPUT. The mint functions are invoked as `mint_* ... || echo
+    # failed`, which puts their bodies in a context where `set -e` is ignored
+    # (bash: commands in a function run from a `||` list are not affected by -e).
+    # So a failed curl/jq does NOT abort the function — execution falls through
+    # to here. Guarding on non-empty content is therefore the real protection
+    # against clobbering a good token with an empty file; we cannot rely on the
+    # callers' early-exit guards firing.
     write_atomic() {
       dest="$1"; mode="$2"
+      content="$(${pkgs.coreutils}/bin/cat)"
+      if [ -z "$content" ]; then
+        echo "hermes-mail: refusing to write empty value to $dest" >&2
+        return 1
+      fi
       ${pkgs.coreutils}/bin/install -d -m 0700 "$(${pkgs.coreutils}/bin/dirname "$dest")"
-      ${pkgs.coreutils}/bin/cat > "$dest.new"
+      ${pkgs.coreutils}/bin/printf '%s' "$content" > "$dest.new"
       ${pkgs.coreutils}/bin/chmod "$mode" "$dest.new"
       ${pkgs.coreutils}/bin/mv -f "$dest.new" "$dest"
     }
@@ -224,9 +235,16 @@ let
         --arg client_secret "$(${pkgs.coreutils}/bin/cat "$secret_path")" \
         --arg refresh_token "$(${pkgs.coreutils}/bin/cat "$refresh_path")" \
         --arg grant_type refresh_token)"
-      # Extract first (jq --exit-status fails if absent) so we only overwrite the
-      # live token once we actually have a new one.
-      access="$(${pkgs.coreutils}/bin/printf '%s' "$resp" | ${pkgs.jq}/bin/jq --exit-status --raw-output '.access_token')"
+      # Extract and explicitly validate before writing. `set -e` is ignored
+      # inside this function (called from a `||` list — see write_atomic), so a
+      # failed exchange does NOT abort here; the empty-string check is what stops
+      # us overwriting a good token. (`|| true` keeps the assignment itself from
+      # being the thing that trips, so we reach the explicit guard.)
+      access="$(${pkgs.coreutils}/bin/printf '%s' "$resp" | ${pkgs.jq}/bin/jq --exit-status --raw-output '.access_token' || true)"
+      if [ -z "$access" ] || [ "$access" = "null" ]; then
+        echo "hermes-mail: $account got no access_token; leaving existing token untouched" >&2
+        return 1
+      fi
       ${pkgs.coreutils}/bin/printf '%s' "$access" | write_atomic "$workspace_root/$account/access-token" 0400
     }
 
@@ -248,10 +266,16 @@ let
         --arg scope "https://graph.microsoft.com/Mail.Read offline_access" \
         --arg refresh_token "$(${pkgs.coreutils}/bin/cat "$refresh_file")" \
         --arg grant_type refresh_token)"
-      # Require BOTH fields before writing anything, so a malformed response never
-      # overwrites the access token or truncates the sole refresh-token copy.
-      access="$(${pkgs.coreutils}/bin/printf '%s' "$resp" | ${pkgs.jq}/bin/jq --exit-status --raw-output '.access_token')"
-      new_refresh="$(${pkgs.coreutils}/bin/printf '%s' "$resp" | ${pkgs.jq}/bin/jq --exit-status --raw-output '.refresh_token')"
+      # Require BOTH fields before writing EITHER, so a malformed/empty response
+      # never overwrites the access token or truncates the sole refresh-token
+      # copy. `set -e` is ignored here (function called from a `||` list — see
+      # write_atomic), so these explicit checks are the real guard, not -e.
+      access="$(${pkgs.coreutils}/bin/printf '%s' "$resp" | ${pkgs.jq}/bin/jq --exit-status --raw-output '.access_token' || true)"
+      new_refresh="$(${pkgs.coreutils}/bin/printf '%s' "$resp" | ${pkgs.jq}/bin/jq --exit-status --raw-output '.refresh_token' || true)"
+      if [ -z "$access" ] || [ "$access" = "null" ] || [ -z "$new_refresh" ] || [ "$new_refresh" = "null" ]; then
+        echo "hermes-mail: $account response missing access/refresh token; leaving existing tokens untouched" >&2
+        return 1
+      fi
       ${pkgs.coreutils}/bin/printf '%s' "$access" | write_atomic "$workspace_root/$account/access-token" 0400
       ${pkgs.coreutils}/bin/printf '%s' "$new_refresh" | write_atomic "$refresh_file" 0600
     }
@@ -290,8 +314,11 @@ in
 
   systemd.services.hermes-mail-token = {
     description = "Refresh Hermes mail/calendar OAuth access tokens";
-    after = [ "agenix.service" ];
-    wants = [ "agenix.service" ];
+    # network-online.target so the OnBootSec=0 run does not race ahead of DNS:
+    # without it, the boot run fired before the resolver was up and curl failed
+    # with "Could not resolve host" (error 6).
+    after = [ "agenix.service" "network-online.target" ];
+    wants = [ "agenix.service" "network-online.target" ];
     serviceConfig = {
       Type = "oneshot";
       User = "hermes";
