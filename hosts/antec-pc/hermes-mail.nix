@@ -65,7 +65,11 @@ let
     hotmail = "hotmail@example.com";
   };
 
+  # Host path the broker writes to, and the path the agent sees it at inside the
+  # sandbox (hermes.nix mounts /var/lib/hermes/workspace -> /workspace). The
+  # manifest must advertise the CONTAINER path, since the agent reads it there.
   workspaceRoot = "/var/lib/hermes/workspace/.hermes-mail";
+  containerRoot = "/workspace/.hermes-mail";
   # Host-side mutable store for rotating refresh tokens (Microsoft only). Lives
   # outside the workspace mount so generated commands never see refresh tokens.
   refreshTokenDir = "/var/lib/hermes/oauth";
@@ -118,7 +122,7 @@ let
   manifest = pkgs.writeText "hermes-mail-manifest.json" (builtins.toJSON (
     lib.mapAttrs (name: acct: {
       inherit (acct) provider address scopes;
-      access_token = "${workspaceRoot}/${name}/access-token";
+      access_token = "${containerRoot}/${name}/access-token";
     }) accounts
   ));
 
