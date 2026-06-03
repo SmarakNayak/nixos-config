@@ -15,4 +15,12 @@ in {
   "telegram-bot-token.age".publicKeys = [ master ];
   "telegram-chat-id.age".publicKeys = [ master ];
   "antec-pc-wifi.env.age".publicKeys = [ master ];
+  # Hermes mail/calendar OAuth (see hosts/antec-pc/hermes-mail.nix). Google only:
+  # one shared client secret + a static refresh token per account. Microsoft's
+  # token rotates (90-day per-token window) so it is NOT in Agenix — it lives in
+  # a mutable host file (/var/lib/hermes/oauth/ms-hotmail.refresh).
+  "google-oauth-client-secret.age".publicKeys = [ master ];
+  "google-refresh-casual.age".publicKeys = [ master ];
+  "google-refresh-proper.age".publicKeys = [ master ];
+  "google-refresh-work.age".publicKeys = [ master ];
 }

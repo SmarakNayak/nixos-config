@@ -15,6 +15,7 @@ in
 {
   imports = [
     ./hermes-github-app.nix
+    ./hermes-mail.nix
   ];
 
   # Extend the service account created by the upstream Hermes module. Rootless
