@@ -37,12 +37,14 @@
 #   2. Azure: register an app for personal Microsoft accounts (`consumers`) as a
 #      PUBLIC client (no secret), delegated `Mail.Read` + `offline_access`. Put
 #      the client ID in `msClientId` below.
-#   3. Mint a refresh token once per account (helper: ./hermes-oauth-mint.py):
-#      - Google (loopback flow) → store each value + the client secret with Agenix:
-#          cd secrets && nix run github:ryantm/agenix -- -e <name>.age
-#      - Microsoft (device-code flow) → copy the printed token into the host
-#        file the broker reads (the helper prints the exact commands):
-#          /var/lib/hermes/oauth/ms-hotmail.refresh  (owner hermes, mode 0600)
+#   3. Mint + store the refresh tokens with ./hermes-oauth-mint.sh, which mints
+#      (via hermes-oauth-mint.py) AND stores in one step:
+#        bash hosts/antec-pc/hermes-oauth-mint.sh google casual   # + proper, work
+#        sudo bash hosts/antec-pc/hermes-oauth-mint.sh microsoft
+#      Google tokens land in secrets/*.age (agenix); the Microsoft token lands in
+#      /var/lib/hermes/oauth/ms-hotmail.refresh. The Google client secret must
+#      already be stored once: cd secrets && nix run github:ryantm/agenix -- \
+#        -e google-oauth-client-secret.age
 
 let
   # Public application identifiers — not secret (like githubAppId in
@@ -120,21 +122,32 @@ let
     }) accounts
   ));
 
-  # Loaded into the agent's system prompt (Hermes reads HERMES.md from the
-  # terminal cwd, which is /workspace). Teaches it how to use the tokens.
-  hermesMd = pkgs.writeText "HERMES.md" ''
+  # Usage + lifecycle doc. Written both to /workspace/HERMES.md (Hermes loads it
+  # into the system prompt from the terminal cwd) and to .hermes-mail/README.md
+  # (so it sits next to the tokens for anything that inspects that directory).
+  hermesMd = pkgs.writeText "hermes-mail-readme.md" ''
     # Mail & calendar access
 
     You have short-lived OAuth access tokens for the operator's email and
-    calendar accounts. They auto-refresh roughly hourly, so always re-read the
-    token file immediately before a request rather than caching its contents.
-
-    Account → token-file map is in `.hermes-mail/manifest.json`. Each entry's
-    `access_token` field is a file holding a bearer token. Use it as:
+    calendar accounts. The account → token-file map is in
+    `.hermes-mail/manifest.json`; each entry's `access_token` field is a file
+    holding a bearer token. Use it as:
 
         AUTH="Authorization: Bearer $(cat .hermes-mail/<account>/access-token)"
 
     Mail is READ-ONLY. Calendar (Google only) is read/write (events).
+
+    ## Token lifecycle — READ THIS BEFORE ASSUMING ANYTHING IS BROKEN
+    - These are SHORT-LIVED access tokens (~1 hour). A host-side service
+      refreshes them automatically every 45 minutes — you do not manage refresh.
+    - ALWAYS re-read the token file immediately before each request. Never cache
+      the token's value in a variable across calls; re-read it each time.
+    - The long-lived refresh tokens are deliberately NOT in this sandbox — they
+      live on the host and never appear here. You cannot and need not perform
+      token refresh yourself, and there is nothing to "fix" about that.
+    - A 401 almost always means you used a stale/cached value, or you hit the
+      brief window during a refresh. Just re-read the file and retry once before
+      concluding anything is wrong.
 
     ## Google accounts (google-casual, google-proper, google-work)
     - Read mail (read-only):
@@ -248,8 +261,10 @@ let
         "mint_microsoft ${lib.escapeShellArg name} || echo \"hermes-mail: ${name} refresh failed\" >&2"
     ) accounts)}
 
-    # Drop the account manifest and agent instructions alongside the tokens.
+    # Drop the account manifest and usage/lifecycle doc alongside the tokens,
+    # plus HERMES.md in the workspace root (loaded into the agent's prompt).
     ${pkgs.coreutils}/bin/install -m 0444 ${manifest} "$workspace_root/manifest.json"
+    ${pkgs.coreutils}/bin/install -m 0444 ${hermesMd} "$workspace_root/README.md"
     ${pkgs.coreutils}/bin/install -m 0444 ${hermesMd} /var/lib/hermes/workspace/HERMES.md
   '';
 in
