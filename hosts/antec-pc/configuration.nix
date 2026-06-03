@@ -18,6 +18,30 @@
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "antec-pc";
   networking.networkmanager.enable = true;
+  networking.networkmanager.ensureProfiles.environmentFiles = [
+    config.age.secrets.antec-pc-wifi.path
+  ];
+  networking.networkmanager.ensureProfiles.profiles."Eero 6+" = {
+    connection = {
+      id = "Eero 6+";
+      type = "wifi";
+      uuid = "aea9ead3-c99a-413b-808b-90d87953baba";
+      interface-name = "wlp2s0";
+      autoconnect = true;
+    };
+    wifi = {
+      mode = "infrastructure";
+      ssid = "Eero 6+";
+    };
+    wifi-security = {
+      key-mgmt = "wpa-psk";
+      psk = "$ANTEC_PC_WIFI_PSK";
+    };
+    ipv4.method = "auto";
+    ipv6.method = "auto";
+  };
+
+  age.secrets.antec-pc-wifi.file = ../../secrets/antec-pc-wifi.env.age;
 
   # Set your time zone.
   time.timeZone = "Australia/Sydney";

@@ -14,4 +14,5 @@ in {
   "smarak-agent-github-app.age".publicKeys = [ master ];
   "telegram-bot-token.age".publicKeys = [ master ];
   "telegram-chat-id.age".publicKeys = [ master ];
+  "antec-pc-wifi.env.age".publicKeys = [ master ];
 }
