@@ -23,8 +23,6 @@ in
   users.users.hermes.autoSubUidGidRange = true;
 
   # Decrypt the existing reusable raw key for the dedicated Hermes account.
-  # System-level Agenix is separate from Home Manager's Agenix instance.
-  age.identityPaths = [ "/home/miltu/.config/age/master.key" ];
   age.secrets.hermes-deepseek-api-key = {
     file = ../../secrets/deepseek-api-key.age;
     owner = "hermes";

@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ../../modules/caches.nix
+      ../../modules/tailscale-server.nix
       ./hermes.nix
     ];
 
@@ -41,8 +42,9 @@
     ipv6.method = "auto";
   };
 
+  # System-level Agenix is separate from Home Manager's Agenix instance.
+  age.identityPaths = [ "/home/miltu/.config/age/master.key" ];
   age.secrets.antec-pc-wifi.file = ../../secrets/antec-pc-wifi.env.age;
-
   # Set your time zone.
   time.timeZone = "Australia/Sydney";
 
@@ -180,7 +182,6 @@
     publish.enable = true;
     publish.addresses = true;
   };
-
   networking.firewall.allowedTCPPorts = [ 22 ];
 
   # Copy the NixOS configuration file and link it from the resulting system

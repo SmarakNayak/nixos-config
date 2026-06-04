@@ -12,6 +12,7 @@
       ../../modules/hyprland.nix
       ../../modules/caches.nix
       ../../modules/mdns.nix
+      ../../modules/tailscale-client.nix
     ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
