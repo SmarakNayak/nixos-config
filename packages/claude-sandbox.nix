@@ -10,6 +10,8 @@
 # --proc/--dev         minimal proc and dev filesystems required for programs to run
 # --tmpfs /tmp         fresh tmp to avoid leaks from other processes
 # --ro-bind /nix       actual binaries live here
+# --symlink /bin/sh    claude spawns statusline/hooks via posix_spawn('/bin/sh');
+#                      target is already inside the sandbox, this just names it
 # --ro-bind /etc       ssl certs, dns, tls etc (--tmpfs /etc/ssh to remove SSH config with readonly perms)
 # --ro-bind /run/current-system  symlinks to /nix/store binaries (needed for PATH)
 # --tmpfs $HOME        blank home - hides ssh keys, dotfiles, shell history, credentials
@@ -34,6 +36,7 @@ pkgs.writeShellScriptBin "claude-sandbox" ''
     --uid "$(id -u)" --gid "$(id -g)" \
     --proc /proc --dev /dev --tmpfs /tmp \
     --ro-bind /nix /nix \
+    --symlink /run/current-system/sw/bin/sh /bin/sh \
     --ro-bind /etc /etc --tmpfs /etc/ssh \
     --ro-bind-try /run/current-system /run/current-system \
     --tmpfs "$HOME" \

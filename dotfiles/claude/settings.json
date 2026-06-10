@@ -1,6 +1,10 @@
 {
   "model": "claude-opus-4-8",
   "alwaysThinkingEnabled": true,
+  "statusLine": {
+    "type": "command",
+    "command": "i=$(cat); d=$(printf \"%s\" \"$i\" | jq -r \".workspace.current_dir // .cwd\"); b=$(git -C \"$d\" branch --show-current 2>/dev/null); printf \"%s\" \"$i\" | jq -r --arg b \"$b\" '\"[\\(.model.display_name)] 📁 \\(.workspace.current_dir|split(\"/\")|last)\" + ($b|if .==\"\" then \"\" else \" | 🌿 \"+. end) + ([(.rate_limits.five_hour.used_percentage // empty | \"5h \\(floor)%\"), (.rate_limits.seven_day.used_percentage // empty | \"1w \\(floor)%\")] | if length>0 then \" | ⏳ \"+join(\" · \") else \"\" end)'"
+  },
   "attribution": {
     "commit": "",
     "pr": ""
