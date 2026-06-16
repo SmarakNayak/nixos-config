@@ -73,6 +73,7 @@ in
 
         # Expose only the dedicated persistent workspace to generated commands.
         docker_volumes = [
+          "hermes-nix:/nix"
           "/var/lib/hermes/workspace:/workspace"
         ];
 
@@ -87,6 +88,12 @@ in
         # memory and 51200 MB disk.
         container_memory = 2048;
         container_disk = 10240;
+
+        # Use fresh command containers so rootless Podman network namespaces
+        # cannot go stale across long-lived gateway uptime. The /workspace bind
+        # mount and named /nix volume keep useful state persistent.
+        container_persistent = false;
+        docker_persist_across_processes = false;
       };
 
       # Keep third-party gateway plugins disabled until explicitly reviewed.
