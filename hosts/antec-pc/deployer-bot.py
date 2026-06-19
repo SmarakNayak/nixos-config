@@ -1,0 +1,240 @@
+#!/usr/bin/env python3
+"""Telegram-driven nixos-rebuild for antec-pc.
+
+This is the *trusted* half of the Hermes deploy loop. Hermes can only open
+pull requests; it can never merge main (code-owner ruleset) and has no access
+to this bot's token. This service reads the proposed commit *directly from
+GitHub* by SHA and rebuilds that exact revision, so what you approve here is
+what runs - independent of anything Hermes claims.
+
+Pure stdlib, no third-party Telegram library, so it needs nothing in the Nix
+closure beyond python3 itself (referenced by absolute store path in the unit).
+"""
+
+import html
+import json
+import os
+import re
+import subprocess
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+
+TOKEN = open(os.environ["DEPLOYER_BOT_TOKEN_FILE"]).read().strip()
+# Id of your private chat with THIS deployer bot - the sole chat allowed to
+# drive deploys. (A private chat's id equals your Telegram user id, so it is the
+# same number as your Hermes chat, but it is the deployer bot's chat we honor.)
+CHAT_ID = open(os.environ["DEPLOYER_CHAT_ID_FILE"]).read().strip()
+REPO = os.environ.get("DEPLOYER_REPO", "SmarakNayak/nixos-config")
+ATTR = os.environ.get("DEPLOYER_ATTR", "antec-pc")
+BRANCH = os.environ.get("DEPLOYER_BRANCH", "main")
+
+API = "https://api.telegram.org/bot{}/{}"
+# A git object name: 7-40 lowercase hex chars. Anything else never reaches a
+# shell or flake ref, so a Telegram message cannot inject arguments.
+SHA_RE = re.compile(r"^[0-9a-f]{7,40}$")
+
+_deploying = False
+
+
+def api(method, **params):
+    url = API.format(TOKEN, method)
+    data = urllib.parse.urlencode(
+        {k: v for k, v in params.items() if v is not None}
+    ).encode()
+    try:
+        with urllib.request.urlopen(url, data=data, timeout=70) as r:
+            return json.load(r)
+    except urllib.error.HTTPError as e:
+        return json.load(e)
+    except Exception as e:  # noqa: BLE001 - keep the long-poll loop alive
+        return {"ok": False, "error": str(e)}
+
+
+def send(text, **kw):
+    return api("sendMessage", chat_id=CHAT_ID, text=text,
+               parse_mode="HTML", disable_web_page_preview="true", **kw)
+
+
+def authorized(update_part):
+    """Only the single allowlisted private chat may drive deploys."""
+    return str(update_part.get("chat", {}).get("id")) == CHAT_ID
+
+
+def resolve_head(ref):
+    """Resolve a branch name to its current SHA straight from GitHub."""
+    try:
+        out = subprocess.run(
+            ["git", "ls-remote", f"https://github.com/{REPO}.git", ref],
+            capture_output=True, text=True, timeout=30)
+    except Exception:
+        return None
+    if out.returncode != 0 or not out.stdout.strip():
+        return None
+    return out.stdout.split()[0]
+
+
+def commit_subject(sha):
+    """First line of the commit message, for display only."""
+    url = f"https://api.github.com/repos/{REPO}/commits/{sha}"
+    req = urllib.request.Request(
+        url, headers={"Accept": "application/vnd.github+json",
+                      "User-Agent": "antec-deployer"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            data = json.load(r)
+        return data["commit"]["message"].splitlines()[0]
+    except Exception:
+        return "(commit subject unavailable)"
+
+
+def offer_deploy(ref):
+    sha = ref if SHA_RE.match(ref) else resolve_head(ref)
+    if not sha:
+        send(f"Couldn't resolve <code>{html.escape(ref)}</code> on GitHub.")
+        return
+    subject = commit_subject(sha)
+    keyboard = {"inline_keyboard": [[
+        {"text": f"🚀 Deploy {sha[:7]}", "callback_data": f"deploy:{sha}"},
+        {"text": "✖ Cancel", "callback_data": "cancel"},
+    ]]}
+    send(
+        f"Deploy <b>{ATTR}</b> → <code>{sha[:7]}</code>\n"
+        f"{html.escape(subject)}\n\n"
+        f"Review the diff in the GitHub app, then confirm.",
+        reply_markup=json.dumps(keyboard),
+    )
+
+
+def do_deploy(sha):
+    global _deploying
+    if not SHA_RE.match(sha):
+        send("Refusing to deploy: SHA failed validation.")
+        return
+    if _deploying:
+        send("⏳ A deploy is already running. Ignoring.")
+        return
+    _deploying = True
+    try:
+        flake = f"github:{REPO}/{sha}#{ATTR}"
+        send(f"🚀 Building <code>{sha[:7]}</code>…\n<code>{flake}</code>")
+        proc = subprocess.run(
+            ["nixos-rebuild", "switch", "--flake", flake, "--refresh"],
+            capture_output=True, text=True)
+        if proc.returncode == 0:
+            send(f"✅ <b>{ATTR}</b> now running <code>{sha[:7]}</code>.")
+        else:
+            tail = html.escape((proc.stderr or proc.stdout)[-3000:])
+            send(
+                f"❌ Deploy of <code>{sha[:7]}</code> failed "
+                f"(exit {proc.returncode}). The running system is unchanged "
+                f"unless activation already started.\n<pre>{tail}</pre>")
+    finally:
+        _deploying = False
+
+
+def show_status():
+    rev = "unknown"
+    try:
+        rev = subprocess.run(
+            ["nixos-version", "--configuration-revision"],
+            capture_output=True, text=True, timeout=15).stdout.strip() or rev
+    except Exception:
+        pass
+    head = resolve_head(BRANCH)
+    head_line = f"<code>{head[:7]}</code>" if head else "(unreachable)"
+    behind = ""
+    if head and not rev.startswith(head[:7]) and SHA_RE.match(rev[:40] or ""):
+        behind = "  ⚠️ not the latest main"
+    send(
+        f"<b>{ATTR}</b> status\n"
+        f"running revision: <code>{html.escape(rev)}</code>\n"
+        f"{BRANCH} on GitHub: {head_line}{behind}")
+
+
+HELP = (
+    "<b>antec deployer</b>\n"
+    "/deploy — deploy current main (or <code>/deploy &lt;sha&gt;</code>)\n"
+    "/status — show the live revision vs main\n"
+    "/rollback — switch to the previous generation\n\n"
+    "Hermes opens PRs; only your merge (code-owner) lands on main. "
+    "This bot rebuilds the exact GitHub SHA you confirm."
+)
+
+
+def handle_message(msg):
+    if not authorized(msg):
+        return
+    text = (msg.get("text") or "").strip()
+    cmd = text.split()[0] if text else ""
+    if cmd.startswith("/deploy"):
+        parts = text.split()
+        offer_deploy(parts[1] if len(parts) > 1 else BRANCH)
+    elif cmd.startswith("/status"):
+        show_status()
+    elif cmd.startswith("/rollback"):
+        keyboard = {"inline_keyboard": [[
+            {"text": "↩ Roll back", "callback_data": "rollback"},
+            {"text": "✖ Cancel", "callback_data": "cancel"},
+        ]]}
+        send("Roll back to the previous generation?",
+             reply_markup=json.dumps(keyboard))
+    elif cmd in ("/start", "/help"):
+        send(HELP)
+
+
+def do_rollback():
+    global _deploying
+    if _deploying:
+        send("⏳ A deploy is running. Ignoring rollback.")
+        return
+    _deploying = True
+    try:
+        send("↩ Rolling back to the previous generation…")
+        proc = subprocess.run(
+            ["nixos-rebuild", "switch", "--rollback"],
+            capture_output=True, text=True)
+        if proc.returncode == 0:
+            send("✅ Rolled back.")
+        else:
+            tail = html.escape((proc.stderr or proc.stdout)[-2000:])
+            send(f"❌ Rollback failed (exit {proc.returncode}).\n<pre>{tail}</pre>")
+    finally:
+        _deploying = False
+
+
+def handle_callback(cb):
+    api("answerCallbackQuery", callback_query_id=cb["id"])
+    if not authorized(cb.get("message", {})):
+        return
+    data = cb.get("data", "")
+    if data.startswith("deploy:"):
+        do_deploy(data.split(":", 1)[1])
+    elif data == "rollback":
+        do_rollback()
+    elif data == "cancel":
+        send("Cancelled.")
+
+
+def main():
+    send("🤖 Deployer online. /help for commands.")
+    offset = None
+    while True:
+        resp = api("getUpdates", offset=offset, timeout=60)
+        if not resp.get("ok"):
+            time.sleep(5)
+            continue
+        for upd in resp["result"]:
+            offset = upd["update_id"] + 1
+            try:
+                if "message" in upd:
+                    handle_message(upd["message"])
+                elif "callback_query" in upd:
+                    handle_callback(upd["callback_query"])
+            except Exception as e:  # noqa: BLE001 - never die on one bad update
+                send(f"⚠️ Internal error: <code>{html.escape(str(e))}</code>")
+
+
+if __name__ == "__main__":
+    main()

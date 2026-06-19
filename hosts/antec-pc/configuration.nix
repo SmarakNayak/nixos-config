@@ -11,6 +11,7 @@
       ../../modules/caches.nix
       ../../modules/tailscale-server.nix
       ./hermes.nix
+      ./deployer.nix
     ];
 
   # Use the systemd-boot EFI boot loader.

@@ -15,6 +15,8 @@ in {
   "smarak-agent-github-app.age".publicKeys = [ master ];
   "telegram-bot-token.age".publicKeys = [ master ];
   "telegram-chat-id.age".publicKeys = [ master ];
+  "deployer-telegram-bot-token.age".publicKeys = [ master ];
+  "deployer-telegram-chat-id.age".publicKeys = [ master ];
   "antec-pc-wifi.env.age".publicKeys = [ master ];
   # Hermes mail/calendar OAuth (see hosts/antec-pc/hermes-mail.nix). Google only:
   # one shared client secret + a static refresh token per account. Microsoft's
