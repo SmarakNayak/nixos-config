@@ -1,0 +1,4 @@
+# Every change to main requires review from the code owner.
+# CODEOWNERS only accepts users/teams — never GitHub Apps — so the Hermes
+# App can open PRs but can never satisfy this approval. Only @SmarakNayak can.
+* @SmarakNayak
