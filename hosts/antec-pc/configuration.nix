@@ -2,7 +2,7 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports =
@@ -184,6 +184,14 @@
     publish.addresses = true;
   };
   networking.firewall.allowedTCPPorts = [ 22 ];
+
+  # fwupd's hourly metadata refresh fails persistently on this host ("Failed to
+  # obtain auth" after the LVFS download completes - a polkit issue on unstable),
+  # so it provides no working firmware data anyway. Worse, when its timer fires
+  # during a nixos-rebuild switch the failed unit makes switch-to-configuration
+  # exit 4, which the deploy bot would report as a failed deploy. Unhook the
+  # timer; firmware metadata can still be refreshed by hand with `fwupdmgr refresh`.
+  systemd.timers.fwupd-refresh.wantedBy = lib.mkForce [ ];
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
