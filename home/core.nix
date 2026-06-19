@@ -324,24 +324,32 @@ in
     path = "${config.home.homeDirectory}/.config/smarak-agent/smarak-agent-github-app.pem";
     mode = "600";
   };
+  # symlink = false makes agenix write the decrypted key as a real file at
+  # `path` instead of a symlink into $XDG_RUNTIME_DIR/agenix. The bubblewrap
+  # sandboxes bind the config dir but not the runtime secrets dir, so a symlink
+  # would dangle inside the sandbox; a real file binds through cleanly.
   age.secrets.deepseek-api-key = {
     file = ../secrets/deepseek-api-key.age;
     path = "${config.home.homeDirectory}/.config/opencode/deepseek-api-key";
+    symlink = false;
   };
   age.secrets.zai-api-key = {
     file = ../secrets/zai-api-key.age;
     path = "${config.home.homeDirectory}/.config/opencode/zai-api-key";
     mode = "600";
+    symlink = false;
   };
   age.secrets.pi-deepseek-api-key = {
     file = ../secrets/deepseek-api-key.age;
     path = "${config.home.homeDirectory}/.pi/agent/deepseek-api-key";
     mode = "600";
+    symlink = false;
   };
   age.secrets.pi-zai-api-key = {
     file = ../secrets/zai-api-key.age;
     path = "${config.home.homeDirectory}/.pi/agent/zai-api-key";
     mode = "600";
+    symlink = false;
   };
 
   home.file.".claude/settings.json".source = ../dotfiles/claude/settings.json;
