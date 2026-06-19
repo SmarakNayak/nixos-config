@@ -4,6 +4,7 @@ let
   claude-sandbox = import ../packages/claude-sandbox.nix { inherit pkgs; };
   opencode-sandbox = import ../packages/opencode-sandbox.nix { inherit pkgs; };
   codex-sandbox = import ../packages/codex-sandbox.nix { inherit pkgs; };
+  pi-sandbox = import ../packages/pi-sandbox.nix { inherit pkgs; };
 in
 {
   imports = [
@@ -23,6 +24,8 @@ in
     llm-agents.opencode
     codex-sandbox
     llm-agents.codex
+    pi-sandbox
+    llm-agents.pi
     llm-agents.gemini-cli
     speedtest-go
     procs
@@ -325,10 +328,60 @@ in
     file = ../secrets/deepseek-api-key.age;
     path = "${config.home.homeDirectory}/.config/opencode/deepseek-api-key";
   };
+  age.secrets.zai-api-key = {
+    file = ../secrets/zai-api-key.age;
+    path = "${config.home.homeDirectory}/.config/opencode/zai-api-key";
+    mode = "600";
+  };
+  age.secrets.pi-deepseek-api-key = {
+    file = ../secrets/deepseek-api-key.age;
+    path = "${config.home.homeDirectory}/.pi/agent/deepseek-api-key";
+    mode = "600";
+  };
+  age.secrets.pi-zai-api-key = {
+    file = ../secrets/zai-api-key.age;
+    path = "${config.home.homeDirectory}/.pi/agent/zai-api-key";
+    mode = "600";
+  };
 
   home.file.".claude/settings.json".source = ../dotfiles/claude/settings.json;
+  home.file.".pi/agent/auth.json".text = builtins.toJSON {
+    deepseek = {
+      type = "api_key";
+      key = "!cat ${config.age.secrets.pi-deepseek-api-key.path}";
+    };
+    zai = {
+      type = "api_key";
+      key = "!cat ${config.age.secrets.pi-zai-api-key.path}";
+    };
+  };
   xdg.configFile."opencode/opencode.json".text = builtins.toJSON {
     "$schema" = "https://opencode.ai/config.json";
     provider.deepseek.options.apiKey = "{file:${config.age.secrets.deepseek-api-key.path}}";
+    provider.zai.options.apiKey = "{file:${config.age.secrets.zai-api-key.path}}";
+    provider.zai.models."glm-5.2" = {
+      name = "GLM-5.2";
+      family = "glm";
+      attachment = false;
+      reasoning = true;
+      tool_call = true;
+      interleaved.field = "reasoning_content";
+      temperature = true;
+      release_date = "2026-06-13";
+      modalities = {
+        input = [ "text" ];
+        output = [ "text" ];
+      };
+      limit = {
+        context = 1000000;
+        output = 131072;
+      };
+      cost = {
+        input = 1.4;
+        output = 4.4;
+        cache_read = 0.26;
+        cache_write = 0;
+      };
+    };
   };
 }

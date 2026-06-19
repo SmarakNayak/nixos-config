@@ -29,6 +29,12 @@ in
     group = "hermes";
     mode = "0400";
   };
+  age.secrets.hermes-zai-api-key = {
+    file = ../../secrets/zai-api-key.age;
+    owner = "hermes";
+    group = "hermes";
+    mode = "0400";
+  };
   age.secrets.hermes-telegram-bot-token = {
     file = ../../secrets/telegram-bot-token.age;
     owner = "hermes";
@@ -58,8 +64,14 @@ in
     ];
 
     settings = {
-      # Use DeepSeek V4 Pro through direct DEEPSEEK_API_KEY access.
-      model = "deepseek-v4-pro";
+      # Use GLM by default, with DeepSeek as Hermes' automatic provider fallback.
+      model = "glm-5.2";
+      fallback_providers = [
+        {
+          provider = "deepseek";
+          model = "deepseek-v4-pro";
+        }
+      ];
 
       terminal = {
         # Upstream defaults to local host execution. Use the Docker-compatible
@@ -114,15 +126,18 @@ in
       umask 077
       env_file=/var/lib/hermes/.hermes/.env
       deepseek_secret_file=${config.age.secrets.hermes-deepseek-api-key.path}
+      zai_secret_file=${config.age.secrets.hermes-zai-api-key.path}
       telegram_secret_file=${config.age.secrets.hermes-telegram-bot-token.path}
       telegram_chat_id_file=${config.age.secrets.hermes-telegram-chat-id.path}
 
       test -r "$deepseek_secret_file"
+      test -r "$zai_secret_file"
       test -r "$telegram_secret_file"
       test -r "$telegram_chat_id_file"
       : > "$env_file"
       chmod 0600 "$env_file"
       printf 'DEEPSEEK_API_KEY=%s\n' "$(cat "$deepseek_secret_file")" >> "$env_file"
+      printf 'GLM_API_KEY=%s\n' "$(cat "$zai_secret_file")" >> "$env_file"
       printf 'TELEGRAM_BOT_TOKEN=%s\n' "$(cat "$telegram_secret_file")" >> "$env_file"
       # The Telegram chat Hermes treats as its home channel doubles as the
       # allowlist of users permitted to talk to the bot. For a private chat the
@@ -152,6 +167,7 @@ in
     # dotenv file. Unrelated rebuilds do not restart the service.
     restartTriggers = [
       config.age.secrets.hermes-deepseek-api-key.file
+      config.age.secrets.hermes-zai-api-key.file
       config.age.secrets.hermes-telegram-bot-token.file
       config.age.secrets.hermes-telegram-chat-id.file
     ];

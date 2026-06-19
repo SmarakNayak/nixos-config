@@ -11,6 +11,7 @@ in {
   "ssh-key-hetzner.age".publicKeys = [ master ];
   "antec-admin-ssh-key.age".publicKeys = [ master ];
   "deepseek-api-key.age".publicKeys = [ master ];
+  "zai-api-key.age".publicKeys = [ master ];
   "smarak-agent-github-app.age".publicKeys = [ master ];
   "telegram-bot-token.age".publicKeys = [ master ];
   "telegram-chat-id.age".publicKeys = [ master ];
