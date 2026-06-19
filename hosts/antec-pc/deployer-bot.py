@@ -22,6 +22,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from datetime import datetime, timezone
 
 TOKEN = open(os.environ["DEPLOYER_BOT_TOKEN_FILE"]).read().strip()
 # Id of your private chat with THIS deployer bot - the sole chat allowed to
@@ -36,6 +37,7 @@ API = "https://api.telegram.org/bot{}/{}"
 TELEGRAM_API_HOST = "api.telegram.org"
 HTTP_TIMEOUT = 10
 POLL_TIMEOUT = 60
+PR_POLL_SECONDS = 60
 NIXOS_VERSION = "/run/current-system/sw/bin/nixos-version"
 # A git object name: 7-40 lowercase hex chars. Anything else never reaches a
 # shell or flake ref, so a Telegram message cannot inject arguments.
@@ -123,6 +125,18 @@ def commit_subject(sha):
         return "(commit subject unavailable)"
 
 
+def github_json(path, query=None):
+    params = urllib.parse.urlencode(query or {})
+    url = f"https://api.github.com/repos/{REPO}/{path}"
+    if params:
+        url = f"{url}?{params}"
+    req = urllib.request.Request(
+        url, headers={"Accept": "application/vnd.github+json",
+                      "User-Agent": "antec-deployer"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.load(r)
+
+
 def commit_url(sha):
     return f"https://github.com/{REPO}/commit/{sha}"
 
@@ -154,6 +168,61 @@ def revision_link(rev):
     return commit_link(rev) if SHA_RE.match(rev[:40] or "") else (
         f"<code>{html.escape(rev)}</code>"
     )
+
+
+def pr_link(pr):
+    return f'<a href="{pr["html_url"]}">#{pr["number"]}</a>'
+
+
+def open_main_prs():
+    prs = github_json("pulls", {
+        "state": "open",
+        "base": BRANCH,
+        "per_page": 100,
+        "sort": "created",
+        "direction": "desc",
+    })
+    return prs if isinstance(prs, list) else []
+
+
+def pr_created_at(pr):
+    created = pr.get("created_at", "")
+    try:
+        return datetime.fromisoformat(created.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def notify_new_pr(pr):
+    user = pr.get("user", {}).get("login", "unknown")
+    title = html.escape(pr.get("title") or "(untitled)")
+    head_sha = pr.get("head", {}).get("sha", "")
+    head_line = commit_link(head_sha) if SHA_RE.match(head_sha) else (
+        f"<code>{html.escape(head_sha or 'unknown')}</code>"
+    )
+    send(
+        f"New PR to <b>{BRANCH}</b>: {pr_link(pr)} {title}\n"
+        f"author: <code>{html.escape(user)}</code>\n"
+        f"head: {head_line}")
+
+
+def poll_prs():
+    last_check = datetime.now(timezone.utc)
+    log(f"PR polling started from {last_check.isoformat()}")
+    while True:
+        time.sleep(PR_POLL_SECONDS)
+        this_check = datetime.now(timezone.utc)
+        try:
+            prs = open_main_prs()
+            for pr in sorted(prs, key=lambda item: item.get("number", 0)):
+                created = pr_created_at(pr)
+                if created is None or created <= last_check:
+                    continue
+                notify_new_pr(pr)
+                log(f"notified PR #{pr['number']}")
+            last_check = this_check
+        except Exception as e:
+            log(f"PR poll failed: {e}")
 
 
 def restart_self_soon():
@@ -351,6 +420,7 @@ def main():
     offset = startup_offset()
     send("🤖 Deployer online. /help for commands.")
     log(f"polling started offset={offset}")
+    start_worker(poll_prs)
     while True:
         resp = api(
             "getUpdates",
