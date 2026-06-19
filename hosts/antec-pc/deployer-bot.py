@@ -15,7 +15,9 @@ import html
 import json
 import os
 import re
+import socket
 import subprocess
+import threading
 import time
 import urllib.error
 import urllib.parse
@@ -31,24 +33,55 @@ ATTR = os.environ.get("DEPLOYER_ATTR", "antec-pc")
 BRANCH = os.environ.get("DEPLOYER_BRANCH", "main")
 
 API = "https://api.telegram.org/bot{}/{}"
+TELEGRAM_API_HOST = "api.telegram.org"
+HTTP_TIMEOUT = 10
+POLL_TIMEOUT = 60
 # A git object name: 7-40 lowercase hex chars. Anything else never reaches a
 # shell or flake ref, so a Telegram message cannot inject arguments.
 SHA_RE = re.compile(r"^[0-9a-f]{7,40}$")
 
 _deploying = False
+_deploy_lock = threading.Lock()
+_getaddrinfo = socket.getaddrinfo
 
 
-def api(method, **params):
+def log(message):
+    print(time.strftime("%Y-%m-%dT%H:%M:%S%z"), message, flush=True)
+
+
+def telegram_ipv4_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
+    if host == TELEGRAM_API_HOST:
+        family = socket.AF_INET
+    return _getaddrinfo(host, port, family, type, proto, flags)
+
+
+socket.getaddrinfo = telegram_ipv4_getaddrinfo
+
+
+def api(method, http_timeout=HTTP_TIMEOUT, log_empty_updates=False, **params):
     url = API.format(TOKEN, method)
     data = urllib.parse.urlencode(
         {k: v for k, v in params.items() if v is not None}
     ).encode()
+    start = time.monotonic()
     try:
-        with urllib.request.urlopen(url, data=data, timeout=70) as r:
-            return json.load(r)
+        with urllib.request.urlopen(url, data=data, timeout=http_timeout) as r:
+            resp = json.load(r)
+            elapsed = time.monotonic() - start
+            if method != "getUpdates" or resp.get("result") or log_empty_updates:
+                log(f"telegram {method} ok in {elapsed:.3f}s")
+            return resp
     except urllib.error.HTTPError as e:
-        return json.load(e)
+        elapsed = time.monotonic() - start
+        try:
+            resp = json.load(e)
+        except Exception:
+            resp = {"ok": False, "error": str(e)}
+        log(f"telegram {method} http-error in {elapsed:.3f}s: {resp}")
+        return resp
     except Exception as e:  # noqa: BLE001 - keep the long-poll loop alive
+        elapsed = time.monotonic() - start
+        log(f"telegram {method} error in {elapsed:.3f}s: {e}")
         return {"ok": False, "error": str(e)}
 
 
@@ -113,10 +146,11 @@ def do_deploy(sha):
     if not SHA_RE.match(sha):
         send("Refusing to deploy: SHA failed validation.")
         return
-    if _deploying:
-        send("⏳ A deploy is already running. Ignoring.")
-        return
-    _deploying = True
+    with _deploy_lock:
+        if _deploying:
+            send("⏳ A deploy is already running. Ignoring.")
+            return
+        _deploying = True
     try:
         flake = f"github:{REPO}/{sha}#{ATTR}"
         send(f"🚀 Building <code>{sha[:7]}</code>…\n<code>{flake}</code>")
@@ -132,7 +166,8 @@ def do_deploy(sha):
                 f"(exit {proc.returncode}). The running system is unchanged "
                 f"unless activation already started.\n<pre>{tail}</pre>")
     finally:
-        _deploying = False
+        with _deploy_lock:
+            _deploying = False
 
 
 def show_status():
@@ -165,15 +200,20 @@ HELP = (
 
 
 def handle_message(msg):
-    if not authorized(msg):
-        return
+    chat_id = msg.get("chat", {}).get("id")
     text = (msg.get("text") or "").strip()
     cmd = text.split()[0] if text else ""
+    msg_date = msg.get("date")
+    age = f" age={time.time() - msg_date:.1f}s" if msg_date else ""
+    log(f"message chat={chat_id} cmd={cmd or '(none)'}{age}")
+    if not authorized(msg):
+        log(f"unauthorized message ignored chat={chat_id}")
+        return
     if cmd.startswith("/deploy"):
         parts = text.split()
-        offer_deploy(parts[1] if len(parts) > 1 else BRANCH)
+        start_worker(offer_deploy, parts[1] if len(parts) > 1 else BRANCH)
     elif cmd.startswith("/status"):
-        show_status()
+        start_worker(show_status)
     elif cmd.startswith("/rollback"):
         keyboard = {"inline_keyboard": [[
             {"text": "↩ Roll back", "callback_data": "rollback"},
@@ -187,10 +227,11 @@ def handle_message(msg):
 
 def do_rollback():
     global _deploying
-    if _deploying:
-        send("⏳ A deploy is running. Ignoring rollback.")
-        return
-    _deploying = True
+    with _deploy_lock:
+        if _deploying:
+            send("⏳ A deploy is running. Ignoring rollback.")
+            return
+        _deploying = True
     try:
         send("↩ Rolling back to the previous generation…")
         proc = subprocess.run(
@@ -202,7 +243,12 @@ def do_rollback():
             tail = html.escape((proc.stderr or proc.stdout)[-2000:])
             send(f"❌ Rollback failed (exit {proc.returncode}).\n<pre>{tail}</pre>")
     finally:
-        _deploying = False
+        with _deploy_lock:
+            _deploying = False
+
+
+def start_worker(target, *args):
+    threading.Thread(target=target, args=args, daemon=True).start()
 
 
 def clear_keyboard(cb):
@@ -216,29 +262,51 @@ def clear_keyboard(cb):
 
 
 def handle_callback(cb):
+    log(f"callback data={cb.get('data', '')}")
     api("answerCallbackQuery", callback_query_id=cb["id"])
     if not authorized(cb.get("message", {})):
+        log("unauthorized callback ignored")
         return
     # Remove the keyboard immediately so the same offer can't be actioned twice
     # (e.g. tapping Deploy after Cancel).
     clear_keyboard(cb)
     data = cb.get("data", "")
     if data.startswith("deploy:"):
-        do_deploy(data.split(":", 1)[1])
+        start_worker(do_deploy, data.split(":", 1)[1])
     elif data == "rollback":
-        do_rollback()
+        start_worker(do_rollback)
     elif data == "cancel":
         send("Cancelled.")
 
 
+def startup_offset():
+    """Skip commands queued while the bot was offline or restarting."""
+    resp = api("getUpdates", http_timeout=HTTP_TIMEOUT, timeout=0)
+    if not resp.get("ok") or not resp.get("result"):
+        log("startup found no queued updates")
+        return None
+    offset = resp["result"][-1]["update_id"] + 1
+    log(f"startup skipped {len(resp['result'])} queued updates; offset={offset}")
+    return offset
+
+
 def main():
+    offset = startup_offset()
     send("🤖 Deployer online. /help for commands.")
-    offset = None
+    log(f"polling started offset={offset}")
     while True:
-        resp = api("getUpdates", offset=offset, timeout=60)
+        resp = api(
+            "getUpdates",
+            http_timeout=POLL_TIMEOUT + 5,
+            log_empty_updates=True,
+            offset=offset,
+            timeout=POLL_TIMEOUT,
+        )
         if not resp.get("ok"):
             time.sleep(5)
             continue
+        if resp["result"]:
+            log(f"received {len(resp['result'])} update(s)")
         for upd in resp["result"]:
             offset = upd["update_id"] + 1
             try:
