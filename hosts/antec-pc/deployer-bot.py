@@ -99,10 +99,11 @@ def offer_deploy(ref):
         {"text": f"🚀 Deploy {sha[:7]}", "callback_data": f"deploy:{sha}"},
         {"text": "✖ Cancel", "callback_data": "cancel"},
     ]]}
+    url = f"https://github.com/{REPO}/commit/{sha}"
     send(
         f"Deploy <b>{ATTR}</b> → <code>{sha[:7]}</code>\n"
         f"{html.escape(subject)}\n\n"
-        f"Review the diff in the GitHub app, then confirm.",
+        f'<a href="{url}">Review the diff on GitHub</a>, then confirm.',
         reply_markup=json.dumps(keyboard),
     )
 
@@ -204,10 +205,23 @@ def do_rollback():
         _deploying = False
 
 
+def clear_keyboard(cb):
+    """Drop the inline buttons from the message so a choice can't be re-tapped."""
+    msg = cb.get("message", {})
+    chat = msg.get("chat", {}).get("id")
+    mid = msg.get("message_id")
+    if chat is not None and mid is not None:
+        api("editMessageReplyMarkup", chat_id=chat, message_id=mid,
+            reply_markup=json.dumps({"inline_keyboard": []}))
+
+
 def handle_callback(cb):
     api("answerCallbackQuery", callback_query_id=cb["id"])
     if not authorized(cb.get("message", {})):
         return
+    # Remove the keyboard immediately so the same offer can't be actioned twice
+    # (e.g. tapping Deploy after Cancel).
+    clear_keyboard(cb)
     data = cb.get("data", "")
     if data.startswith("deploy:"):
         do_deploy(data.split(":", 1)[1])

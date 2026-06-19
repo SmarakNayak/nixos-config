@@ -41,12 +41,16 @@ in
     wants = [ "network-online.target" ];
     wantedBy = [ "multi-user.target" ];
 
-    # nixos-rebuild, nix, and git plus the activation toolchain on PATH.
+    # Everything as packages, never bare path strings: NixOS feeds `path`
+    # through makeBinPath, which appends /bin to each entry - so a string like
+    # "/run/current-system/sw/bin" becomes ".../bin/bin" and nixos-rebuild is
+    # never found. Use the built derivations instead.
     path = [
-      "/run/current-system/sw/bin"
-      "/run/wrappers/bin"
-      pkgs.git
-      pkgs.nix
+      config.system.build.nixos-rebuild  # the nixos-rebuild command itself
+      config.nix.package                 # nix
+      pkgs.git                           # flake fetch from GitHub
+      pkgs.coreutils
+      pkgs.systemd                       # nixos-rebuild drives the switch via systemd-run
     ];
 
     environment = {
