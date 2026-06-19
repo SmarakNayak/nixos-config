@@ -146,6 +146,25 @@ def revision_link(rev):
     )
 
 
+def restart_self_soon():
+    try:
+        subprocess.Popen(
+            [
+                "systemd-run",
+                "--unit=deployer-self-restart",
+                "--collect",
+                "--on-active=2s",
+                "systemctl",
+                "restart",
+                "deployer.service",
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except Exception as e:
+        log(f"failed to schedule deployer restart: {e}")
+
+
 def offer_deploy(ref):
     sha = ref if SHA_RE.match(ref) else resolve_head(ref)
     if not sha:
@@ -182,6 +201,7 @@ def do_deploy(sha):
             capture_output=True, text=True)
         if proc.returncode == 0:
             send(f"✅ <b>{ATTR}</b> now running {commit_link(sha)}.")
+            restart_self_soon()
         else:
             tail = html.escape((proc.stderr or proc.stdout)[-3000:])
             send(
@@ -259,6 +279,7 @@ def do_rollback():
             capture_output=True, text=True)
         if proc.returncode == 0:
             send(f"✅ Rolled back. Now running {revision_link(running_revision())}.")
+            restart_self_soon()
         else:
             tail = html.escape((proc.stderr or proc.stdout)[-2000:])
             send(f"❌ Rollback failed (exit {proc.returncode}).\n<pre>{tail}</pre>")

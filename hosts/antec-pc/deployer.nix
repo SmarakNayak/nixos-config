@@ -40,6 +40,7 @@ in
     after = [ "network-online.target" ];
     wants = [ "network-online.target" ];
     wantedBy = [ "multi-user.target" ];
+    restartIfChanged = false;
 
     # Everything as packages, never bare path strings: NixOS feeds `path`
     # through makeBinPath, which appends /bin to each entry - so a string like
