@@ -200,7 +200,10 @@ def do_deploy(sha):
             ["nixos-rebuild", "switch", "--flake", flake, "--refresh"],
             capture_output=True, text=True)
         if proc.returncode == 0:
-            send(f"✅ <b>{ATTR}</b> now running {commit_link(sha)}.")
+            send(
+                f"✅ <b>{ATTR}</b> now running {commit_link(sha)}.\n"
+                "Restarting deployer now."
+            )
             restart_self_soon()
         else:
             tail = html.escape((proc.stderr or proc.stdout)[-3000:])
@@ -278,7 +281,10 @@ def do_rollback():
             ["nixos-rebuild", "switch", "--rollback", "--no-reexec"],
             capture_output=True, text=True)
         if proc.returncode == 0:
-            send(f"✅ Rolled back. Now running {revision_link(running_revision())}.")
+            send(
+                f"✅ Rolled back. Now running {revision_link(running_revision())}.\n"
+                "Restarting deployer now."
+            )
             restart_self_soon()
         else:
             tail = html.escape((proc.stderr or proc.stdout)[-2000:])
