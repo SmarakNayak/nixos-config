@@ -36,6 +36,7 @@ API = "https://api.telegram.org/bot{}/{}"
 TELEGRAM_API_HOST = "api.telegram.org"
 HTTP_TIMEOUT = 10
 POLL_TIMEOUT = 60
+NIXOS_VERSION = "/run/current-system/sw/bin/nixos-version"
 # A git object name: 7-40 lowercase hex chars. Anything else never reaches a
 # shell or flake ref, so a Telegram message cannot inject arguments.
 SHA_RE = re.compile(r"^[0-9a-f]{7,40}$")
@@ -132,12 +133,21 @@ def commit_link(sha):
 
 def running_revision():
     try:
-        rev = subprocess.run(
-            ["nixos-version", "--configuration-revision"],
-            capture_output=True, text=True, timeout=15).stdout.strip()
-        return rev or "unknown"
-    except Exception:
+        proc = subprocess.run(
+            [NIXOS_VERSION, "--configuration-revision"],
+            capture_output=True, text=True, timeout=15)
+        if proc.returncode == 0 and proc.stdout.strip():
+            rev = proc.stdout.strip()
+            log(f"running revision: {rev}")
+            return rev
+        log(
+            "nixos-version failed: "
+            f"exit={proc.returncode} stderr={proc.stderr.strip()!r}"
+        )
+    except Exception as e:
+        log(f"nixos-version error: {e}")
         return "unknown"
+    return "unknown"
 
 
 def revision_link(rev):
