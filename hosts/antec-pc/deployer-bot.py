@@ -122,6 +122,30 @@ def commit_subject(sha):
         return "(commit subject unavailable)"
 
 
+def commit_url(sha):
+    return f"https://github.com/{REPO}/commit/{sha}"
+
+
+def commit_link(sha):
+    return f'<a href="{commit_url(sha)}">{sha[:7]}</a>'
+
+
+def running_revision():
+    try:
+        rev = subprocess.run(
+            ["nixos-version", "--configuration-revision"],
+            capture_output=True, text=True, timeout=15).stdout.strip()
+        return rev or "unknown"
+    except Exception:
+        return "unknown"
+
+
+def revision_link(rev):
+    return commit_link(rev) if SHA_RE.match(rev[:40] or "") else (
+        f"<code>{html.escape(rev)}</code>"
+    )
+
+
 def offer_deploy(ref):
     sha = ref if SHA_RE.match(ref) else resolve_head(ref)
     if not sha:
@@ -132,11 +156,10 @@ def offer_deploy(ref):
         {"text": f"🚀 Deploy {sha[:7]}", "callback_data": f"deploy:{sha}"},
         {"text": "✖ Cancel", "callback_data": "cancel"},
     ]]}
-    url = f"https://github.com/{REPO}/commit/{sha}"
     send(
-        f"Deploy <b>{ATTR}</b> → <code>{sha[:7]}</code>\n"
+        f"Deploy <b>{ATTR}</b> → {commit_link(sha)}\n"
         f"{html.escape(subject)}\n\n"
-        f'<a href="{url}">Review the diff on GitHub</a>, then confirm.',
+        f'<a href="{commit_url(sha)}">Review the diff on GitHub</a>, then confirm.',
         reply_markup=json.dumps(keyboard),
     )
 
@@ -153,16 +176,16 @@ def do_deploy(sha):
         _deploying = True
     try:
         flake = f"github:{REPO}/{sha}#{ATTR}"
-        send(f"🚀 Building <code>{sha[:7]}</code>…\n<code>{flake}</code>")
+        send(f"🚀 Building {commit_link(sha)}…\n<code>{flake}</code>")
         proc = subprocess.run(
             ["nixos-rebuild", "switch", "--flake", flake, "--refresh"],
             capture_output=True, text=True)
         if proc.returncode == 0:
-            send(f"✅ <b>{ATTR}</b> now running <code>{sha[:7]}</code>.")
+            send(f"✅ <b>{ATTR}</b> now running {commit_link(sha)}.")
         else:
             tail = html.escape((proc.stderr or proc.stdout)[-3000:])
             send(
-                f"❌ Deploy of <code>{sha[:7]}</code> failed "
+                f"❌ Deploy of {commit_link(sha)} failed "
                 f"(exit {proc.returncode}). The running system is unchanged "
                 f"unless activation already started.\n<pre>{tail}</pre>")
     finally:
@@ -171,21 +194,15 @@ def do_deploy(sha):
 
 
 def show_status():
-    rev = "unknown"
-    try:
-        rev = subprocess.run(
-            ["nixos-version", "--configuration-revision"],
-            capture_output=True, text=True, timeout=15).stdout.strip() or rev
-    except Exception:
-        pass
+    rev = running_revision()
     head = resolve_head(BRANCH)
-    head_line = f"<code>{head[:7]}</code>" if head else "(unreachable)"
+    head_line = commit_link(head) if head else "(unreachable)"
     behind = ""
     if head and not rev.startswith(head[:7]) and SHA_RE.match(rev[:40] or ""):
         behind = "  ⚠️ not the latest main"
     send(
         f"<b>{ATTR}</b> status\n"
-        f"running revision: <code>{html.escape(rev)}</code>\n"
+        f"running revision: {revision_link(rev)}\n"
         f"{BRANCH} on GitHub: {head_line}{behind}")
 
 
@@ -234,11 +251,14 @@ def do_rollback():
         _deploying = True
     try:
         send("↩ Rolling back to the previous generation…")
+        # Avoid re-execing a freshly built nixos-rebuild from the local flake:
+        # root may not own/read the user's checkout, and rollback only needs the
+        # existing system profile.
         proc = subprocess.run(
-            ["nixos-rebuild", "switch", "--rollback"],
+            ["nixos-rebuild", "switch", "--rollback", "--no-reexec"],
             capture_output=True, text=True)
         if proc.returncode == 0:
-            send("✅ Rolled back.")
+            send(f"✅ Rolled back. Now running {revision_link(running_revision())}.")
         else:
             tail = html.escape((proc.stderr or proc.stdout)[-2000:])
             send(f"❌ Rollback failed (exit {proc.returncode}).\n<pre>{tail}</pre>")
