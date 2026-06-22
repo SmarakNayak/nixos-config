@@ -43,7 +43,6 @@ in
     mission-center
     signal-desktop
     discord
-    telegram-desktop
     whatsapp-web
     messenger-web
     gamescope

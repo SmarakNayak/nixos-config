@@ -19,6 +19,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-flatpak = {
+      url = "github:gmodena/nix-flatpak/?ref=v0.6.0";
+    };
+
     claude-code = {
       url = "github:sadjow/claude-code-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -43,12 +47,14 @@
 
   };
 
-  outputs = { self, nixpkgs, agenix, hermes-agent, home-manager, claude-code, llm-agents, ghostty, comfyui-nix, stability-matrix-nix, ... }@inputs: {
+  outputs = { self, nixpkgs, agenix, hermes-agent, home-manager, nix-flatpak, claude-code, llm-agents, ghostty, comfyui-nix, stability-matrix-nix, ... }@inputs: {
     nixosConfigurations= {
       louqe-pc = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit self; };
         modules = [
           ./hosts/louqe-pc/configuration.nix
+          nix-flatpak.nixosModules.nix-flatpak
+          ./modules/flatpak.nix
           agenix.nixosModules.default
           home-manager.nixosModules.home-manager
           {
@@ -101,6 +107,8 @@
         specialArgs = { inherit self; };
         modules = [
           ./hosts/msi-laptop/configuration.nix
+          nix-flatpak.nixosModules.nix-flatpak
+          ./modules/flatpak.nix
           agenix.nixosModules.default
           home-manager.nixosModules.home-manager
           {
