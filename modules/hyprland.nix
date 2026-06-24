@@ -1,5 +1,7 @@
 { config, pkgs, ... }:
 {
+  imports = [ ./dolphin-android-integration.nix ];
+
   # XDG Desktop Portal — consistent file/folder chooser dialogs
   xdg.portal = {
     enable = true;
