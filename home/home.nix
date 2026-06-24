@@ -22,6 +22,7 @@ in
   imports = [
     ./core.nix
     ../modules/email.nix
+    ../modules/dolphin.nix
   ];
 
   home.packages = with pkgs; [
@@ -58,7 +59,6 @@ in
     proton-vpn
     qalculate-gtk
     libreoffice
-    kdePackages.dolphin
     stability-matrix
   ];
 
@@ -85,6 +85,7 @@ in
     enable = true;
     defaultApplications = {
       "inode/directory" = "org.kde.dolphin.desktop";
+      "text/csv" = "calc.desktop";
     };
   };
 

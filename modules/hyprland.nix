@@ -10,6 +10,9 @@
     };
   };
 
+  # Show all disks in dolphin
+  services.udisks2.enable = true;
+
   # GTK apps use dconf for settings such as middle-click primary paste.
   programs.dconf.enable = true;
 
