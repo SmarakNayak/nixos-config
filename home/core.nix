@@ -160,6 +160,13 @@ in
     enableZshIntegration = true;
     enableFishIntegration = true;
     shellWrapperName = "y";
+
+    settings = {
+      manager = {
+        show_hidden = true;
+        linemode = "size";
+      };
+    };
   };
 
   programs.direnv = {
@@ -196,6 +203,11 @@ in
       ruff
       ty
     ];
+  };
+
+  home.sessionVariables = {
+    EDITOR = "hx";
+    VISUAL = "hx";
   };
 
   programs.fish = {

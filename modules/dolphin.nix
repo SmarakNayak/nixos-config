@@ -18,7 +18,10 @@
 { pkgs, lib, ... }:
 
 {
-  home.packages = [ pkgs.kdePackages.dolphin ];
+  home.packages = with pkgs.kdePackages; [
+    dolphin
+    ark
+  ];
 
   xdg.configFile."menus/applications.menu".text = ''
     <!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
