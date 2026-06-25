@@ -177,11 +177,6 @@ in
           run = ''shell 'yazi-open-with "$@"' --orphan'';
           desc = "Open with...";
         }
-        {
-          on = [ "<C-o>" ];
-          run = ''shell 'xdg-open "$@"' --orphan'';
-          desc = "Open with the default app (xdg-open)";
-        }
       ];
     };
   };
