@@ -84,7 +84,7 @@ in
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      "inode/directory" = "yazi.desktop";
+      "inode/directory" = "org.kde.dolphin.desktop";
       "text/csv" = "calc.desktop";
     };
   };

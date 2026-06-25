@@ -9,6 +9,7 @@ in
 {
   imports = [
     ../scripts.nix
+    ../modules/yazi-open-with.nix
   ];
 
   home.username = "miltu";
@@ -98,6 +99,7 @@ in
     };
     initContent = ''
       export SHELL=${pkgs.zsh}/bin/zsh
+      zstyle ':completion:*' menu select
 
       function q {
         if command -v ollama >/dev/null 2>&1; then
@@ -162,10 +164,25 @@ in
     shellWrapperName = "y";
 
     settings = {
-      manager = {
+      mgr = {
         show_hidden = true;
         linemode = "size";
       };
+    };
+
+    keymap = {
+      mgr.prepend_keymap = [
+        {
+          on = [ "e" ];
+          run = ''shell 'yazi-open-with "$@"' --orphan'';
+          desc = "Open with...";
+        }
+        {
+          on = [ "<C-o>" ];
+          run = ''shell 'xdg-open "$@"' --orphan'';
+          desc = "Open with the default app (xdg-open)";
+        }
+      ];
     };
   };
 
@@ -404,4 +421,5 @@ in
       };
     };
   };
+
 }
