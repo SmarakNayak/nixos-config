@@ -22,6 +22,10 @@ in
   # Podman maps additional container users to an unprivileged ID range.
   users.users.hermes.autoSubUidGidRange = true;
 
+  # Persistent user session so rootless Podman has a stable /run/user/989 instead
+  # of a /tmp fallback that dies with "unable to create a new pause process".
+  users.users.hermes.linger = true;
+
   # Decrypt the existing reusable raw key for the dedicated Hermes account.
   age.secrets.hermes-deepseek-api-key = {
     file = ../../secrets/deepseek-api-key.age;
@@ -49,6 +53,13 @@ in
   };
   # Hermes invokes Podman directly as its non-root service account.
   virtualisation.podman.enable = true;
+
+  # Container DNS otherwise relies on pasta's forwarder with only unreachable
+  # MagicDNS fallbacks; one hiccup kills name resolution for the container's life.
+  virtualisation.containers.containersConf.settings.network.dns_servers = [
+    "1.1.1.1"
+    "1.0.0.1"
+  ];
 
   services.hermes-agent = {
     enable = true;
