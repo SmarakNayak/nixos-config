@@ -45,9 +45,9 @@ in
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
       rebuild-antec = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc --sudo --ask-sudo-password";
-      rebuild-antec-ts = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc-ts --sudo --ask-sudo-password";
+      rebuild-antec-local = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc-local --sudo --ask-sudo-password";
       ssh-antec = "ssh -t antec-pc fish -l";
-      ssh-antec-ts = "ssh -t antec-pc-ts fish -l";
+      ssh-antec-local = "ssh -t antec-pc-local fish -l";
       vm-run = "nix run ~/nixos-config#test-vm";
     };
     initExtra = ''
@@ -88,9 +88,9 @@ in
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
       rebuild-antec = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc --sudo --ask-sudo-password";
-      rebuild-antec-ts = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc-ts --sudo --ask-sudo-password";
+      rebuild-antec-local = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc-local --sudo --ask-sudo-password";
       ssh-antec = "ssh -t antec-pc fish -l";
-      ssh-antec-ts = "ssh -t antec-pc-ts fish -l";
+      ssh-antec-local = "ssh -t antec-pc-local fish -l";
       vm-run = "nix run ~/nixos-config#test-vm";
     };
     history = {
@@ -232,9 +232,9 @@ in
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config";
       rebuild-antec = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc --sudo --ask-sudo-password";
-      rebuild-antec-ts = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc-ts --sudo --ask-sudo-password";
+      rebuild-antec-local = "nixos-rebuild switch --flake ~/nixos-config#antec-pc --target-host antec-pc-local --sudo --ask-sudo-password";
       ssh-antec = "ssh -t antec-pc fish -l";
-      ssh-antec-ts = "ssh -t antec-pc-ts fish -l";
+      ssh-antec-local = "ssh -t antec-pc-local fish -l";
       vm-run = "nix run ~/nixos-config#test-vm";
     };
     shellInit = ''
@@ -293,14 +293,16 @@ in
     enable = true;
     enableDefaultConfig = false;
     settings = {
+      # Resolves via Tailscale MagicDNS, works anywhere.
       "antec-pc" = {
-        Hostname = "antec-pc.local";
+        Hostname = "antec-pc";
         User = "miltu";
         IdentityFile = "~/.ssh/antec-admin";
         IdentitiesOnly = "yes";
       };
-      "antec-pc-ts" = {
-        Hostname = "antec-pc";
+      # mDNS/LAN fallback for when tailscaled is down.
+      "antec-pc-local" = {
+        Hostname = "antec-pc.local";
         User = "miltu";
         IdentityFile = "~/.ssh/antec-admin";
         IdentitiesOnly = "yes";

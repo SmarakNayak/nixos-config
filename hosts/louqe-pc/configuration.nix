@@ -13,6 +13,7 @@
       ../../modules/caches.nix
       ../../modules/mdns.nix
       ../../modules/tailscale-client.nix
+      ../../modules/antec-mount.nix
     ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
