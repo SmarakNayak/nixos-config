@@ -27,7 +27,7 @@
   # Home-manager: Manage hyprland config and packages
   home-manager.users.miltu = {
     home.packages = with pkgs; [
-      swappy
+      satty
       grim
       slurp
       wf-recorder
@@ -70,6 +70,11 @@
 
     xdg.configFile."hypr/hide_special_workspace.sh" = {
       source = ../dotfiles/hypr/hide_special_workspace.sh;
+      executable = true;
+    };
+
+    xdg.configFile."hypr/screenshot.sh" = {
+      source = ../dotfiles/hypr/screenshot.sh;
       executable = true;
     };
 
