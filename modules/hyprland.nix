@@ -73,6 +73,11 @@
       executable = true;
     };
 
+    xdg.configFile."hypr/toggle_scratchpad.sh" = {
+      source = ../dotfiles/hypr/toggle_scratchpad.sh;
+      executable = true;
+    };
+
     xdg.configFile."hypr/screenshot.sh" = {
       source = ../dotfiles/hypr/screenshot.sh;
       executable = true;
