@@ -30,6 +30,8 @@
       swappy
       grim
       slurp
+      wf-recorder
+      libnotify
       hyprpaper
       hypridle
       swaylock
@@ -68,6 +70,11 @@
 
     xdg.configFile."hypr/hide_special_workspace.sh" = {
       source = ../dotfiles/hypr/hide_special_workspace.sh;
+      executable = true;
+    };
+
+    xdg.configFile."hypr/toggle_recording.sh" = {
+      source = ../dotfiles/hypr/toggle_recording.sh;
       executable = true;
     };
 
