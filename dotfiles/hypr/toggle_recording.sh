@@ -8,6 +8,8 @@ notify() {
 if pgrep -x wf-recorder >/dev/null; then
   pkill -INT -x wf-recorder
   notify "Screen recording stopped"
+  sleep 0.5  # let wf-recorder exit before waybar re-checks
+  pkill -RTMIN+9 waybar || true
   exit 0
 fi
 
@@ -20,10 +22,19 @@ if [ -z "$monitor" ]; then
   exit 1
 fi
 
+# Desktop audio = monitor source of the default output sink
+sink="$(wpctl inspect @DEFAULT_AUDIO_SINK@ | awk -F'"' '/node.name/ { print $2; exit }')"
+
+if [ -z "$sink" ]; then
+  notify -u critical "Screen recording failed" "Could not detect default audio sink"
+  exit 1
+fi
+
 # wf-recorder tags output as full-range but swscale defaults to limited-range
 # data, washing out colors. Force full-range data to match the tag.
 wf-recorder -l -o "$monitor" \
+  --audio="$sink.monitor" \
   -F "scale=in_range=pc:out_range=pc:out_color_matrix=bt709,format=yuv420p" \
   -p x264-params=colorprim=bt709:transfer=bt709:colormatrix=bt709 \
   -f "$output" &>/dev/null &
-notify "Screen recording started" "$output"
+pkill -RTMIN+9 waybar || true  # show REC indicator

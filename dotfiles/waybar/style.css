@@ -57,6 +57,7 @@ window#waybar {
 }
 
 /* Right modules */
+#custom-recording,
 #custom-audio-output,
 #custom-network,
 #pulseaudio,
@@ -89,6 +90,11 @@ window#waybar {
 
 #pulseaudio.muted {
   color: #6c7086;
+}
+
+/* Screen recording indicator */
+#custom-recording {
+  color: #f38ba8;
 }
 
 /* Audio Output Toggle */
