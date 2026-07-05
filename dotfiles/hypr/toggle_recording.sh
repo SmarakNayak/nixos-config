@@ -13,7 +13,6 @@ fi
 
 mkdir -p "$HOME/Videos"
 output="$HOME/Videos/screenrecord-$(date +%Y%m%d-%H%M%S).mp4"
-log="${output%.mp4}.log"
 monitor="$(hyprctl monitors | awk '/^Monitor / { name = $2 } /focused: yes/ { print name; exit }')"
 
 if [ -z "$monitor" ]; then
@@ -21,15 +20,10 @@ if [ -z "$monitor" ]; then
   exit 1
 fi
 
-{
-  date
-  echo "output=$output"
-  echo "monitor=$monitor"
-  env | grep -E '^(XDG_|WAYLAND_|HYPRLAND_|DISPLAY=)'
-  wf-recorder -l -o "$monitor" \
-    -F "scale=in_range=pc:out_range=pc:out_color_matrix=bt709,format=yuv420p" \
-    -p color_range=pc \
-    -p x264-params=colorprim=bt709:transfer=bt709:colormatrix=bt709:range=pc \
-    -f "$output"
-} >"$log" 2>&1 &
+# wf-recorder tags output as full-range but swscale defaults to limited-range
+# data, washing out colors. Force full-range data to match the tag.
+wf-recorder -l -o "$monitor" \
+  -F "scale=in_range=pc:out_range=pc:out_color_matrix=bt709,format=yuv420p" \
+  -p x264-params=colorprim=bt709:transfer=bt709:colormatrix=bt709 \
+  -f "$output" &>/dev/null &
 notify "Screen recording started" "$output"
