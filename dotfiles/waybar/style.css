@@ -45,6 +45,12 @@ window#waybar {
   border-bottom: 2px solid #89b4fa;
 }
 
+/* special workspace (scratchpad) — only shown while visible */
+#workspaces button.special {
+  color: #f9e2af;
+  border-bottom: 2px solid #f9e2af;
+}
+
 #workspaces button:hover {
   background: rgba(137, 180, 250, 0.1);
   color: #89b4fa;
