@@ -59,6 +59,7 @@ in
     proton-vpn
     qalculate-gtk
     libreoffice
+    rstudioWrapper
     stability-matrix
   ];
 
