@@ -17,6 +17,11 @@ in
   home.homeDirectory = "/home/miltu";
   home.stateVersion = "24.11";
 
+  home.sessionVariables = {
+    EDITOR = "hx";
+    VISUAL = "hx";
+  };
+
   home.packages = with pkgs; [
     curl
     git-agecrypt
