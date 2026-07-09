@@ -21,7 +21,18 @@
   home.packages = with pkgs.kdePackages; [
     dolphin
     ark
+    ffmpegthumbs # Video thumbnails.
+    kdegraphics-thumbnailers # Extra document/graphics thumbnailers.
+    kimageformats # AVIF/HEIF/JXL and other KDE image format plugins.
+    qtimageformats # WebP and other Qt image format plugins.
   ];
+
+  home.sessionVariables.QT_PLUGIN_PATH =
+    lib.makeSearchPath pkgs.kdePackages.qtbase.qtPluginPrefix [
+      pkgs.kdePackages.kdegraphics-thumbnailers
+      pkgs.kdePackages.kimageformats
+      pkgs.kdePackages.qtimageformats
+    ];
 
   xdg.configFile."menus/applications.menu".text = ''
     <!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
