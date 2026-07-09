@@ -9,6 +9,7 @@ in
 {
   imports = [
     ../scripts.nix
+    ../packages/quick-ask.nix
     ../modules/yazi-open-with.nix
   ];
 
