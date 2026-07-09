@@ -48,9 +48,12 @@
 
   home.activation.kdeDefaultTerminal =
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      # KIO spawns the terminal with cwd set but ghostty's single-instance
+      # launch drops it; the flag makes it use the cwd (and any CLI arg
+      # forces a dedicated instance). A TerminalService key would take
+      # priority over this and launch via desktop file, bypassing the flag.
       run ${pkgs.kdePackages.kconfig}/bin/kwriteconfig6 \
-        --file kdeglobals --group General --key TerminalApplication ghostty
-      run ${pkgs.kdePackages.kconfig}/bin/kwriteconfig6 \
-        --file kdeglobals --group General --key TerminalService com.mitchellh.ghostty.desktop
+        --file kdeglobals --group General --key TerminalApplication \
+        'ghostty --working-directory=inherit'
     '';
 }
