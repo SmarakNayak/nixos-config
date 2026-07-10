@@ -58,10 +58,10 @@ let
       PanelWindow {
         id: window
         visible: true
-        focusable: true
         aboveWindows: true
         exclusionMode: ExclusionMode.Ignore
         WlrLayershell.namespace: "quick-ask"
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
         width: 720
         height: shell.windowHeight
         color: "transparent"
@@ -112,7 +112,6 @@ let
 
               Keys.onReturnPressed: shell.ask()
               Keys.onEnterPressed: shell.ask()
-              Keys.onEscapePressed: Qt.quit()
 
               Text {
                 visible: question.text.length === 0 && !query.running
@@ -148,8 +147,6 @@ let
                 font.family: "JetBrains Mono"
                 font.pixelSize: 16
                 horizontalAlignment: TextEdit.AlignLeft
-
-                Keys.onEscapePressed: Qt.quit()
               }
             }
 
@@ -217,6 +214,7 @@ let
 
         Shortcut {
           sequence: "Esc"
+          context: Qt.ApplicationShortcut
           onActivated: Qt.quit()
         }
 
