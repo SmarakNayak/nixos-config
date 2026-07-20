@@ -6,15 +6,14 @@ let
   krita-ai-diffusion = import ../packages/krita-ai-diffusion.nix { inherit pkgs; };
   whatsapp-web = import ../packages/whatsapp-web.nix { inherit pkgs; };
   messenger-web = import ../packages/messenger-web.nix { inherit pkgs; };
-  # krita-vision-tools (AI object selection) is disabled until upstream adds Python 3.13 support
-  # Track: https://github.com/Acly/krita-vision-tools/issues/68
-  # krita-vision-tools = import ../packages/krita-vision-tools.nix { inherit pkgs; };
+  krita-vision-tools = import ../packages/krita-vision-tools.nix { inherit pkgs; };
   krita-with-ai = pkgs.krita.overrideAttrs (old: {
     buildCommand = ''
       ${old.buildCommand or ""}
       wrapProgram $out/bin/krita \
         --prefix QT_PLUGIN_PATH : ${pkgs.qt5.qtimageformats}/${pkgs.qt5.qtbase.qtPluginPrefix} \
-        --prefix XDG_DATA_DIRS : ${krita-ai-diffusion}/share
+        --prefix XDG_DATA_DIRS : ${krita-ai-diffusion}/share \
+        --prefix XDG_DATA_DIRS : ${krita-vision-tools}/share
     '';
   });
 in

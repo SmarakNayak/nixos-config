@@ -4,8 +4,8 @@ pkgs.stdenv.mkDerivation {
   name = "krita-vision-tools";
 
   src = pkgs.fetchurl {
-    url = "https://github.com/Acly/krita-vision-tools/releases/download/v2.1.0/krita_vision_tools-linux-x64-2.1.1.zip";
-    hash = "sha256-pSS929jHx6tRxzP7mzIEaPVNKb4T8/q/of+BB3IeYnU=";
+    url = "https://github.com/Acly/krita-vision-tools/releases/download/v3.0.0-pre/krita_vision_tools-linux-x64-3.0.0.zip";
+    hash = "sha256-sZTqjKpy+Yxb2pB+O7ITzfHTTFqd/ZmogYoFLAfnypI=";
   };
 
   nativeBuildInputs = [ pkgs.unzip pkgs.autoPatchelfHook ];

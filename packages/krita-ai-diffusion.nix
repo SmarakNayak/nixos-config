@@ -7,8 +7,10 @@ pkgs.stdenv.mkDerivation {
     owner = "Acly";
     repo = "krita-ai-diffusion";
     fetchSubmodules = true;
-    rev = "v1.49.0";
-    hash = "sha256-RXMF2Pc8hTDugxXYCbfeSH3DWLxMUeE5Ox4b5iE7QqE=";
+    # Qt6/Krita 6 support, pending upstream merge:
+    # https://github.com/Acly/krita-ai-diffusion/pull/2491
+    rev = "bb8ffa235be41edeee5057aca013445d4872dadf";
+    hash = "sha256-dFYtuBDL60pu7r6kujYTfQZxyGEyNwvZH88RG+lNChc=";
   };
 
   installPhase = ''
