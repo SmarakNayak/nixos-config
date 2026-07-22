@@ -75,14 +75,30 @@ in
     ];
 
     settings = {
-      # Use GLM by default, with DeepSeek as Hermes' automatic provider fallback.
-      model = "glm-5.2";
+      # Use DeepSeek by default, with GLM as Hermes' automatic provider fallback.
+      model = {
+        default = "deepseek-v4-pro";
+        provider = "deepseek";
+      };
       fallback_providers = [
         {
-          provider = "deepseek";
-          model = "deepseek-v4-pro";
+          provider = "zai";
+          model = "glm-5.2";
         }
       ];
+
+      auxiliary.vision = {
+        provider = "zai";
+        model = "glm-4.6v-flashx";
+        base_url = "https://api.z.ai/api/paas/v4";
+      };
+
+      gateway = {
+        # Generated files in the terminal sandbox appear here on the host.
+        # MEDIA:/var/lib/hermes/workspace/... must be accepted for native
+        # Telegram delivery.
+        media_delivery_allow_dirs = [ "/var/lib/hermes/workspace" ];
+      };
 
       terminal = {
         # Upstream defaults to local host execution. Use the Docker-compatible
