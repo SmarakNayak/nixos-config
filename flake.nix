@@ -60,7 +60,7 @@
           {
             nixpkgs.overlays = [
               claude-code.overlays.default
-              llm-agents.overlays.default
+              llm-agents.overlays.shared-nixpkgs
               ghostty.overlays.default
               comfyui-nix.overlays.default
               stability-matrix-nix.overlays.default
@@ -83,7 +83,7 @@
           {
             nixpkgs.overlays = [
               claude-code.overlays.default
-              llm-agents.overlays.default
+              llm-agents.overlays.shared-nixpkgs
               hermes-agent.overlays.default
               ghostty.overlays.default
               comfyui-nix.overlays.default
@@ -114,7 +114,7 @@
           {
             nixpkgs.overlays = [
               claude-code.overlays.default
-              llm-agents.overlays.default
+              llm-agents.overlays.shared-nixpkgs
               ghostty.overlays.default
               comfyui-nix.overlays.default
               stability-matrix-nix.overlays.default
