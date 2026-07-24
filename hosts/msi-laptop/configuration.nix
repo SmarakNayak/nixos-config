@@ -21,6 +21,23 @@
   boot.loader.systemd-boot.configurationLimit = 50;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "msi-laptop"; # Define your hostname.
+
+  # These persistent-data directories are independent Btrfs subvolumes so
+  # Snapper can snapshot them without also snapshotting the reproducible root.
+  fileSystems."/home" = {
+    device = "/dev/disk/by-uuid/ce9d6127-ce90-4480-8a86-b9d075e5e943";
+    fsType = "btrfs";
+    options = [ "subvol=home" ];
+  };
+
+  fileSystems."/var/lib" = {
+    device = "/dev/disk/by-uuid/ce9d6127-ce90-4480-8a86-b9d075e5e943";
+    fsType = "btrfs";
+    options = [ "subvol=var/lib" ];
+  };
+
+  miltu.btrfs.snapshots.enable = true;
+
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
   time.timeZone = "Australia/Sydney";
   users.users.miltu = {
