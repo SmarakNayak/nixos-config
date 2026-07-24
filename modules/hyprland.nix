@@ -45,10 +45,9 @@
 
     wayland.windowManager.hyprland = {
       enable = true;
-      configType = "hyprlang";
-      systemd.enable = true;  # Creates hyprland-session.target
-      # systemd.enable = false;  # UWSM manages the systemd session
-      extraConfig = "# Using manual config file";  # Suppress warning
+      configType = "lua";
+      systemd.enable = true;
+      extraConfig = builtins.readFile ../dotfiles/hypr/hyprland.lua;
     };
     
     # Make hyprland-session start XDG autostart apps
@@ -56,7 +55,6 @@
       Unit.Wants = [ "xdg-desktop-autostart.target" ];
     };
 
-    xdg.configFile."hypr/hyprland.conf".source = ../dotfiles/hypr/hyprland.conf;
     xdg.configFile."hypr/hyprpaper.conf".source = ../dotfiles/hypr/hyprpaper.conf;
     xdg.configFile."hypr/random-wallpaper.sh" = {
       source = ../dotfiles/hypr/random-wallpaper.sh;
