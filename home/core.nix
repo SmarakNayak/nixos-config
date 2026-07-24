@@ -1,10 +1,11 @@
-{ config, pkgs, ... }:
+{ config, pkgs, llm-agents, ... }:
 
 let
+  llmAgentPackages = llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   claude-sandbox = import ../packages/claude-sandbox.nix { inherit pkgs; };
-  opencode-sandbox = import ../packages/opencode-sandbox.nix { inherit pkgs; };
-  codex-sandbox = import ../packages/codex-sandbox.nix { inherit pkgs; };
-  pi-sandbox = import ../packages/pi-sandbox.nix { inherit pkgs; };
+  opencode-sandbox = import ../packages/opencode-sandbox.nix { inherit pkgs llmAgentPackages; };
+  codex-sandbox = import ../packages/codex-sandbox.nix { inherit pkgs llmAgentPackages; };
+  pi-sandbox = import ../packages/pi-sandbox.nix { inherit pkgs llmAgentPackages; };
 in
 {
   imports = [
@@ -28,12 +29,12 @@ in
     claude-sandbox
     claude-code
     opencode-sandbox
-    llm-agents.opencode
+    llmAgentPackages.opencode
     codex-sandbox
-    llm-agents.codex
+    llmAgentPackages.codex
     pi-sandbox
-    llm-agents.pi
-    llm-agents.gemini-cli
+    llmAgentPackages.pi
+    llmAgentPackages.gemini-cli
     speedtest-go
     procs
     sd

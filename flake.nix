@@ -30,7 +30,10 @@
 
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Keep llm-agents on its own pinned nixpkgs so Codex matches Numtide's
+      # binary cache. Following the root nixpkgs changes the Codex store path
+      # and forces slow local Rust builds on laptops.
+      # inputs.nixpkgs.follows = "nixpkgs";
     };
 
     ghostty = {
@@ -60,7 +63,6 @@
           {
             nixpkgs.overlays = [
               claude-code.overlays.default
-              llm-agents.overlays.shared-nixpkgs
               ghostty.overlays.default
               comfyui-nix.overlays.default
               stability-matrix-nix.overlays.default
@@ -70,6 +72,7 @@
             home-manager.users.miltu = import ./home/home.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
+            home-manager.extraSpecialArgs = { inherit llm-agents; };
           }
         ];
       };
@@ -83,7 +86,6 @@
           {
             nixpkgs.overlays = [
               claude-code.overlays.default
-              llm-agents.overlays.shared-nixpkgs
               hermes-agent.overlays.default
               ghostty.overlays.default
               comfyui-nix.overlays.default
@@ -94,6 +96,7 @@
             home-manager.users.miltu = import ./home/home-server.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
+            home-manager.extraSpecialArgs = { inherit llm-agents; };
           }
         ];
       };
@@ -114,7 +117,6 @@
           {
             nixpkgs.overlays = [
               claude-code.overlays.default
-              llm-agents.overlays.shared-nixpkgs
               ghostty.overlays.default
               comfyui-nix.overlays.default
               stability-matrix-nix.overlays.default
@@ -124,6 +126,7 @@
             home-manager.users.miltu = import ./home/home.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
+            home-manager.extraSpecialArgs = { inherit llm-agents; };
           }
         ];
       };

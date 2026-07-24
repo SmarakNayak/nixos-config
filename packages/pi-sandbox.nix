@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, llmAgentPackages, ... }:
 
 # Sandboxed Pi coding agent using bubblewrap
 #
@@ -45,5 +45,5 @@ pkgs.writeShellScriptBin "pi-sandbox" ''
     --ro-bind-try "$HOME/.ssh/known_hosts" "$HOME/.ssh/known_hosts" \
     --bind-try "$SSH_AUTH_SOCK" "$SSH_AUTH_SOCK" \
     --bind "$PWD" "$PWD" --chdir "$PWD" \
-    -- ${pkgs.llm-agents.pi}/bin/pi "$@"
+    -- ${llmAgentPackages.pi}/bin/pi "$@"
 ''

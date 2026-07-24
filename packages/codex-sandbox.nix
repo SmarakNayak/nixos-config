@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, llmAgentPackages, ... }:
 
 # Sandboxed OpenAI Codex CLI using bubblewrap
 #
@@ -42,5 +42,5 @@ pkgs.writeShellScriptBin "codex-sandbox" ''
     --ro-bind-try "$HOME/.ssh/known_hosts" "$HOME/.ssh/known_hosts" \
     --bind-try "$SSH_AUTH_SOCK" "$SSH_AUTH_SOCK" \
     --bind "$PWD" "$PWD" --chdir "$PWD" \
-    -- ${pkgs.llm-agents.codex}/bin/codex --dangerously-bypass-approvals-and-sandbox "$@"
+    -- ${llmAgentPackages.codex}/bin/codex --dangerously-bypass-approvals-and-sandbox "$@"
 ''

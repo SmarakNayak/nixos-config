@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, llmAgentPackages, ... }:
 
 # Sandboxed opencode using bubblewrap
 #
@@ -48,5 +48,5 @@ pkgs.writeShellScriptBin "opencode-sandbox" ''
     --ro-bind-try "$HOME/.ssh/known_hosts" "$HOME/.ssh/known_hosts" \
     --bind-try "$SSH_AUTH_SOCK" "$SSH_AUTH_SOCK" \
     --bind "$PWD" "$PWD" --chdir "$PWD" \
-    -- ${pkgs.llm-agents.opencode}/bin/opencode "$@"
+    -- ${llmAgentPackages.opencode}/bin/opencode "$@"
 ''
