@@ -20,6 +20,23 @@
   boot.loader.systemd-boot.configurationLimit = 5;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "antec-pc";
+
+  # These persistent-data directories are independent Btrfs subvolumes so
+  # Snapper can snapshot them without also snapshotting the reproducible root.
+  fileSystems."/home" = {
+    device = "/dev/disk/by-uuid/90adecc9-c307-4b57-ac70-68095fbc9540";
+    fsType = "btrfs";
+    options = [ "subvol=home" ];
+  };
+
+  fileSystems."/var/lib" = {
+    device = "/dev/disk/by-uuid/90adecc9-c307-4b57-ac70-68095fbc9540";
+    fsType = "btrfs";
+    options = [ "subvol=var/lib" ];
+  };
+
+  miltu.btrfs.snapshots.enable = true;
+
   networking.networkmanager.enable = true;
   networking.networkmanager.ensureProfiles.environmentFiles = [
     config.age.secrets.antec-pc-wifi.path
