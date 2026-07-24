@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ../../modules/btrfs.nix
       ../../modules/niri.nix
       ../../modules/hyprland.nix
       ../../modules/caches.nix
@@ -94,6 +95,22 @@
 
   # Firewall configuration
   networking.firewall.allowedTCPPorts = [ 8081 ]; # For Expo
+
+  miltu.btrfs.snapshots.enable = true;
+
+  # Independently snapshotted Btrfs subvolumes. They are nested beneath the
+  # filesystem root but mounted explicitly so the on-disk layout is declared.
+  fileSystems."/home" = {
+    device = "/dev/disk/by-uuid/9d666b6e-5d4e-4f0c-a367-36a7fd8ac320";
+    fsType = "btrfs";
+    options = [ "subvol=home" ];
+  };
+
+  fileSystems."/var/lib" = {
+    device = "/dev/disk/by-uuid/9d666b6e-5d4e-4f0c-a367-36a7fd8ac320";
+    fsType = "btrfs";
+    options = [ "subvol=var/lib" ];
+  };
 
   # Windows partition mounts (read-only)
   fileSystems."/mnt/winboot" = {

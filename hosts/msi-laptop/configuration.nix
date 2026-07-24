@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ../../modules/btrfs.nix
       ./power-management.nix
       ../../modules/caches.nix
       ../../modules/niri.nix
