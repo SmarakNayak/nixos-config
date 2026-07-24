@@ -18,6 +18,7 @@
       ../../modules/antec-mount.nix
     ];
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 50;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "msi-laptop"; # Define your hostname.
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
