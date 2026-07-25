@@ -33,6 +33,8 @@ in
     nerd-fonts.jetbrains-mono
     nerd-fonts.fira-code
     wl-clipboard
+    wl-clip-persist
+    cliphist
     ollama
     ghostty
     wofi
