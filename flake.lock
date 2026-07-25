@@ -134,6 +134,22 @@
         "type": "github"
       }
     },
+    "flake-compat_2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767039857,
+        "narHash": "sha256-vNpUSpF5Nuw8xvDLj2KCwwksIbjua2LZCqhV1LNRDns=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "5edf11c44bc78a0d334f6334cdaf7d60d732daab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -553,7 +569,8 @@
         "llm-agents": "llm-agents",
         "nix-flatpak": "nix-flatpak",
         "nixpkgs": "nixpkgs_4",
-        "stability-matrix-nix": "stability-matrix-nix"
+        "stability-matrix-nix": "stability-matrix-nix",
+        "waybar": "waybar"
       }
     },
     "stability-matrix-nix": {
@@ -694,6 +711,27 @@
       "original": {
         "owner": "pyproject-nix",
         "repo": "uv2nix",
+        "type": "github"
+      }
+    },
+    "waybar": {
+      "inputs": {
+        "flake-compat": "flake-compat_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784661194,
+        "narHash": "sha256-pSbVf9mMWazkaTgNM0X4pfkIS/6AzoAfs7YTS27udOE=",
+        "owner": "Alexays",
+        "repo": "Waybar",
+        "rev": "30610d3b68f109e950d924bc7d9c42b8cbbc5df8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Alexays",
+        "repo": "Waybar",
         "type": "github"
       }
     },

@@ -4,6 +4,12 @@
   inputs = {
     # NixOS official package source, using the nixos-25.05 branch here
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Temporary Waybar master pin for Lua-aware Hyprland workspace IPC.
+    # Remove this input and its overlays once nixpkgs ships Waybar >= 0.15.1.
+    waybar = {
+      url = "github:Alexays/Waybar";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -50,7 +56,7 @@
 
   };
 
-  outputs = { self, nixpkgs, agenix, hermes-agent, home-manager, nix-flatpak, claude-code, llm-agents, ghostty, comfyui-nix, stability-matrix-nix, ... }@inputs: {
+  outputs = { self, nixpkgs, waybar, agenix, hermes-agent, home-manager, nix-flatpak, claude-code, llm-agents, ghostty, comfyui-nix, stability-matrix-nix, ... }@inputs: {
     nixosConfigurations= {
       louqe-pc = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit self; };
@@ -62,6 +68,7 @@
           home-manager.nixosModules.home-manager
           {
             nixpkgs.overlays = [
+              waybar.overlays.default
               claude-code.overlays.default
               ghostty.overlays.default
               comfyui-nix.overlays.default
@@ -116,6 +123,7 @@
           home-manager.nixosModules.home-manager
           {
             nixpkgs.overlays = [
+              waybar.overlays.default
               claude-code.overlays.default
               ghostty.overlays.default
               comfyui-nix.overlays.default
