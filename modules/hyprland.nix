@@ -24,6 +24,12 @@
     withUWSM = true;
   };
 
+  # Unlock GNOME Keyring with the Ly login, but replace its implicit GCR SSH
+  # component with the explicit OpenSSH agent configured in ssh.nix.
+  services.gnome.gnome-keyring.enable = true;
+  services.gnome.gcr-ssh-agent.enable = false;
+  security.pam.services.ly.enableGnomeKeyring = true;
+
   # Home-manager: Manage hyprland config and packages
   home-manager.users.miltu = {
     home.packages = with pkgs; [

@@ -55,7 +55,7 @@ local exitSession = "systemctl --user stop hyprland-session.target; hyprctl disp
 -- exec-once = $terminal
 -- exec-once = nm-applet &
 -- exec-once = waybar & hyprpaper & firefox
-hl.env("SSH_AUTH_SOCK", "$XDG_RUNTIME_DIR/gcr/ssh")
+hl.env("SSH_AUTH_SOCK", os.getenv("XDG_RUNTIME_DIR") .. "/ssh-agent")
 
 --############################
 --## ENVIRONMENT VARIABLES ###

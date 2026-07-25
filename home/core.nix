@@ -296,74 +296,7 @@ in
     }];
   };
 
-  programs.ssh = {
-    enable = true;
-    enableDefaultConfig = false;
-    settings = {
-      "github.com" = {
-        Hostname = "github.com";
-        User = "git";
-        IdentityFile = "~/.ssh/id_github";
-        IdentitiesOnly = "yes";
-      };
-      "gitlab.com" = {
-        Hostname = "gitlab.com";
-        User = "git";
-        IdentityFile = "~/.ssh/id_gitlab";
-        IdentitiesOnly = "yes";
-      };
-      # Resolves via Tailscale MagicDNS, works anywhere.
-      "antec-pc" = {
-        Hostname = "antec-pc";
-        User = "miltu";
-        IdentityFile = "~/.ssh/antec-admin";
-        IdentitiesOnly = "yes";
-      };
-      # mDNS/LAN fallback for when tailscaled is down.
-      "antec-pc-local" = {
-        Hostname = "antec-pc.local";
-        User = "miltu";
-        IdentityFile = "~/.ssh/antec-admin";
-        IdentitiesOnly = "yes";
-      };
-      "hetzner-green" = {
-        Hostname = "65.21.25.120";
-        User = "ubuntu";
-        IdentityFile = "~/.ssh/id_hetzner";
-        Compression = "yes";
-        SetEnv = { TERM = "xterm-256color"; };
-      };
-      "hetzner-blue" = {
-        Hostname = "37.27.139.85";
-        User = "ubuntu";
-        IdentityFile = "~/.ssh/id_hetzner";
-        Compression = "yes";
-        SetEnv = { TERM = "xterm-256color"; };
-      };
-    };
-  };
-
   age.identityPaths = [ "${config.home.homeDirectory}/.config/age/master.key" ];
-  age.secrets.ssh-key-github = {
-    file = ../secrets/ssh-key-github.age;
-    path = "${config.home.homeDirectory}/.ssh/id_github";
-    mode = "600";
-  };
-  age.secrets.ssh-key-gitlab = {
-    file = ../secrets/ssh-key-gitlab.age;
-    path = "${config.home.homeDirectory}/.ssh/id_gitlab";
-    mode = "600";
-  };
-  age.secrets.ssh-key-hetzner = {
-    file = ../secrets/ssh-key-hetzner.age;
-    path = "${config.home.homeDirectory}/.ssh/id_hetzner";
-    mode = "600";
-  };
-  age.secrets.antec-admin-ssh-key = {
-    file = ../secrets/antec-admin-ssh-key.age;
-    path = "${config.home.homeDirectory}/.ssh/antec-admin";
-    mode = "600";
-  };
   age.secrets.smarak-agent-github-app = {
     file = ../secrets/smarak-agent-github-app.age;
     path = "${config.home.homeDirectory}/.config/smarak-agent/smarak-agent-github-app.pem";

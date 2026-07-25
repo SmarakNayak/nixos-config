@@ -11,6 +11,7 @@
       ../../modules/btrfs.nix
       ../../modules/caches.nix
       ../../modules/tailscale-server.nix
+      ../../modules/ssh.nix
       ./hermes.nix
       ./deployer.nix
     ];

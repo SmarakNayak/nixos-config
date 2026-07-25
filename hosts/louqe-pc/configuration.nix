@@ -11,6 +11,7 @@
       ../../modules/btrfs.nix
       ../../modules/niri.nix
       ../../modules/hyprland.nix
+      ../../modules/ssh.nix
       ../../modules/caches.nix
       ../../modules/mdns.nix
       ../../modules/tailscale-client.nix
@@ -80,10 +81,6 @@
       load = true;    # Load saved session on startup
     };
   };
-
-  # GNOME Keyring - auto-unlock on login
-  services.gnome.gnome-keyring.enable = true;
-  security.pam.services.ly.enableGnomeKeyring = true;
 
   hardware.ledger.enable = true;
 
