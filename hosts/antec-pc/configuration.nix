@@ -12,6 +12,7 @@
       ../../modules/caches.nix
       ../../modules/tailscale-server.nix
       ../../modules/ssh.nix
+      ./agent-vault.nix
       ./hermes.nix
       ./deployer.nix
     ];
