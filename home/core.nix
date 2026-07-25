@@ -300,6 +300,18 @@ in
     enable = true;
     enableDefaultConfig = false;
     settings = {
+      "github.com" = {
+        Hostname = "github.com";
+        User = "git";
+        IdentityFile = "~/.ssh/id_github";
+        IdentitiesOnly = "yes";
+      };
+      "gitlab.com" = {
+        Hostname = "gitlab.com";
+        User = "git";
+        IdentityFile = "~/.ssh/id_gitlab";
+        IdentitiesOnly = "yes";
+      };
       # Resolves via Tailscale MagicDNS, works anywhere.
       "antec-pc" = {
         Hostname = "antec-pc";
@@ -332,9 +344,14 @@ in
   };
 
   age.identityPaths = [ "${config.home.homeDirectory}/.config/age/master.key" ];
-  age.secrets.ssh-key = {
-    file = ../secrets/ssh-key.age;
-    path = "${config.home.homeDirectory}/.ssh/id_ed25519";
+  age.secrets.ssh-key-github = {
+    file = ../secrets/ssh-key-github.age;
+    path = "${config.home.homeDirectory}/.ssh/id_github";
+    mode = "600";
+  };
+  age.secrets.ssh-key-gitlab = {
+    file = ../secrets/ssh-key-gitlab.age;
+    path = "${config.home.homeDirectory}/.ssh/id_gitlab";
     mode = "600";
   };
   age.secrets.ssh-key-hetzner = {
