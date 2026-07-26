@@ -23,6 +23,11 @@
         auth.type = "passthrough";
       }
       {
+        name = "gitlab-block-user-gpg-keys";
+        host = "gitlab.com/api/v4/user/gpg_keys*";
+        auth.type = "passthrough";
+      }
+      {
         name = "gitlab-block-personal-access-tokens";
         host = "gitlab.com/api/v4/personal_access_tokens*";
         auth.type = "passthrough";
