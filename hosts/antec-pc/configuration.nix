@@ -121,6 +121,7 @@
     ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBo/KF7ZUTO6Nkai8cKwWMsU78sxVrFXwjcZ/fxm9Ksp antec-admin"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBWJ2BdZadc8JmK1wRIf/M+Uo3jFpA8CHqqf4Lk/EvR/ termux-CPH2581"
     ];
   };
 
