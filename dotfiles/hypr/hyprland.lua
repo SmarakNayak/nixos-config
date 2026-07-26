@@ -55,7 +55,6 @@ local exitSession = "systemctl --user stop hyprland-session.target; hyprctl disp
 -- exec-once = $terminal
 -- exec-once = nm-applet &
 -- exec-once = waybar & hyprpaper & firefox
-hl.env("SSH_AUTH_SOCK", os.getenv("XDG_RUNTIME_DIR") .. "/ssh-agent")
 
 --############################
 --## ENVIRONMENT VARIABLES ###
@@ -65,9 +64,7 @@ hl.env("SSH_AUTH_SOCK", os.getenv("XDG_RUNTIME_DIR") .. "/ssh-agent")
 
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
-hl.env("TERMINAL", "ghostty")
-hl.env("EDITOR", "hx")
-hl.env("VISUAL", "hx")
+hl.env("TERMINAL", "ghostty") # dolphin's "Open Terminal" uses ghostty
 
 --##################
 --## PERMISSIONS ###

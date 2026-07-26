@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 {
   imports = [ ./dolphin-android-integration.nix ];
 
@@ -23,6 +23,11 @@
     enable = true;
     withUWSM = true;
   };
+
+  # The CAP_SYS_NICE wrapper strips TZDIR, breaking timezone detection in
+  # applications launched by Hyprland (notably Flatpak applications).
+  # https://github.com/NixOS/nixpkgs/issues/526193
+  security.wrappers.Hyprland.enable = lib.mkForce false;
 
   # Unlock GNOME Keyring with the Ly login, but replace its implicit GCR SSH
   # component with the explicit OpenSSH agent configured in ssh.nix.

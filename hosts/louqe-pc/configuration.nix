@@ -75,8 +75,19 @@
   services.displayManager.ly = {
     enable = true;
     settings = {
+      # Minimal replacement of default setup_cmd xsession-wrapper. Source env vars once at login manager instead of multiple times later.
+      setup_cmd = "${pkgs.writeShellScript "graphical-session-wrapper" ''
+        source /etc/profile
+
+        if [[ -f "$HOME/.profile" ]]; then
+          source "$HOME/.profile"
+        fi
+
+        cd "$HOME"
+        eval exec "$@"
+      ''}";
+
       xinitrc = "";   # Hide xinitrc option (X11 not configured)
-      setup_cmd = ""; # Don't use xsession-wrapper for shell sessions
       save = true;    # Save selected session as default
       load = true;    # Load saved session on startup
     };
