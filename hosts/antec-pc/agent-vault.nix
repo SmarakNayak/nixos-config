@@ -2,6 +2,14 @@
 
 let
   version = "0.39.0";
+  policy = import ./agent-vault-policy.nix;
+  policyFile = pkgs.writeText "agent-vault-policy.json" (builtins.toJSON policy);
+  apiScript = pkgs.writeText "agent-vault-api.sh"
+    (builtins.readFile ./agent-vault-scripts/agent-vault-api.sh);
+  policyScript = pkgs.writeText "agent-vault-policy.sh"
+    (builtins.readFile ./agent-vault-scripts/agent-vault-policy.sh);
+  hermesHandoffScript = pkgs.writeText "agent-vault-hermes-handoff.sh"
+    (builtins.readFile ./agent-vault-scripts/agent-vault-hermes-handoff.sh);
 
   agentVault = pkgs.stdenvNoCC.mkDerivation {
     pname = "agent-vault";
@@ -47,8 +55,9 @@ in
   ];
 
   # One env-format secret, kept out of the world-readable Nix store and fed to
-  # the units via EnvironmentFile. Holds both AGENT_VAULT_MASTER_PASSWORD (the
-  # KEK that unwraps the data key) and the AV_OWNER_* owner login for bootstrap.
+  # the units via EnvironmentFile. Holds AGENT_VAULT_MASTER_PASSWORD (the KEK
+  # that unwraps the data key), the AV_OWNER_* login, and upstream credentials
+  # referenced by environment name in agent-vault-policy.nix.
   age.secrets.agent-vault = {
     file = ../../secrets/agent-vault.env.age;
     owner = "agent-vault";
@@ -164,126 +173,34 @@ in
     after = [ "agent-vault-bootstrap.service" ];
     requires = [ "agent-vault.service" ];
     wantedBy = [ "multi-user.target" ];
-    restartTriggers = [ config.age.secrets.agent-vault.file ];
+    restartTriggers = [
+      config.age.secrets.agent-vault.file
+      policyFile
+    ];
 
     path = [ pkgs.curl pkgs.jq pkgs.coreutils ];
 
     serviceConfig = {
       Type = "oneshot";
+      RemainAfterExit = true;
       User = "agent-vault";
       Group = "agent-vault";
       EnvironmentFile = config.age.secrets.agent-vault.path;
       ExecStart = pkgs.writeShellScript "agent-vault-config" ''
         set -eu
-        url="http://127.0.0.1:14321"
+        agent_vault_url=http://127.0.0.1:14321
+        agent_vault_policy=${lib.escapeShellArg policyFile}
+        vault_name="$(jq -er '.vault.name' "$agent_vault_policy")"
+        agent_name="$(jq -er '.agent.name' "$agent_vault_policy")"
 
-        ready=false
-        for _ in $(seq 1 60); do
-          if curl -fsS "$url/health" >/dev/null 2>&1; then
-            ready=true
-            break
-          fi
-          sleep 1
-        done
-        if [ "$ready" != true ]; then
-          echo "agent-vault-config: server did not become ready" >&2
-          exit 1
-        fi
+        . ${lib.escapeShellArg apiScript}
+        . ${lib.escapeShellArg policyScript}
+        . ${lib.escapeShellArg hermesHandoffScript}
 
-        login_body="$(jq -n --arg e "$AV_OWNER_EMAIL" --arg p "$AV_OWNER_PASSWORD" \
-          '{email:$e,password:$p,device_label:"declarative-config"}')"
-        session_token="$(curl -fsS -H 'Content-Type: application/json' \
-          -d "$login_body" "$url/v1/auth/login" | jq -er '.token')"
-
-        request() {
-          method="$1"
-          endpoint="$2"
-          body="$3"
-          curl -fsS -X "$method" -H "Authorization: Bearer $session_token" \
-            -H 'Content-Type: application/json' -d "$body" "$url$endpoint" \
-            >/dev/null
-        }
-
-        # Creating an existing vault returns 409; every subsequent operation is
-        # a convergent update, so only ignore that one expected response.
-        create_code="$(curl -sS -o /dev/null -w '%{http_code}' -X POST \
-          -H "Authorization: Bearer $session_token" \
-          -H 'Content-Type: application/json' -d '{"name":"hermes"}' \
-          "$url/v1/vaults")"
-        if [ "$create_code" != "201" ] && [ "$create_code" != "409" ]; then
-          echo "agent-vault-config: vault creation failed (HTTP $create_code)" >&2
-          exit 1
-        fi
-
-        credential_body="$(jq -n --arg token "$GITLAB_TOKEN" \
-          '{vault:"hermes",credentials:{GITLAB_TOKEN:$token}}')"
-        request POST /v1/credentials "$credential_body"
-
-        request PUT /v1/vaults/hermes/services \
-          '{"services":[{"name":"gitlab-api","host":"gitlab.com","path":"/api/v4/*","auth":{"type":"api-key","key":"GITLAB_TOKEN","header":"PRIVATE-TOKEN"}}]}'
-
-        request PATCH /v1/vaults/hermes/settings \
-          '{"unmatched_host_policy":"passthrough"}'
-
-        # Create the long-lived broker identity once, then continuously assert
-        # its least-privileged instance and vault roles.
-        agent_code="$(curl -sS -o /dev/null -w '%{http_code}' \
-          -H "Authorization: Bearer $session_token" "$url/v1/agents/hermes")"
-        agent_token=""
-        if [ "$agent_code" = "404" ]; then
-          agent_body='{"name":"hermes","role":"no-access","vaults":[{"vault_name":"hermes","vault_role":"proxy"}]}'
-          agent_token="$(curl -fsS -H "Authorization: Bearer $session_token" \
-            -H 'Content-Type: application/json' -d "$agent_body" \
-            "$url/v1/agents" | jq -er '.av_agent_token')"
-        elif [ "$agent_code" = "200" ]; then
-          request POST /v1/agents/hermes/role '{"role":"no-access"}'
-          request POST /v1/vaults/hermes/agents/hermes/role '{"role":"proxy"}'
-        else
-          echo "agent-vault-config: agent lookup failed (HTTP $agent_code)" >&2
-          exit 1
-        fi
-
-        # Preserve a working token across rebuilds. If the handoff file is lost
-        # or its token is revoked, rotate the broker identity and recreate it.
-        client_env=/var/lib/hermes/workspace/.agent-vault/env
-        if [ -z "$agent_token" ] && [ -r "$client_env" ]; then
-          current_token="$(sed -n 's/^AGENT_VAULT_TOKEN=//p' "$client_env")"
-          if [ -n "$current_token" ] && curl -fsS \
-            -H "Authorization: Bearer $current_token" -H 'X-Vault: hermes' \
-            "$url/discover" >/dev/null 2>&1; then
-            agent_token="$current_token"
-          fi
-        fi
-        if [ -z "$agent_token" ]; then
-          agent_token="$(curl -fsS -X POST \
-            -H "Authorization: Bearer $session_token" \
-            -H 'Content-Type: application/json' -d '{}' \
-            "$url/v1/agents/hermes/rotate" | jq -er '.av_agent_token')"
-        fi
-
-        ca_tmp="$(mktemp /var/lib/hermes/workspace/.agent-vault/.ca.pem.XXXXXX)"
-        curl -fsS "$url/v1/mitm/ca.pem" > "$ca_tmp"
-        chmod 0640 "$ca_tmp"
-        mv "$ca_tmp" /var/lib/hermes/workspace/.agent-vault/ca.pem
-
-        env_tmp="$(mktemp /var/lib/hermes/workspace/.agent-vault/.env.XXXXXX)"
-        chmod 0640 "$env_tmp"
-        proxy_url="http://$agent_token:hermes@host.containers.internal:14322"
-        printf 'AGENT_VAULT_ADDR=http://host.containers.internal:14321\n' > "$env_tmp"
-        printf 'AGENT_VAULT_VAULT=hermes\n' >> "$env_tmp"
-        printf 'AGENT_VAULT_TOKEN=%s\n' "$agent_token" >> "$env_tmp"
-        printf 'HTTPS_PROXY=%s\n' "$proxy_url" >> "$env_tmp"
-        printf 'HTTP_PROXY=%s\n' "$proxy_url" >> "$env_tmp"
-        printf 'NO_PROXY=localhost,127.0.0.1,host.containers.internal\n' >> "$env_tmp"
-        printf 'NODE_USE_ENV_PROXY=1\n' >> "$env_tmp"
-        printf 'OPENCLAW_PROXY_URL=%s\n' "$proxy_url" >> "$env_tmp"
-        printf 'SSL_CERT_FILE=/workspace/.agent-vault/ca.pem\n' >> "$env_tmp"
-        printf 'NODE_EXTRA_CA_CERTS=/workspace/.agent-vault/ca.pem\n' >> "$env_tmp"
-        printf 'REQUESTS_CA_BUNDLE=/workspace/.agent-vault/ca.pem\n' >> "$env_tmp"
-        printf 'CURL_CA_BUNDLE=/workspace/.agent-vault/ca.pem\n' >> "$env_tmp"
-        printf 'GIT_SSL_CAINFO=/workspace/.agent-vault/ca.pem\n' >> "$env_tmp"
-        printf 'DENO_CERT=/workspace/.agent-vault/ca.pem\n' >> "$env_tmp"
-        mv "$env_tmp" "$client_env"
+        agent_vault_wait
+        agent_vault_login
+        agent_vault_reconcile_policy
+        agent_vault_write_hermes_handoff
       '';
     };
   };

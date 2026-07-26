@@ -19,8 +19,9 @@ in {
   "deployer-telegram-bot-token.age".publicKeys = [ master ];
   "deployer-telegram-chat-id.age".publicKeys = [ master ];
   "antec-pc-wifi.env.age".publicKeys = [ master ];
-  # Env-format, three lines: AGENT_VAULT_MASTER_PASSWORD, AV_OWNER_EMAIL,
-  # AV_OWNER_PASSWORD (see hosts/antec-pc/agent-vault.nix).
+  # Env-format: AGENT_VAULT_MASTER_PASSWORD, AV_OWNER_EMAIL,
+  # AV_OWNER_PASSWORD, and upstream credentials referenced by environment name
+  # in hosts/antec-pc/agent-vault-policy.nix.
   "agent-vault.env.age".publicKeys = [ master ];
   # Hermes mail/calendar OAuth (see hosts/antec-pc/hermes-mail.nix). Google only:
   # one shared client secret + a static refresh token per account. Microsoft's
