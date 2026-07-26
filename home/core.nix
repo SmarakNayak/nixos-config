@@ -42,6 +42,7 @@ in
     unzip
     file
     tree
+    glab
   ];
 
   programs.home-manager.enable = true;
