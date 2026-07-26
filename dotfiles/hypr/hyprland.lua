@@ -64,7 +64,7 @@ local exitSession = "systemctl --user stop hyprland-session.target; hyprctl disp
 
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
-hl.env("TERMINAL", "ghostty") # dolphin's "Open Terminal" uses ghostty
+hl.env("TERMINAL", "ghostty") -- dolphin's "Open Terminal" uses ghostty
 
 --##################
 --## PERMISSIONS ###
