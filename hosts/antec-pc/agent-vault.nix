@@ -87,9 +87,9 @@ in
       StateDirectory = "agent-vault";
       WorkingDirectory = "/var/lib/agent-vault";
       EnvironmentFile = config.age.secrets.agent-vault.path;
-      # Listen on IPv4 interfaces so other machines on the home LAN can use the
-      # web UI. The interface-specific firewall rule below limits access to the
-      # Wi-Fi LAN; in particular, this does not open the port on Tailscale.
+      # Listen on IPv4 interfaces for the local Hermes container and the web UI.
+      # The interface-specific firewall rules below expose it on Wi-Fi and
+      # Tailscale, but not on unrelated interfaces.
       ExecStart = "${lib.getExe agentVault} server --host 0.0.0.0 --port 14321";
       Restart = "on-failure";
       RestartSec = "5s";
@@ -104,6 +104,7 @@ in
   };
 
   networking.firewall.interfaces.wlp2s0.allowedTCPPorts = [ 14321 ];
+  networking.firewall.interfaces.${config.services.tailscale.interfaceName}.allowedTCPPorts = [ 14321 ];
 
   # The owner account is DB state with no config-file/env seed, but the first
   # POST /v1/auth/register is auto-verified as owner (no code/SMTP). This oneshot
