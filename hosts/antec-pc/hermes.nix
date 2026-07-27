@@ -225,9 +225,8 @@ in
         "/var/lib/hermes/workspace:/workspace"
       ];
 
-      # Upstream permits home access for optional state sharing. This service
-      # does not need /home, /root, or /run/user.
-      ProtectHome = lib.mkForce true;
+      # The dedicated UID is already restricted to hermes owned files and needs /run/user/989 for its lingering user manager.
+      # ProtectHome = lib.mkForce true;
 
       # Prevent runtime plugin modification. Nix activation can still install
       # reviewed declarative plugins before the service starts.
