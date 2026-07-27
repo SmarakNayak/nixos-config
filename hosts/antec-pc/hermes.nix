@@ -250,6 +250,7 @@ in
       Type = "oneshot";
       User = "hermes";
       Group = "hermes";
+      StandardError = "journal";
     };
   };
 
