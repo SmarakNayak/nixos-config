@@ -97,7 +97,10 @@ in
         # Generated files in the terminal sandbox appear here on the host.
         # MEDIA:/var/lib/hermes/workspace/... must be accepted for native
         # Telegram delivery.
-        media_delivery_allow_dirs = [ "/var/lib/hermes/workspace" ];
+        media_delivery_allow_dirs = [
+          "/var/lib/hermes/workspace"
+          "/workspace"
+        ];
       };
 
       terminal = {
@@ -212,6 +215,14 @@ in
       ReadWritePaths = lib.mkForce [
         "/var/lib/hermes"
         "/var/lib/hermes/workspace"
+      ];
+
+      # MEDIA paths are emitted from command containers, where the persistent
+      # workspace is mounted at /workspace. Expose that same path read-only in
+      # the gateway's mount namespace so Telegram can resolve and upload files
+      # without granting the gateway another writable view of the workspace.
+      BindReadOnlyPaths = [
+        "/var/lib/hermes/workspace:/workspace"
       ];
 
       # Upstream permits home access for optional state sharing. This service
