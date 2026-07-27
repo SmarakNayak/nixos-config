@@ -236,6 +236,34 @@ in
     };
   };
 
+  systemd.services.hermes-container-prune = {
+    description = "Remove stopped Hermes containers older than 24 hours";
+    after = [ "hermes-agent.service" ];
+
+    script = ''
+      export HOME=/var/lib/hermes
+      exec ${lib.getExe config.virtualisation.podman.package} container prune --force \
+        --filter until=24h
+    '';
+
+    serviceConfig = {
+      Type = "oneshot";
+      User = "hermes";
+      Group = "hermes";
+    };
+  };
+
+  systemd.timers.hermes-container-prune = {
+    description = "Daily cleanup of stopped Hermes containers";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "daily";
+      Persistent = true;
+      RandomizedDelaySec = "30m";
+      Unit = "hermes-container-prune.service";
+    };
+  };
+
   environment.systemPackages = [
     (pkgs.writeShellScriptBin "hermes-service" ''
       cd /var/lib/hermes/workspace
