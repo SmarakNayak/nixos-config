@@ -144,6 +144,7 @@
     wget
     helix
     # debugging utils
+    ghostty.terminfo
     inxi
     pciutils
     hwinfo
