@@ -6,6 +6,7 @@
   ];
 
   home.packages = with pkgs; [
+    ghostty.terminfo
     inxi
     pciutils
     hwinfo
