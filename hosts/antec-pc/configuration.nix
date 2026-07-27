@@ -15,6 +15,9 @@
       ./agent-vault.nix
       ./hermes.nix
       ./deployer.nix
+      # Select exactly one GPU driver module.
+      # ./gpu/nvidia.nix
+      ./gpu/nouveau.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -81,12 +84,8 @@
   #   useXkbConfig = true; # use xkb.options in tty.
   # };
 
-  # Enable the X11 windowing system.
-  services = {
-    xserver.enable = true;
-    displayManager.sddm.enable = true;
-    desktopManager.plasma6.enable = true;
-  };
+  # X11 and Plasma removed — this host runs headless.
+
   
 
   # Configure keymap in X11
@@ -125,7 +124,6 @@
     ];
   };
 
-  programs.firefox.enable = true;
   programs.fish.enable = true; # Enable system package completions
   programs.zsh.enable = true; # Enable system package completions
 
@@ -134,21 +132,9 @@
     VISUAL = "hx";
   };
 
-  # Nvidia Proprietary Drivers
-  services.xserver.videoDrivers = [ "nvidia" ]; #enables nvidia
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings.trusted-users = [ "root" "miltu" ];
-  nixpkgs.config.nvidia.acceptLicense = true;
-  hardware = {
-    graphics.enable = true; #seems optional - maybe set somewhere else
-    nvidia.modesetting.enable = true; #needed for high res
-    # Last version that supports Kepler GPUs
-    nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
-    # nvidia.open = false; - only applies to drivers >= 560
-    nvidia.nvidiaSettings = true;
-    # nvidia.forceFullCompositionPipeline = true;
-  };
   
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
@@ -157,15 +143,9 @@
     vim
     wget
     helix
-    kitty
-    ghostty
-    google-chrome
     # debugging utils
-    xrandr
     inxi
     pciutils
-    virtualgl
-    fbset
     hwinfo
   ];
 
