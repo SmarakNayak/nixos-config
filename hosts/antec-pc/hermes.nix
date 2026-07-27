@@ -210,7 +210,8 @@ in
       # remaining hardening below still confines the unprivileged hermes account.
       NoNewPrivileges = lib.mkForce false;
       ProtectSystem = lib.mkForce "strict";
-      PrivateTmp = lib.mkForce true;
+      # Rootless Podman's RunRoot is shared through /tmp and must survive gateway restarts.
+      PrivateTmp = lib.mkForce false;
       UMask = lib.mkForce "0007";
       ReadWritePaths = lib.mkForce [
         "/var/lib/hermes"
