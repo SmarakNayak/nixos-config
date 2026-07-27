@@ -191,6 +191,7 @@ in
         set -eu
         agent_vault_url=http://127.0.0.1:14321
         agent_vault_policy=${lib.escapeShellArg policyFile}
+        agent_vault_system_ca=${lib.escapeShellArg "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"}
         vault_name="$(jq -er '.vault.name' "$agent_vault_policy")"
         agent_name="$(jq -er '.agent.name' "$agent_vault_policy")"
 

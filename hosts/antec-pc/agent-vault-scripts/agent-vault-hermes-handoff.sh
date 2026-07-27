@@ -4,6 +4,7 @@
 #   agent_token      Initial token if the Hermes agent was just created; empty
 #                    when an existing token should be validated or rotated.
 #   agent_vault_url  Agent Vault management API base URL.
+#   agent_vault_system_ca  Nixpkgs' public certificate authority bundle.
 #   session_token    Short-lived owner-session token used only if rotation is
 #                    required; it is never written to the Hermes handoff.
 #   vault_name       Vault assigned to the Hermes proxy identity.
@@ -11,6 +12,7 @@
 #
 # Outputs written atomically to the Hermes workspace:
 #   .agent-vault/ca.pem  Agent Vault MITM certificate authority.
+#   .agent-vault/ca-bundle.pem  Public and Agent Vault certificate authorities.
 #   .agent-vault/env     Restricted agent token, proxy URL, and CA environment.
 #
 # The function may update agent_token with a validated existing token or a newly
@@ -37,6 +39,12 @@ agent_vault_write_hermes_handoff() {
   chmod 0640 "$ca_tmp"
   mv "$ca_tmp" /var/lib/hermes/workspace/.agent-vault/ca.pem
 
+  ca_bundle_tmp="$(mktemp /var/lib/hermes/workspace/.agent-vault/.ca-bundle.pem.XXXXXX)"
+  cat "$agent_vault_system_ca" \
+    /var/lib/hermes/workspace/.agent-vault/ca.pem > "$ca_bundle_tmp"
+  chmod 0640 "$ca_bundle_tmp"
+  mv "$ca_bundle_tmp" /var/lib/hermes/workspace/.agent-vault/ca-bundle.pem
+
   env_tmp="$(mktemp /var/lib/hermes/workspace/.agent-vault/.env.XXXXXX)"
   chmod 0640 "$env_tmp"
   proxy_url="http://$agent_token:$vault_name@host.containers.internal:14322"
@@ -48,11 +56,11 @@ agent_vault_write_hermes_handoff() {
   printf 'NO_PROXY=localhost,127.0.0.1,host.containers.internal\n' >> "$env_tmp"
   printf 'NODE_USE_ENV_PROXY=1\n' >> "$env_tmp"
   printf 'OPENCLAW_PROXY_URL=%s\n' "$proxy_url" >> "$env_tmp"
-  printf 'SSL_CERT_FILE=/workspace/.agent-vault/ca.pem\n' >> "$env_tmp"
+  printf 'SSL_CERT_FILE=/workspace/.agent-vault/ca-bundle.pem\n' >> "$env_tmp"
   printf 'NODE_EXTRA_CA_CERTS=/workspace/.agent-vault/ca.pem\n' >> "$env_tmp"
-  printf 'REQUESTS_CA_BUNDLE=/workspace/.agent-vault/ca.pem\n' >> "$env_tmp"
-  printf 'CURL_CA_BUNDLE=/workspace/.agent-vault/ca.pem\n' >> "$env_tmp"
-  printf 'GIT_SSL_CAINFO=/workspace/.agent-vault/ca.pem\n' >> "$env_tmp"
-  printf 'DENO_CERT=/workspace/.agent-vault/ca.pem\n' >> "$env_tmp"
+  printf 'REQUESTS_CA_BUNDLE=/workspace/.agent-vault/ca-bundle.pem\n' >> "$env_tmp"
+  printf 'CURL_CA_BUNDLE=/workspace/.agent-vault/ca-bundle.pem\n' >> "$env_tmp"
+  printf 'GIT_SSL_CAINFO=/workspace/.agent-vault/ca-bundle.pem\n' >> "$env_tmp"
+  printf 'DENO_CERT=/workspace/.agent-vault/ca-bundle.pem\n' >> "$env_tmp"
   mv "$env_tmp" "$client_env"
 }
