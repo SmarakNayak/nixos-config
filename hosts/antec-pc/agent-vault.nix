@@ -214,11 +214,19 @@ in
     requires = [ "agent-vault-config.service" ];
   };
 
-  # Podman reads this host-side env file while constructing every command
-  # container. Paths inside it refer to the existing /workspace bind mount.
-  services.hermes-agent.settings.terminal.docker_extra_args = [
-    "--env-file=/var/lib/hermes/workspace/.agent-vault/env"
-  ];
+  # Make the combined public + Agent Vault bundle the command containers'
+  # system trust store. Most OpenSSL/libcurl consumers (including Python, Git,
+  # curl, and Nix) then discover it without application-specific environment
+  # overrides. Keep the env file for proxy credentials and runtimes with their
+  # own trust stores.
+  services.hermes-agent.settings.terminal = {
+    docker_extra_args = [
+      "--env-file=/var/lib/hermes/workspace/.agent-vault/env"
+      "--volume=/var/lib/hermes/workspace/.agent-vault/ca-bundle.pem:/etc/ssl/certs/ca-bundle.crt:ro"
+      "--volume=/var/lib/hermes/workspace/.agent-vault/ca-bundle.pem:/etc/ssl/certs/ca-certificates.crt:ro"
+      "--volume=/var/lib/hermes/workspace/.agent-vault/ca-bundle.pem:/etc/ssl/cert.pem:ro"
+    ];
+  };
 
   environment.systemPackages = [ agentVault ];
 }

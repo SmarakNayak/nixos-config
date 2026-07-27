@@ -56,11 +56,11 @@ agent_vault_write_hermes_handoff() {
   printf 'NO_PROXY=localhost,127.0.0.1,host.containers.internal\n' >> "$env_tmp"
   printf 'NODE_USE_ENV_PROXY=1\n' >> "$env_tmp"
   printf 'OPENCLAW_PROXY_URL=%s\n' "$proxy_url" >> "$env_tmp"
-  printf 'SSL_CERT_FILE=/workspace/.agent-vault/ca-bundle.pem\n' >> "$env_tmp"
+  # Node, Requests/certifi, and Deno do not consistently use the OS trust
+  # store mounted by agent-vault.nix, so retain only their runtime-specific
+  # compatibility hooks.
   printf 'NODE_EXTRA_CA_CERTS=/workspace/.agent-vault/ca.pem\n' >> "$env_tmp"
   printf 'REQUESTS_CA_BUNDLE=/workspace/.agent-vault/ca-bundle.pem\n' >> "$env_tmp"
-  printf 'CURL_CA_BUNDLE=/workspace/.agent-vault/ca-bundle.pem\n' >> "$env_tmp"
-  printf 'GIT_SSL_CAINFO=/workspace/.agent-vault/ca-bundle.pem\n' >> "$env_tmp"
   printf 'DENO_CERT=/workspace/.agent-vault/ca-bundle.pem\n' >> "$env_tmp"
   mv "$env_tmp" "$client_env"
 }
