@@ -14,6 +14,7 @@ closure beyond python3 itself (referenced by absolute store path in the unit).
 import html
 import json
 import os
+import queue
 import re
 import socket
 import subprocess
@@ -22,6 +23,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from collections import deque
 from datetime import datetime, timezone
 
 TOKEN = open(os.environ["DEPLOYER_BOT_TOKEN_FILE"]).read().strip()
@@ -38,6 +40,7 @@ TELEGRAM_API_HOST = "api.telegram.org"
 HTTP_TIMEOUT = 10
 POLL_TIMEOUT = 60
 PR_POLL_SECONDS = 60
+DEPLOY_PROGRESS_SECONDS = 60
 NIXOS_VERSION = "/run/current-system/sw/bin/nixos-version"
 # A git object name: 7-40 lowercase hex chars. Anything else never reaches a
 # shell or flake ref, so a Telegram message cannot inject arguments.
@@ -91,6 +94,70 @@ def api(method, http_timeout=HTTP_TIMEOUT, log_empty_updates=False, **params):
 def send(text, **kw):
     return api("sendMessage", chat_id=CHAT_ID, text=text,
                parse_mode="HTML", disable_web_page_preview="true", **kw)
+
+
+def elapsed_text(seconds):
+    minutes, seconds = divmod(int(seconds), 60)
+    return f"{minutes}m {seconds:02d}s" if minutes else f"{seconds}s"
+
+
+def run_with_progress(command, progress_title):
+    """Run a command while streaming logs and sending minute heartbeats."""
+    proc = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+    )
+    output = queue.Queue()
+
+    def read_output():
+        try:
+            for line in proc.stdout:
+                output.put(line)
+        finally:
+            proc.stdout.close()
+            output.put(None)
+
+    threading.Thread(target=read_output, daemon=True).start()
+    started = time.monotonic()
+    next_update = started + DEPLOY_PROGRESS_SECONDS
+    recent = deque(maxlen=100)
+    tail = deque(maxlen=200)
+
+    while True:
+        timeout = max(0, next_update - time.monotonic())
+        try:
+            line = output.get(timeout=timeout)
+        except queue.Empty:
+            line = ""
+
+        if line is None:
+            break
+        if line:
+            # Keep the service journal useful as well as Telegram. Bound each
+            # retained line in case a tool emits an unexpectedly huge record.
+            print(line, end="", flush=True)
+            retained = line[-4000:]
+            recent.append(retained)
+            tail.append(retained)
+
+        now = time.monotonic()
+        if now >= next_update:
+            excerpt = "".join(recent).strip()
+            if excerpt:
+                body = f"\n<pre>{html.escape(excerpt[-2800:])}</pre>"
+            else:
+                body = "\nNo new output; the process is still running."
+            send(
+                f"⏳ {progress_title} — {elapsed_text(now - started)} elapsed"
+                f"{body}"
+            )
+            recent.clear()
+            next_update = now + DEPLOY_PROGRESS_SECONDS
+
+    return proc.wait(), "".join(tail)
 
 
 def authorized(update_part):
@@ -275,20 +342,21 @@ def do_deploy(sha):
     try:
         flake = f"github:{REPO}/{sha}#{ATTR}"
         send(f"🚀 Building {commit_link(sha)}…\n<code>{flake}</code>")
-        proc = subprocess.run(
+        returncode, output_tail = run_with_progress(
             ["nixos-rebuild", "switch", "--flake", flake, "--refresh"],
-            capture_output=True, text=True)
-        if proc.returncode == 0:
+            f"Deploying {commit_link(sha)}",
+        )
+        if returncode == 0:
             send(
                 f"✅ <b>{ATTR}</b> now running {commit_link(sha)}.\n"
                 "Restarting deployer now."
             )
             restart_self_soon()
         else:
-            tail = html.escape((proc.stderr or proc.stdout)[-3000:])
+            tail = html.escape(output_tail[-3000:])
             send(
                 f"❌ Deploy of {commit_link(sha)} failed "
-                f"(exit {proc.returncode}). The running system is unchanged "
+                f"(exit {returncode}). The running system is unchanged "
                 f"unless activation already started.\n<pre>{tail}</pre>")
     finally:
         with _deploy_lock:
