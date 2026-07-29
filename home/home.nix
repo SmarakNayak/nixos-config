@@ -6,6 +6,7 @@ let
   krita-ai-diffusion = import ../packages/krita-ai-diffusion.nix { inherit pkgs; };
   whatsapp-web = import ../packages/whatsapp-web.nix { inherit pkgs; };
   messenger-web = import ../packages/messenger-web.nix { inherit pkgs; };
+  fas3desktop = pkgs.callPackage ../packages/fas3desktop.nix { };
   krita-vision-tools = import ../packages/krita-vision-tools.nix { inherit pkgs; };
   krita-with-ai = pkgs.krita.overrideAttrs (old: {
     buildCommand = ''
@@ -47,6 +48,7 @@ in
     discord
     whatsapp-web
     messenger-web
+    fas3desktop
     gamescope
     mangohud
     heroic
