@@ -4,3 +4,6 @@ Jellyfin
 Navidrome
 Paperless-ngx
 Immich
+Atuin Server
+Glance
+Beszel
