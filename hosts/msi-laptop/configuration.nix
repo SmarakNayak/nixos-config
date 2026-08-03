@@ -16,13 +16,13 @@
       ../../modules/ssh.nix
       ../../modules/mdns.nix
       ../../modules/tailscale-client.nix
+      ../../modules/syncthing.nix
       ../../modules/antec-mount.nix
     ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 50;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "msi-laptop"; # Define your hostname.
-
   # These persistent-data directories are independent Btrfs subvolumes so
   # Snapper can snapshot them without also snapshotting the reproducible root.
   fileSystems."/home" = {

@@ -11,6 +11,7 @@
       ../../modules/btrfs.nix
       ../../modules/caches.nix
       ../../modules/tailscale-server.nix
+      ../../modules/syncthing.nix
       ../../modules/ssh.nix
       ./agent-vault.nix
       ./hermes.nix
