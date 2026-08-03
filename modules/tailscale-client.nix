@@ -17,6 +17,12 @@ in
     iptables -I nixos-fw -i ${tailscaleInterface} -p udp --dport 22000 -j ACCEPT
     ip6tables -I nixos-fw -i ${tailscaleInterface} -p tcp --dport 22000 -j ACCEPT
     ip6tables -I nixos-fw -i ${tailscaleInterface} -p udp --dport 22000 -j ACCEPT
+
+    # KDE Connect (clipboard/file/notification sync) over the tailnet.
+    iptables -I nixos-fw -i ${tailscaleInterface} -p tcp --dport 1714:1764 -j ACCEPT
+    iptables -I nixos-fw -i ${tailscaleInterface} -p udp --dport 1714:1764 -j ACCEPT
+    ip6tables -I nixos-fw -i ${tailscaleInterface} -p tcp --dport 1714:1764 -j ACCEPT
+    ip6tables -I nixos-fw -i ${tailscaleInterface} -p udp --dport 1714:1764 -j ACCEPT
   '';
 
   # Remove the inserted rules when the NixOS firewall is stopped or reloaded
@@ -26,6 +32,11 @@ in
     iptables -D nixos-fw -i ${tailscaleInterface} -p udp --dport 22000 -j ACCEPT || true
     ip6tables -D nixos-fw -i ${tailscaleInterface} -p tcp --dport 22000 -j ACCEPT || true
     ip6tables -D nixos-fw -i ${tailscaleInterface} -p udp --dport 22000 -j ACCEPT || true
+
+    iptables -D nixos-fw -i ${tailscaleInterface} -p tcp --dport 1714:1764 -j ACCEPT || true
+    iptables -D nixos-fw -i ${tailscaleInterface} -p udp --dport 1714:1764 -j ACCEPT || true
+    ip6tables -D nixos-fw -i ${tailscaleInterface} -p tcp --dport 1714:1764 -j ACCEPT || true
+    ip6tables -D nixos-fw -i ${tailscaleInterface} -p udp --dport 1714:1764 -j ACCEPT || true
 
     iptables -D nixos-fw -i ${tailscaleInterface} -m conntrack --ctstate NEW -j DROP || true
     ip6tables -D nixos-fw -i ${tailscaleInterface} -m conntrack --ctstate NEW -j DROP || true

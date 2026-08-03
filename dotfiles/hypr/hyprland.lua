@@ -523,6 +523,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("wl-paste --type image --watch cliphist store")
     hl.exec_cmd("nm-applet")
     hl.exec_cmd("blueman-applet")
+    hl.exec_cmd("kdeconnect-indicator") -- starts kdeconnectd; tray menu for pairing/send-clipboard
     hl.exec_cmd("mako")
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("~/.config/hypr/random-wallpaper.sh")

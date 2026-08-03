@@ -18,6 +18,7 @@
       ../../modules/mdns.nix
       ../../modules/tailscale-client.nix
       ../../modules/syncthing.nix
+      ../../modules/kdeconnect.nix
       ../../modules/antec-mount.nix
     ];
   boot.loader.systemd-boot.enable = true;
