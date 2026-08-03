@@ -18,17 +18,13 @@ window#waybar {
 
 #workspaces button {
   padding: 0 8px;
-  color: #6c7086;
+  /* Existing workspaces are occupied unless Waybar marks them empty. */
+  color: #89b4fa;
   background: transparent;
   border-bottom: 2px solid transparent;
 }
 
-/* non-empty persistent workspaces */
-#workspaces button.persistent {
-  color: #89b4fa;
-}
-
-/* empty persistent workspaces */
+/* Empty workspaces, persistent or otherwise */
 #workspaces button.empty {
   color: #6c7086;
 }
