@@ -1,0 +1,6 @@
+AdGuard Home
+Vaultwarden
+Jellyfin
+Navidrome
+Paperless-ngx
+Immich
