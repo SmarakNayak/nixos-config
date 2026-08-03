@@ -13,6 +13,7 @@
       ../../modules/hyprland.nix
       ../../modules/ssh.nix
       ../../modules/caches.nix
+      ../../modules/localsend.nix
       ../../modules/mdns.nix
       ../../modules/tailscale-client.nix
       ../../modules/syncthing.nix

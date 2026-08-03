@@ -16,6 +16,7 @@
       ./agent-vault.nix
       ./hermes.nix
       ./deployer.nix
+      ./urbit.nix
       # Select exactly one GPU driver module.
       # ./gpu/nvidia.nix
       ./gpu/nouveau.nix
@@ -144,6 +145,7 @@
     vim
     wget
     helix
+    urbit
     # debugging utils
     ghostty.terminfo
     inxi

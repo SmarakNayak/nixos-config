@@ -11,6 +11,7 @@
       ../../modules/btrfs.nix
       ./power-management.nix
       ../../modules/caches.nix
+      ../../modules/localsend.nix
       ../../modules/niri.nix
       ../../modules/hyprland.nix
       ../../modules/ssh.nix

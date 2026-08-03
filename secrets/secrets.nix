@@ -19,6 +19,7 @@ in {
   "deployer-telegram-bot-token.age".publicKeys = [ master ];
   "deployer-telegram-chat-id.age".publicKeys = [ master ];
   "antec-pc-wifi.env.age".publicKeys = [ master ];
+  "dalwel-walrum-1.key.age".publicKeys = [ master ];
   # Env-format: AGENT_VAULT_MASTER_PASSWORD, AV_OWNER_EMAIL,
   # AV_OWNER_PASSWORD, and upstream credentials referenced by environment name
   # in hosts/antec-pc/agent-vault-policy.nix.
