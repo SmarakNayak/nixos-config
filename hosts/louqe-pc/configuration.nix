@@ -117,6 +117,13 @@
     options = [ "subvol=home" ];
   };
 
+  # Keep the large, frequently changing Steam library out of /home snapshots.
+  fileSystems."/home/miltu/.local/share/Steam" = {
+    device = "/dev/disk/by-uuid/9d666b6e-5d4e-4f0c-a367-36a7fd8ac320";
+    fsType = "btrfs";
+    options = [ "subvol=home/miltu/.local/share/Steam" ];
+  };
+
   fileSystems."/var/lib" = {
     device = "/dev/disk/by-uuid/9d666b6e-5d4e-4f0c-a367-36a7fd8ac320";
     fsType = "btrfs";
