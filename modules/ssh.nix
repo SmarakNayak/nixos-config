@@ -2,7 +2,7 @@
 
 {
   # OpenSSH starts with no identities; the user service below explicitly loads
-  # only the Git forge keys.
+  # the Git forge and Hetzner keys.
   programs.ssh.startAgent = true;
 
   home-manager.users.miltu = { config, ... }: {
@@ -74,11 +74,12 @@
       mode = "600";
     };
 
-    # Load only the Git forge identities after the agent and Agenix secrets are
-    # ready. The Antec key is never exposed through the forwarded agent socket.
+    # Load the Git forge and Hetzner identities after the agent and Agenix
+    # secrets are ready. The Antec key is never exposed through the forwarded
+    # agent socket.
     systemd.user.services.ssh-agent-keys = {
       Unit = {
-        Description = "Load Git forge keys into the SSH agent";
+        Description = "Load Git forge and Hetzner keys into the SSH agent";
         Requires = [ "agenix.service" "ssh-agent.service" ];
         After = [ "agenix.service" "ssh-agent.service" ];
         PartOf = [ "agenix.service" "ssh-agent.service" ];
@@ -87,7 +88,7 @@
         Type = "oneshot";
         RemainAfterExit = true;
         Environment = "SSH_AUTH_SOCK=%t/ssh-agent";
-        ExecStart = "${pkgs.openssh}/bin/ssh-add %h/.ssh/id_github %h/.ssh/id_gitlab";
+        ExecStart = "${pkgs.openssh}/bin/ssh-add %h/.ssh/id_github %h/.ssh/id_gitlab %h/.ssh/id_hetzner";
       };
       Install.WantedBy = [ "default.target" ];
     };
