@@ -26,6 +26,7 @@ in
   ];
 
   home.packages = with pkgs; [
+    keymapp
     distrobox
     claude-distro
     facefusion

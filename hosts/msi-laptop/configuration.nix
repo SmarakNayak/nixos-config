@@ -117,6 +117,9 @@
     };
   };
 
+  # Allow Oryx/Wally to access and flash ZSA keyboards over WebUSB.
+  hardware.keyboard.zsa.enable = true;
+
   virtualisation.podman.enable = true;
 
   services.ollama = {

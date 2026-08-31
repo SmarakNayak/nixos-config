@@ -97,6 +97,8 @@
   };
 
   hardware.ledger.enable = true;
+  # Allow Oryx/Wally to access and flash ZSA keyboards over WebUSB.
+  hardware.keyboard.zsa.enable = true;
 
   # Keystone hardware wallet udev rules
   services.udev.extraRules = ''
