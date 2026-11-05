@@ -3,7 +3,10 @@
 {
   services.flatpak = {
     enable = true;
-    packages = [ "org.telegram.desktop" ];
+    packages = [
+      "org.telegram.desktop"
+      "com.bambulab.BambuStudio"
+    ];
 
     update.auto = {
       enable = true;
