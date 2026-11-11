@@ -136,6 +136,7 @@ in
     enableBashIntegration = true;
     enableZshIntegration = true;
     enableFishIntegration = true;
+    historyWidget.command = ""; # atuin owns Ctrl-R
   };
 
   programs.atuin = {

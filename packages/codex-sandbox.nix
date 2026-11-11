@@ -19,6 +19,7 @@
 # --ro-bind ~/.ssh/known_hosts    host key verification for SSH git remotes
 # --bind $SSH_AUTH_SOCK                ssh agent socket (set by UWSM) for git push/pull over ssh urls
 # --bind $PWD          read-write access to the project directory
+# --no-daemon          shared app-server daemon can't install/run inside the sandbox
 pkgs.writeShellScriptBin "codex-sandbox" ''
   mkdir -p "$HOME/.codex"
 
@@ -42,5 +43,5 @@ pkgs.writeShellScriptBin "codex-sandbox" ''
     --ro-bind-try "$HOME/.ssh/known_hosts" "$HOME/.ssh/known_hosts" \
     --bind-try "$SSH_AUTH_SOCK" "$SSH_AUTH_SOCK" \
     --bind "$PWD" "$PWD" --chdir "$PWD" \
-    -- ${llmAgentPackages.codex}/bin/codex --dangerously-bypass-approvals-and-sandbox "$@"
+    -- ${llmAgentPackages.codex}/bin/codex --no-daemon --dangerously-bypass-approvals-and-sandbox "$@"
 ''
