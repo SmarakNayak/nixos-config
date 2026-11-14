@@ -21,6 +21,14 @@
 # --ro-bind ~/.ssh/known_hosts    host key verification for SSH git remotes
 # --bind $SSH_AUTH_SOCK                ssh agent socket (set by UWSM) for git push/pull over ssh urls
 # --bind $PWD          read-write access to the project directory
+let
+  # Sandbox-only settings: bypass-mode acceptance is only read from ~/.claude/settings.json.
+  # Bound over the resolved store file since bwrap can't mount onto a symlink.
+  sandboxSettings = pkgs.writeText "claude-sandbox-settings.json" (builtins.toJSON (
+    builtins.fromJSON (builtins.readFile ../dotfiles/claude/settings.json)
+    // { skipDangerousModePermissionPrompt = true; }
+  ));
+in
 pkgs.writeShellScriptBin "claude-sandbox" ''
   mkdir -p "$HOME/.claude"
   touch "$HOME/.claude.json"
@@ -41,6 +49,7 @@ pkgs.writeShellScriptBin "claude-sandbox" ''
     --ro-bind-try /run/current-system /run/current-system \
     --tmpfs "$HOME" \
     --bind "$HOME/.claude" "$HOME/.claude" --bind "$HOME/.claude.json" "$HOME/.claude.json" \
+    --ro-bind ${sandboxSettings} "$(readlink -f "$HOME/.claude/settings.json")" \
     --ro-bind-try "$HOME/.config/git/config" "$HOME/.config/git/config" \
     --ro-bind-try "$HOME/.config/git/ignore" "$HOME/.config/git/ignore" \
     --ro-bind-try "$HOME/.ssh/known_hosts" "$HOME/.ssh/known_hosts" \
