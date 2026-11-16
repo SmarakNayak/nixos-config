@@ -183,7 +183,7 @@ in
       mgr.prepend_keymap = [
         {
           on = [ "e" ];
-          run = ''shell 'yazi-open-with "$@"' --orphan'';
+          run = "shell 'yazi-open-with %s' --orphan";
           desc = "Open with...";
         }
       ];
