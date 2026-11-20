@@ -1,6 +1,14 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, self, ... }:
 
 let
+  # Upstream patches nixpkgs' patchelf assuming 0.19.2, but ours is 0.15.2 and the
+  # patch fails. patchelfUnstable already contains that fix, so skip the re-patch.
+  pmPackages = lib.filterAttrs (_: lib.isDerivation) (
+    pkgs.callPackage "${self.inputs.hermes-agent}/nix/pm-packages.nix" {
+      patchelf = pkgs.patchelfUnstable // { overrideAttrs = _: pkgs.patchelfUnstable; };
+    }
+  );
+
   # The `messaging` extra (python-telegram-bot, discord.py, slack) was dropped
   # from upstream's `[all]` on 2026-05-12 and routed to runtime lazy-install.
   # Lazy installs are disabled here, so bake those deps into the sealed venv.
@@ -9,6 +17,7 @@ let
   # "python-telegram-bot not installed".
   hermesAgent = pkgs.hermes-agent.override {
     extraDependencyGroups = [ "messaging" ];
+    inherit pmPackages;
   };
 in
 
