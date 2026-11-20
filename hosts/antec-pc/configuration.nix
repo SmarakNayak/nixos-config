@@ -137,6 +137,15 @@
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings.trusted-users = [ "root" "miltu" ];
+
+  # The store reached 78G of a 104G disk; collect old generations and cap logs.
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
+  nix.settings.auto-optimise-store = true;
+  services.journald.settings.Journal.SystemMaxUse = "1G";
   
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
