@@ -194,8 +194,10 @@
   services.avahi = {
     enable = true;
     nssmdns4 = true;
-    publish.enable = true;
-    publish.addresses = true;
+    settings.publish = {
+      disable-publishing = false;
+      publish-addresses = true;
+    };
   };
   networking.firewall.allowedTCPPorts = [ 22 ];
 
