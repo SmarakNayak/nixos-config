@@ -74,7 +74,10 @@ in
 
   programs.vscode = {
     enable = true;
-    package = pkgs.vscode.fhs;
+    # Select the GNOME keyring explicitly in Wayland sessions.
+    package = (pkgs.vscode.override {
+      commandLineArgs = "--password-store=gnome-libsecret";
+    }).fhs;
 
     # Add nix-vscode-extensions only if a needed extension is missing from nixpkgs.
     profiles.default.extensions = with pkgs.vscode-extensions; [
