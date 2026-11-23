@@ -72,8 +72,7 @@
         "tooltip-format": "Storage: {path}\nUsed: {used} / {total} ({percentage_used}%)\nFree: {free}"
     },
     "backlight": {
-        "format": "{percent}% {icon}",
-        "format-icons": ["", "", "", "", "", "", "", "", ""]
+        "format": "󰃠 {percent}%"
     },
     "power-profiles-daemon": {
         "format": "{icon}",

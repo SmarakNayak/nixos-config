@@ -257,6 +257,7 @@ hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("dpms-off"))
 hl.bind(mainMod .. " + SHIFT + O", hl.dsp.dpms({ action = "on" }))
 
 hl.bind("CTRL + SHIFT + S", hl.dsp.exec_cmd("~/.config/hypr/screenshot.sh"))
+hl.bind("CTRL + ALT + S", hl.dsp.exec_cmd("screenshot-ocr"))
 
 hl.bind("CTRL + SHIFT + R", hl.dsp.exec_cmd("~/.config/hypr/toggle_recording.sh"))
 

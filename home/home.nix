@@ -74,12 +74,13 @@ in
 
   programs.vscode = {
     enable = true;
-    package = pkgs.vscode.fhsWithPackages (pkgs: with pkgs; [
-      rustup
-      gcc
-      pkg-config
-      openssl.dev
-    ]);
+    package = pkgs.vscode.fhs;
+
+    # Add nix-vscode-extensions only if a needed extension is missing from nixpkgs.
+    profiles.default.extensions = with pkgs.vscode-extensions; [
+      mkhl.direnv
+      rust-lang.rust-analyzer
+    ];
   };
 
   home.sessionVariables = {
