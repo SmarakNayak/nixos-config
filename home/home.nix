@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, hostType, ... }:
 
 let
   claude-distro = import ../packages/claude-distrobox.nix { inherit pkgs; };
@@ -26,11 +26,11 @@ in
   ];
 
   home.packages = with pkgs; [
+    # Shared desktop and laptop packages.
     keymapp
     distrobox
     claude-distro
     facefusion
-    comfy-ui-cuda
     networkmanagerapplet
     nerd-fonts.jetbrains-mono
     nerd-fonts.fira-code
@@ -65,6 +65,11 @@ in
     libreoffice
     rstudioWrapper
     stability-matrix
+  ] ++ lib.optionals (hostType == "desktop") [
+    # Desktop-only packages.
+    comfy-ui-cuda
+  ] ++ lib.optionals (hostType == "laptop") [
+    # Laptop-only packages.
   ];
 
   programs.vscode = {

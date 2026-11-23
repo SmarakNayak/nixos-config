@@ -79,7 +79,10 @@
             home-manager.users.miltu = import ./home/home.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
-            home-manager.extraSpecialArgs = { inherit llm-agents; };
+            home-manager.extraSpecialArgs = {
+              inherit llm-agents;
+              hostType = "desktop";
+            };
           }
         ];
       };
@@ -126,7 +129,6 @@
               waybar.overlays.default
               claude-code.overlays.default
               ghostty.overlays.default
-              comfyui-nix.overlays.default
               stability-matrix-nix.overlays.default
             ];
             home-manager.useGlobalPkgs = true;
@@ -134,7 +136,10 @@
             home-manager.users.miltu = import ./home/home.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
-            home-manager.extraSpecialArgs = { inherit llm-agents; };
+            home-manager.extraSpecialArgs = {
+              inherit llm-agents;
+              hostType = "laptop";
+            };
           }
         ];
       };
