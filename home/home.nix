@@ -79,10 +79,22 @@ in
       commandLineArgs = "--password-store=gnome-libsecret";
     }).fhs;
 
-    # Add nix-vscode-extensions only if a needed extension is missing from nixpkgs.
+    profiles.default.userSettings."editor.tabSize" = 2;
+
+    # Prefer nixpkgs extensions. Consider nix-vscode-extensions if several
+    # extensions need Marketplace pins.
     profiles.default.extensions = with pkgs.vscode-extensions; [
       mkhl.direnv
       rust-lang.rust-analyzer
+      anthropic.claude-code
+      # Pin Codex directly from the Marketplace while it is absent from nixpkgs.
+      (pkgs.vscode-utils.extensionFromVscodeMarketplace {
+        publisher = "openai";
+        name = "chatgpt";
+        version = "26.51117.41037";
+        arch = "linux-x64";
+        hash = "sha256-JLtSmiFlavrjzsxpx+/EKljg/uVZRMij0XWkUnSVRJc=";
+      })
     ];
   };
 
