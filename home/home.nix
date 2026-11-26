@@ -75,11 +75,10 @@ in
   programs.vscode = {
     enable = true;
     # Select the GNOME keyring explicitly in Wayland sessions.
+    # FHS so auto-updated extensions' generic-Linux binaries (e.g. Claude Code) can run.
     package = (pkgs.vscode.override {
       commandLineArgs = "--password-store=gnome-libsecret";
     }).fhs;
-
-    profiles.default.userSettings."editor.tabSize" = 2;
 
     # Prefer nixpkgs extensions. Consider nix-vscode-extensions if several
     # extensions need Marketplace pins.
