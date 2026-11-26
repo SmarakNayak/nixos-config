@@ -1,4 +1,4 @@
-{ config, pkgs, llm-agents, ... }:
+{ config, pkgs, llm-agents, autolith, ... }:
 
 let
   llmAgentPackages = llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
@@ -35,6 +35,7 @@ in
     pi-sandbox
     llmAgentPackages.pi
     llmAgentPackages.gemini-cli
+    autolith.packages.${pkgs.stdenv.hostPlatform.system}.default
     speedtest-go
     procs
     sd

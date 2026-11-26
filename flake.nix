@@ -42,6 +42,10 @@
       # inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    autolith = {
+      url = "github:lambda-symbolics/autolith";
+    };
+
     ghostty = {
       url = "github:ghostty-org/ghostty";
     };
@@ -56,7 +60,7 @@
 
   };
 
-  outputs = { self, nixpkgs, waybar, agenix, hermes-agent, home-manager, nix-flatpak, claude-code, llm-agents, ghostty, comfyui-nix, stability-matrix-nix, ... }@inputs: {
+  outputs = { self, nixpkgs, waybar, agenix, hermes-agent, home-manager, nix-flatpak, claude-code, llm-agents, autolith, ghostty, comfyui-nix, stability-matrix-nix, ... }@inputs: {
     nixosConfigurations= {
       louqe-pc = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit self; };
@@ -80,7 +84,7 @@
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
             home-manager.extraSpecialArgs = {
-              inherit llm-agents;
+              inherit llm-agents autolith;
               hostType = "desktop";
             };
           }
@@ -106,7 +110,7 @@
             home-manager.users.miltu = import ./home/home-server.nix;
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
-            home-manager.extraSpecialArgs = { inherit llm-agents; };
+            home-manager.extraSpecialArgs = { inherit llm-agents autolith; };
           }
         ];
       };
@@ -137,7 +141,7 @@
             home-manager.backupFileExtension = "backup";
             home-manager.sharedModules = [ agenix.homeManagerModules.default ];
             home-manager.extraSpecialArgs = {
-              inherit llm-agents;
+              inherit llm-agents autolith;
               hostType = "laptop";
             };
           }
