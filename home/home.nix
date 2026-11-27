@@ -78,6 +78,17 @@ in
     # FHS so auto-updated extensions' generic-Linux binaries (e.g. Claude Code) can run.
     package = (pkgs.vscode.override {
       commandLineArgs = "--password-store=gnome-libsecret";
+      # ~/.ssh/config is a symlink into the root-owned Nix store. Inside the FHS
+      # (bubblewrap) namespace root maps to "nobody", so OpenSSH's implicit
+      # user-config ownership check fails with "Bad owner or permissions".
+      # Passing the config explicitly with -F skips that check.
+      buildVscode = args: pkgs.buildVscode (args // {
+        customizeFHSEnv = fhsArgs: fhsArgs // {
+          profile = (fhsArgs.profile or "") + ''
+            export GIT_SSH_COMMAND="ssh -F $HOME/.ssh/config"
+          '';
+        };
+      });
     }).fhs;
 
     # Prefer nixpkgs extensions. Consider nix-vscode-extensions if several
